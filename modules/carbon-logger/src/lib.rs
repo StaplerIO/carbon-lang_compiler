@@ -16,4 +16,8 @@ pub mod logger {
 	pub fn log_error(message: &str) {
 		log(Level::Error, message);
 	}
+
+	pub fn log_debug(message: &str) {
+		log(Level::Debug, message);
+	}
 }
