@@ -1,3 +1,8 @@
+use carbon_logger::logger;
+
+mod helper;
+mod command_executor;
+
 fn main() {
-    println!("Hello, world!");
+    logger::log_info("Hello, world");
 }
