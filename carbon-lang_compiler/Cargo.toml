@@ -1,5 +1,5 @@
 [package]
-name = "carbon-lang"
+name = "carbon-lang_compiler"
 version = "0.0.1"
 authors = ["Jeb Feng <ranzeplay@outlook.com>"]
 edition = "2018"

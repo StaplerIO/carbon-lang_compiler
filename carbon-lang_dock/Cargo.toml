@@ -1,0 +1,10 @@
+[package]
+name = "carbon-lang_dock"
+version = "0.0.1"
+authors = ["Jeb Feng <ranzeplay@outlook.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+"carbon-lang_compiler" = { path = "../carbon-lang_compiler", version = "0.0.1" }
