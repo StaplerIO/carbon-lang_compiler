@@ -1,3 +1,7 @@
-fn main() {
-    println!("Hello, world!");
+mod compiler;
+mod dock;
+
+fn main()
+{
+    print!("Hello, world!")
 }
