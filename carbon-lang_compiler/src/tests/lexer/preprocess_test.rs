@@ -1,4 +1,3 @@
-#[cfg(test)]
 mod tests {
     #[test]
     fn no_comment() {
