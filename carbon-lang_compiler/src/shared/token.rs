@@ -1,3 +1,4 @@
+#[derive(Copy, Clone, PartialEq)]
 pub enum TokenType {
     Identifier = 1,
     Number = 2,
@@ -5,9 +6,11 @@ pub enum TokenType {
     Container = 4,
     Keyword = 5,
     Operator = 6,
+    Semicolon = 7,
     Unset = 0
 }
 
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum KeywordType
 {
     KwDecimal = 1,          // decimal
@@ -32,6 +35,7 @@ pub enum KeywordType
     Unset = 0
 }
 
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ContainerType{
     Brace = 1,              // {
     AntiBrace = 2,          // }
@@ -53,7 +57,7 @@ pub struct Token {
     pub operator: Operator
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Debug)]
 pub enum OperatorType {
     // Root type
     Calculation = 1,
@@ -86,22 +90,6 @@ pub enum RelationOperator
     Equal = 6,              // ==
     Unset = 0
 }
-
-// Needs to be optimized
-/*impl PartialEq for RelationOperator {
-    fn eq(&self, other: &Self) -> bool {
-        return match (self, other) {
-            (RelationOperator::Bigger, RelationOperator::Bigger) => true,
-            (RelationOperator::BiggerEqual, RelationOperator::BiggerEqual) => true,
-            (RelationOperator::Less, RelationOperator::Less) => true,
-            (RelationOperator::LessEqual, RelationOperator::LessEqual) => true,
-            (RelationOperator::NotEqual, RelationOperator::NotEqual) => true,
-            (RelationOperator::Equal, RelationOperator::Equal) => true,
-            (RelationOperator::Unset, RelationOperator::Unset) => true,
-            (_, _) => false
-        }
-    }
-}*/
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum LogicalOperator {

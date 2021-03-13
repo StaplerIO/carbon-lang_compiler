@@ -14,16 +14,16 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
     while source_code.len() > 0 {
         #[allow(unused_assignments)]
-            let mut match_string = String::new();
+            let mut lexeme = String::new();
 
-        match_string = match_identifier(source_code.clone());
-        if match_string.len() > 0 {
+        lexeme = match_identifier(source_code.clone());
+        if lexeme.len() > 0 {
             let token = Token {
                 token_type: TokenType::Identifier,
                 number: "".to_string(),
                 string: "".to_string(),
-                identifier: match_string.clone(),
-                keyword: match_keyword(match_string.clone()),
+                identifier: lexeme.clone(),
+                keyword: match_keyword(lexeme.clone()),
                 container: ContainerType::Unset,
                 operator: Operator {
                     operator_type: OperatorType::Unset,
@@ -35,16 +35,16 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
             result.push(token);
 
-            source_code = source_code[match_string.len()..].parse().unwrap();
+            source_code = source_code[lexeme.len()..].parse().unwrap();
 
             continue;
         }
 
-        match_string = match_number(source_code.clone());
-        if match_string.len() > 0 {
+        lexeme = match_number(source_code.clone());
+        if lexeme.len() > 0 {
             let token = Token {
                 token_type: TokenType::Number,
-                number: match_string.clone(),
+                number: lexeme.clone(),
                 string: "".to_string(),
                 identifier: "".to_string(),
                 keyword: KeywordType::Unset,
@@ -59,7 +59,31 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
             result.push(token);
 
-            source_code = source_code[match_string.len()..].parse().unwrap();
+            source_code = source_code[lexeme.len()..].parse().unwrap();
+
+            continue;
+        }
+
+        lexeme = match_string(source_code.clone());
+        if lexeme.len() > 0 {
+            let token = Token {
+                token_type: TokenType::String,
+                number: "".to_string(),
+                string: lexeme.clone(),
+                identifier: "".to_string(),
+                keyword: KeywordType::Unset,
+                container: ContainerType::Unset,
+                operator: Operator {
+                    operator_type: OperatorType::Unset,
+                    calculation: CalculationOperator::Unset,
+                    relation: RelationOperator::Unset,
+                    logical: LogicalOperator::Unset,
+                },
+            };
+
+            result.push(token);
+
+            source_code = source_code[(lexeme.len() + 2)..].parse().unwrap();
 
             continue;
         }
@@ -121,23 +145,51 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
                         }
                     }
                     OperatorType::Logical => {
-                        match operator.logical {
-                            LogicalOperator::And => { source_code = source_code[2..].parse().unwrap(); }
-                            LogicalOperator::Or => { source_code = source_code[2..].parse().unwrap(); }
-                            _ => { source_code.remove(0); }
+                        if operator.logical == LogicalOperator::And ||
+                            operator.logical == LogicalOperator::Or {
+                            source_code = source_code[2..].parse().unwrap();
+                        } else {
+                            source_code.remove(0);
                         }
                     }
-                    OperatorType::Scope => { source_code = source_code[2..].parse().unwrap(); }
-                    _ => { source_code.remove(0); }
+                    OperatorType::Scope => {
+                        source_code = source_code[2..].parse().unwrap();
+                    }
+                    _ => {
+                        source_code.remove(0);
+                    }
                 }
 
                 continue;
             }
         }
 
-        match_string = match_spaces(source_code.clone());
-        if match_string.len() > 0 {
-            source_code = source_code[match_string.len()..].parse().unwrap();
+        lexeme = match_spaces(source_code.clone());
+        if lexeme.len() > 0 {
+            source_code = source_code[lexeme.len()..].parse().unwrap();
+
+            continue;
+        }
+
+        if match_semicolon(source_code.clone()) {
+            source_code.remove(0);
+
+            let token = Token {
+                token_type: TokenType::Semicolon,
+                number: "".to_string(),
+                string: "".to_string(),
+                identifier: "".to_string(),
+                keyword: KeywordType::Unset,
+                container: ContainerType::Unset,
+                operator: Operator{
+                    operator_type: OperatorType::Unset,
+                    calculation: CalculationOperator::Unset,
+                    relation: RelationOperator::Unset,
+                    logical: LogicalOperator::Unset
+                }
+            };
+
+            result.push(token);
 
             continue;
         }

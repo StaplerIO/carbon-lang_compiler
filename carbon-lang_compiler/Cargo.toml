@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 "carbon-logger" = { path = "../modules/carbon-logger", version = "0.0.1" }
 
-"regex" = "1.4.3"
+# "regex" = "1.4.3"

@@ -122,7 +122,7 @@ pub fn match_operator(content: String) -> Operator {
                 relation: RelationOperator::Unset,
                 logical: LogicalOperator::Unset,
             }
-        },
+        }
         '<' => {
             match content.chars().nth(1).unwrap() {
                 '=' => {
@@ -133,7 +133,7 @@ pub fn match_operator(content: String) -> Operator {
                         relation: RelationOperator::LessEqual,
                         logical: LogicalOperator::Unset,
                     }
-                },
+                }
                 '>' => {
                     // Matches a "<>" sequence
                     Operator {
@@ -142,7 +142,7 @@ pub fn match_operator(content: String) -> Operator {
                         relation: RelationOperator::NotEqual,
                         logical: LogicalOperator::Unset,
                     }
-                },
+                }
                 _ => {
                     // Matches a "<" sequence
                     Operator {
@@ -153,7 +153,7 @@ pub fn match_operator(content: String) -> Operator {
                     }
                 }
             }
-        },
+        }
         '>' => {
             match content.chars().nth(1).unwrap() {
                 '=' => {
@@ -164,7 +164,7 @@ pub fn match_operator(content: String) -> Operator {
                         relation: RelationOperator::BiggerEqual,
                         logical: LogicalOperator::Unset,
                     }
-                },
+                }
                 _ => {
                     // Matches a ">" sequence
                     Operator {
@@ -175,7 +175,7 @@ pub fn match_operator(content: String) -> Operator {
                     }
                 }
             }
-        },
+        }
         '=' => {
             match content.chars().nth(1).unwrap() {
                 '=' => {
@@ -186,7 +186,7 @@ pub fn match_operator(content: String) -> Operator {
                         relation: RelationOperator::Equal,
                         logical: LogicalOperator::Unset,
                     }
-                },
+                }
                 _ => {
                     // Matches a "=" sequence
                     Operator {
@@ -197,7 +197,7 @@ pub fn match_operator(content: String) -> Operator {
                     }
                 }
             }
-        },
+        }
         '!' => {
             Operator {
                 operator_type: OperatorType::Logical,
@@ -207,29 +207,29 @@ pub fn match_operator(content: String) -> Operator {
             }
         }
         _ => {
-            if content[0..1].eq("&&") {
+            let capture = String::from(&content[0..2]);
+            if capture.eq("&&") {
                 Operator {
                     operator_type: OperatorType::Logical,
                     calculation: CalculationOperator::Unset,
                     relation: RelationOperator::Unset,
                     logical: LogicalOperator::And,
                 }
-            } else if content[0..1].eq("||") {
+            } else if capture.eq("||") {
                 Operator {
                     operator_type: OperatorType::Logical,
                     calculation: CalculationOperator::Unset,
                     relation: RelationOperator::Unset,
                     logical: LogicalOperator::Or,
                 }
-
-            } else if content[0..1].eq("::") {
+            } else if capture.eq("::") {
                 Operator {
                     operator_type: OperatorType::Scope,
                     calculation: CalculationOperator::Unset,
                     relation: RelationOperator::Unset,
                     logical: LogicalOperator::Unset,
                 }
-            }else {
+            } else {
                 Operator {
                     operator_type: OperatorType::Unset,
                     calculation: CalculationOperator::Unset,
@@ -239,4 +239,24 @@ pub fn match_operator(content: String) -> Operator {
             }
         }
     };
+}
+
+pub fn match_semicolon(content: String) -> bool {
+    return content.chars().nth(0).unwrap() == ';';
+}
+
+pub fn match_string(content: String) -> String {
+    let mut result = String::new();
+
+    if content.starts_with('\"') {
+        for ch in content[1..].chars() {
+            if ch != '\"' {
+                result.push(ch);
+            } else {
+                break;
+            }
+        }
+    }
+
+    return result;
 }
