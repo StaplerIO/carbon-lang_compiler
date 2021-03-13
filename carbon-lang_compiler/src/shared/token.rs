@@ -1,11 +1,10 @@
-use std::any::Any;
-
 pub enum TokenType {
     Identifier = 1,
     Number = 2,
     String = 3,
     Container = 4,
     Keyword = 5,
+    Operator = 6,
     Unset = 0
 }
 
@@ -54,6 +53,7 @@ pub struct Token {
     pub operator: Operator
 }
 
+#[derive(Copy, Clone, PartialEq)]
 pub enum OperatorType {
     // Root type
     Calculation = 1,
@@ -65,6 +65,7 @@ pub enum OperatorType {
     Unset = 0
 }
 
+#[derive(Copy, Clone, PartialEq)]
 pub enum CalculationOperator {
     Plus = 1,               // +
     Minus = 2,              // -
@@ -74,16 +75,35 @@ pub enum CalculationOperator {
     Unset = 0
 }
 
+#[derive(Copy, Clone, PartialEq)]
 pub enum RelationOperator
 {
     Bigger = 1,             // >
     BiggerEqual = 2,        // >=
     Less = 3,               // <
     LessEqual = 4,          // <=
-    NotEqual = 5,            // <>
+    NotEqual = 5,           // <>,
+    Equal = 6,              // ==
     Unset = 0
 }
 
+// Needs to be optimized
+/*impl PartialEq for RelationOperator {
+    fn eq(&self, other: &Self) -> bool {
+        return match (self, other) {
+            (RelationOperator::Bigger, RelationOperator::Bigger) => true,
+            (RelationOperator::BiggerEqual, RelationOperator::BiggerEqual) => true,
+            (RelationOperator::Less, RelationOperator::Less) => true,
+            (RelationOperator::LessEqual, RelationOperator::LessEqual) => true,
+            (RelationOperator::NotEqual, RelationOperator::NotEqual) => true,
+            (RelationOperator::Equal, RelationOperator::Equal) => true,
+            (RelationOperator::Unset, RelationOperator::Unset) => true,
+            (_, _) => false
+        }
+    }
+}*/
+
+#[derive(Copy, Clone, PartialEq)]
 pub enum LogicalOperator {
     Not = 1,                // !
     And = 2,                // &&
@@ -91,6 +111,7 @@ pub enum LogicalOperator {
     Unset = 0
 }
 
+#[derive(Copy, Clone)]
 pub struct Operator {
     pub operator_type: OperatorType,
 

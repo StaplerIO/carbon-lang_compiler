@@ -1,5 +1,4 @@
 use crate::shared::token::KeywordType;
-use crate::shared::token::TokenType::Keyword;
 use crate::shared::token::KeywordType::{KwStr, KwVar, KwDecimal, KwInt, KwChar, KwConst, KwExport, KwFunc, KwIf, KwElseIf, KwElse, KwWhile, KwLoop, KwFor, KwSwitch, KwContinue, KwBreak, KwReturn, KwCall, Unset};
 
 pub fn match_keyword(identifier: String) -> KeywordType {
