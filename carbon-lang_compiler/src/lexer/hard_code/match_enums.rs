@@ -1,5 +1,5 @@
 use crate::shared::token::KeywordType;
-use crate::shared::token::KeywordType::{KwStr, KwVar, KwDecimal, KwInt, KwChar, KwConst, KwExport, KwFunc, KwIf, KwElseIf, KwElse, KwWhile, KwLoop, KwFor, KwSwitch, KwContinue, KwBreak, KwReturn, KwCall, Unset};
+use crate::shared::token::KeywordType::{KwStr, KwVar, KwDecimal, KwInt, KwChar, KwConst, KwExport, KwFunc, KwIf, KwElseIf, KwElse, KwWhile, KwLoop, KwSwitch, KwContinue, KwBreak, KwReturn, KwCall, Unset};
 
 pub fn match_keyword(identifier: String) -> KeywordType {
     return match identifier.as_str() {
@@ -16,7 +16,6 @@ pub fn match_keyword(identifier: String) -> KeywordType {
         "else" => KwElse,
         "while" => KwWhile,
         "loop" => KwLoop,
-        "for" => KwFor,
         "switch" => KwSwitch,
         "continue" => KwContinue,
         "break" => KwBreak,
