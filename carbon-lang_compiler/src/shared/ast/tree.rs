@@ -1,5 +1,7 @@
-use crate::shared::ast::function_table::FunctionTable;
+use crate::shared::ast::blocks::function::Function;
 
 pub struct AstTree {
-     pub function_table: FunctionTable
+     // function_list doesn't contain the entry function
+     pub function_list: Vec<Function>,
+     pub entry: Function
 }

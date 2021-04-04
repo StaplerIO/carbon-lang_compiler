@@ -1,13 +1,13 @@
 #[derive(Copy, Clone, PartialEq)]
 pub enum TokenType {
-    Identifier = 1,
-    Number = 2,
-    String = 3,
-    Container = 4,
-    Keyword = 5,
-    Operator = 6,
-    Semicolon = 7,
-    Unset = 0
+    Identifier,
+    Number,
+    String,
+    Container,
+    Keyword,
+    Operator,
+    Semicolon,
+    Unset
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
@@ -45,6 +45,7 @@ pub enum ContainerType{
     Unset
 }
 
+#[derive(Clone)]
 pub struct Token {
     pub token_type: TokenType,
 
