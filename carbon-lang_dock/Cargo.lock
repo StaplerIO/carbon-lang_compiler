@@ -3,6 +3,9 @@
 [[package]]
 name = "carbon-lang_compiler"
 version = "0.0.1"
+dependencies = [
+ "carbon-logger",
+]
 
 [[package]]
 name = "carbon-lang_dock"

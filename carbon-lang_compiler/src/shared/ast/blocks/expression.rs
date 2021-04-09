@@ -34,9 +34,17 @@ pub struct Expression {
     pub single_term: Box<Term>
 }
 
+pub enum TermType {
+    Identifier,
+    Number,
+    String
+}
+
 pub struct Term {
+    pub kind: TermType,
     pub identifier: String,
     pub number: String,
+    pub string: String,
 
     // !foo -> True  |  foo -> False
     pub marked_as_not: bool
