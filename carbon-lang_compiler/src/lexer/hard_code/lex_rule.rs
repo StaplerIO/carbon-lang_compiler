@@ -81,76 +81,80 @@ pub fn match_container(content: String) -> ContainerType {
     };
 }
 
-pub fn match_operator(content: String) -> Operator {
+/**
+ * Return:
+ * A tuple (Operator, number) : The number is the length of the operator
+ */
+pub fn match_operator(content: String) -> (Operator, usize) {
     return match content.chars().nth(0).unwrap() {
         '+' => {
-            Operator {
+            (Operator {
                 operator_type: OperatorType::Calculation,
-                calculation: CalculationOperator::Plus,
-                relation: RelationOperator::Unset,
-                logical: LogicalOperator::Unset,
-            }
+                calculation: Option::from(CalculationOperator::Plus),
+                relation: None,
+                logical: None,
+            }, 1)
         }
         '-' => {
-            Operator {
+            (Operator {
                 operator_type: OperatorType::Calculation,
-                calculation: CalculationOperator::Minus,
-                relation: RelationOperator::Unset,
-                logical: LogicalOperator::Unset,
-            }
+                calculation: Option::from(CalculationOperator::Minus),
+                relation: None,
+                logical: None,
+            }, 1)
         }
         '*' => {
-            Operator {
+            (Operator {
                 operator_type: OperatorType::Calculation,
-                calculation: CalculationOperator::Times,
-                relation: RelationOperator::Unset,
-                logical: LogicalOperator::Unset,
-            }
+                calculation: Option::from(CalculationOperator::Times),
+                relation: None,
+                logical: None,
+            }, 1)
         }
         '/' => {
-            Operator {
+            (Operator {
                 operator_type: OperatorType::Calculation,
-                calculation: CalculationOperator::Divide,
-                relation: RelationOperator::Unset,
-                logical: LogicalOperator::Unset,
-            }
+                calculation: Option::from(CalculationOperator::Divide),
+                relation: None,
+                logical: None,
+            }, 1)
         }
         '%' => {
-            Operator {
+            (Operator {
                 operator_type: OperatorType::Calculation,
-                calculation: CalculationOperator::Mod,
-                relation: RelationOperator::Unset,
-                logical: LogicalOperator::Unset,
-            }
+                calculation: Option::from(CalculationOperator::Mod),
+                relation: None,
+                logical: None,
+            }, 1)
         }
         '<' => {
             match content.chars().nth(1).unwrap() {
                 '=' => {
                     // Matches a "<=" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Relation,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::LessEqual,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: Option::from(RelationOperator::LessEqual),
+                        logical: None,
+                    }, 2)
                 }
                 '>' => {
                     // Matches a "<>" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Relation,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::NotEqual,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: Option::from(RelationOperator::NotEqual),
+                        logical: None,
+                    }, 2)
                 }
                 _ => {
                     // Matches a "<" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Relation,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::Less,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: Option::from(RelationOperator::Less),
+                        logical: None,
+                    }, 1)
                 }
             }
         }
@@ -158,21 +162,21 @@ pub fn match_operator(content: String) -> Operator {
             match content.chars().nth(1).unwrap() {
                 '=' => {
                     // Matches a ">=" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Relation,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::BiggerEqual,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: Option::from(RelationOperator::BiggerEqual),
+                        logical: None,
+                    }, 2)
                 }
                 _ => {
                     // Matches a ">" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Relation,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::Bigger,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: Option::from(RelationOperator::Bigger),
+                        logical: None,
+                    }, 1)
                 }
             }
         }
@@ -180,62 +184,62 @@ pub fn match_operator(content: String) -> Operator {
             match content.chars().nth(1).unwrap() {
                 '=' => {
                     // Matches a "==" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Relation,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::Equal,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: Option::from(RelationOperator::Equal),
+                        logical: None,
+                    }, 2)
                 }
                 _ => {
                     // Matches a "=" sequence
-                    Operator {
+                    (Operator {
                         operator_type: OperatorType::Assignment,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::Unset,
-                        logical: LogicalOperator::Unset,
-                    }
+                        calculation: None,
+                        relation: None,
+                        logical: None,
+                    }, 1)
                 }
             }
         }
         '!' => {
-            Operator {
+            (Operator {
                 operator_type: OperatorType::Logical,
-                calculation: CalculationOperator::Unset,
-                relation: RelationOperator::Unset,
-                logical: LogicalOperator::Not,
-            }
+                calculation: None,
+                relation: None,
+                logical: Option::from(LogicalOperator::Not),
+            }, 1)
         }
         _ => {
             let capture = String::from(&content[0..2]);
             if capture.eq("&&") {
-                Operator {
+                (Operator {
                     operator_type: OperatorType::Logical,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::And,
-                }
+                    calculation: None,
+                    relation: None,
+                    logical: Option::from(LogicalOperator::And),
+                }, 2)
             } else if capture.eq("||") {
-                Operator {
+                (Operator {
                     operator_type: OperatorType::Logical,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Or,
-                }
+                    calculation: None,
+                    relation: None,
+                    logical: Option::from(LogicalOperator::Or),
+                }, 2)
             } else if capture.eq("::") {
-                Operator {
+                (Operator {
                     operator_type: OperatorType::Scope,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Unset,
-                }
+                    calculation: None,
+                    relation: None,
+                    logical: Option::from(LogicalOperator::Unset),
+                }, 2)
             } else {
-                Operator {
+                (Operator {
                     operator_type: OperatorType::Unset,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Unset,
-                }
+                    calculation: None,
+                    relation: None,
+                    logical: None,
+                }, 0)
             }
         }
     };

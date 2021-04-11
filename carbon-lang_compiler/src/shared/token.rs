@@ -49,12 +49,12 @@ pub enum ContainerType{
 pub struct Token {
     pub token_type: TokenType,
 
-    pub number: String,
-    pub string: String,
-    pub identifier: String,
-    pub keyword: KeywordType,
-    pub container: ContainerType,
-    pub operator: Operator
+    pub number: Option<String>,
+    pub string: Option<String>,
+    pub identifier: Option<String>,
+    pub keyword: Option<KeywordType>,
+    pub container: Option<ContainerType>,
+    pub operator: Option<Operator>
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
@@ -103,7 +103,7 @@ pub enum LogicalOperator {
 pub struct Operator {
     pub operator_type: OperatorType,
 
-    pub calculation: CalculationOperator,
-    pub relation: RelationOperator,
-    pub logical: LogicalOperator
+    pub calculation: Option<CalculationOperator>,
+    pub relation: Option<RelationOperator>,
+    pub logical: Option<LogicalOperator>
 }

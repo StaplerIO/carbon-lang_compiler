@@ -8,6 +8,7 @@
 use crate::shared::token::*;
 use crate::lexer::hard_code::lex_rule::*;
 use crate::lexer::hard_code::match_enums::match_keyword;
+use std::borrow::Borrow;
 
 pub fn tokenize(mut source_code: String) -> Vec<Token> {
     let mut result: Vec<Token> = Vec::new();
@@ -18,22 +19,33 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
         lexeme = match_identifier(source_code.clone());
         if lexeme.len() > 0 {
-            let token = Token {
-                token_type: TokenType::Identifier,
-                number: "".to_string(),
-                string: "".to_string(),
-                identifier: lexeme.clone(),
-                keyword: match_keyword(lexeme.clone()),
-                container: ContainerType::Unset,
-                operator: Operator {
-                    operator_type: OperatorType::Unset,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Unset,
-                },
-            };
+            // Try match keyword
+            let keyword = match_keyword(lexeme.clone());
+            if keyword != KeywordType::Unset {
+                let token = Token {
+                    token_type: TokenType::Keyword,
+                    number: None,
+                    string: None,
+                    identifier: Option::from(lexeme.clone()),
+                    keyword: Option::from(keyword),
+                    container: None,
+                    operator: None,
+                };
 
-            result.push(token);
+                result.push(token);
+            } else {
+                let token = Token {
+                    token_type: TokenType::Identifier,
+                    number: None,
+                    string: None,
+                    identifier: Option::from(lexeme.clone()),
+                    keyword: None,
+                    container: None,
+                    operator: None,
+                };
+
+                result.push(token);
+            }
 
             source_code = source_code[lexeme.len()..].parse().unwrap();
 
@@ -44,17 +56,12 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         if lexeme.len() > 0 {
             let token = Token {
                 token_type: TokenType::Number,
-                number: lexeme.clone(),
-                string: "".to_string(),
-                identifier: "".to_string(),
-                keyword: KeywordType::Unset,
-                container: ContainerType::Unset,
-                operator: Operator {
-                    operator_type: OperatorType::Unset,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Unset,
-                },
+                number: Option::from(lexeme.clone()),
+                string: None,
+                identifier: None,
+                keyword: None,
+                container: None,
+                operator: None,
             };
 
             result.push(token);
@@ -68,17 +75,12 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         if lexeme.len() > 0 {
             let token = Token {
                 token_type: TokenType::String,
-                number: "".to_string(),
-                string: lexeme.clone(),
-                identifier: "".to_string(),
-                keyword: KeywordType::Unset,
-                container: ContainerType::Unset,
-                operator: Operator {
-                    operator_type: OperatorType::Unset,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Unset,
-                },
+                number: None,
+                string: Option::from(lexeme.clone()),
+                identifier: None,
+                keyword: None,
+                container: None,
+                operator: None,
             };
 
             result.push(token);
@@ -89,79 +91,43 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         }
 
         let container_type = match_container(source_code.clone());
-        match container_type {
-            ContainerType::Unset => {}
-            _ => {
-                let token = Token {
-                    token_type: TokenType::Container,
-                    number: "".to_string(),
-                    string: "".to_string(),
-                    identifier: "".to_string(),
-                    keyword: KeywordType::Unset,
-                    container: container_type,
-                    operator: Operator {
-                        operator_type: OperatorType::Unset,
-                        calculation: CalculationOperator::Unset,
-                        relation: RelationOperator::Unset,
-                        logical: LogicalOperator::Unset,
-                    },
-                };
+        if container_type != ContainerType::Unset {
+            let token = Token {
+                token_type: TokenType::Container,
+                number: None,
+                string: None,
+                identifier: None,
+                keyword: None,
+                container: Option::from(container_type),
+                operator: None,
+            };
 
-                // Add new token
-                result.push(token);
+            // Add new token
+            result.push(token);
 
-                // All containers have only 1 character
-                source_code.remove(0);
+            // All containers have only 1 character
+            source_code.remove(0);
 
-                continue;
-            }
+            continue;
         }
 
-        let operator = match_operator(source_code.clone());
-        match operator.operator_type {
-            OperatorType::Unset => {}
-            _ => {
-                let token = Token {
-                    token_type: TokenType::Operator,
-                    number: "".to_string(),
-                    string: "".to_string(),
-                    identifier: "".to_string(),
-                    keyword: KeywordType::Unset,
-                    container: ContainerType::Unset,
-                    operator,
-                };
+        let operator_result = match_operator(source_code.clone());
+        if operator_result.0.operator_type != OperatorType::Unset {
+            let token = Token {
+                token_type: TokenType::Operator,
+                number: None,
+                string: None,
+                identifier: None,
+                keyword: None,
+                container: None,
+                operator: Option::from(operator_result.0),
+            };
 
-                result.push(token);
+            result.push(token);
 
-                match operator.operator_type {
-                    OperatorType::Relation => {
-                        if operator.relation == RelationOperator::Equal ||
-                            operator.relation == RelationOperator::NotEqual ||
-                            operator.relation == RelationOperator::LessEqual ||
-                            operator.relation == RelationOperator::BiggerEqual {
-                            source_code = source_code[2..].parse().unwrap();
-                        } else {
-                            source_code.remove(0);
-                        }
-                    }
-                    OperatorType::Logical => {
-                        if operator.logical == LogicalOperator::And ||
-                            operator.logical == LogicalOperator::Or {
-                            source_code = source_code[2..].parse().unwrap();
-                        } else {
-                            source_code.remove(0);
-                        }
-                    }
-                    OperatorType::Scope => {
-                        source_code = source_code[2..].parse().unwrap();
-                    }
-                    _ => {
-                        source_code.remove(0);
-                    }
-                }
+            source_code = source_code[(operator_result.1)..].parse().unwrap();
 
-                continue;
-            }
+            continue;
         }
 
         lexeme = match_spaces(source_code.clone());
@@ -176,17 +142,12 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
             let token = Token {
                 token_type: TokenType::Semicolon,
-                number: "".to_string(),
-                string: "".to_string(),
-                identifier: "".to_string(),
-                keyword: KeywordType::Unset,
-                container: ContainerType::Unset,
-                operator: Operator{
-                    operator_type: OperatorType::Unset,
-                    calculation: CalculationOperator::Unset,
-                    relation: RelationOperator::Unset,
-                    logical: LogicalOperator::Unset
-                }
+                number: None,
+                string: None,
+                identifier: None,
+                keyword: None,
+                container: None,
+                operator: None
             };
 
             result.push(token);
