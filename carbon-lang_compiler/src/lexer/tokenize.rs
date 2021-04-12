@@ -8,7 +8,6 @@
 use crate::shared::token::*;
 use crate::lexer::hard_code::lex_rule::*;
 use crate::lexer::hard_code::match_enums::match_keyword;
-use std::borrow::Borrow;
 
 pub fn tokenize(mut source_code: String) -> Vec<Token> {
     let mut result: Vec<Token> = Vec::new();

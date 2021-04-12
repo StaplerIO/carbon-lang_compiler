@@ -1,26 +1,25 @@
 use crate::shared::token::KeywordType;
-use crate::shared::token::KeywordType::{KwStr, KwVar, KwDecimal, KwInt, KwChar, KwConst, KwExport, KwFunc, KwIf, KwElseIf, KwElse, KwWhile, KwLoop, KwSwitch, KwContinue, KwBreak, KwReturn, KwCall, Unset};
 
 pub fn match_keyword(identifier: String) -> KeywordType {
     return match identifier.as_str() {
-        "decimal" => KwDecimal,
-        "int" => KwInt,
-        "char" => KwChar,
-        "str" => KwStr,
-        "var" => KwVar,
-        "const" => KwConst,
-        "export" => KwExport,
-        "func" => KwFunc,
-        "if" => KwIf,
-        "elif" => KwElseIf,
-        "else" => KwElse,
-        "while" => KwWhile,
-        "loop" => KwLoop,
-        "switch" => KwSwitch,
-        "continue" => KwContinue,
-        "break" => KwBreak,
-        "return" => KwReturn,
-        "call" => KwCall,
-        _ => Unset
+        "decimal" => KeywordType::KwDecimal,
+        "int" => KeywordType::KwInt,
+        "char" => KeywordType::KwChar,
+        "str" => KeywordType::KwStr,
+        "var" => KeywordType::KwVar,
+        "const" => KeywordType::KwConst,
+        "export" => KeywordType::KwExport,
+        "func" => KeywordType::KwFunc,
+        "if" => KeywordType::KwIf,
+        "elif" => KeywordType::KwElseIf,
+        "else" => KeywordType::KwElse,
+        "while" => KeywordType::KwWhile,
+        "loop" => KeywordType::KwLoop,
+        "switch" => KeywordType::KwSwitch,
+        "continue" => KeywordType::KwContinue,
+        "break" => KeywordType::KwBreak,
+        "return" => KeywordType::KwReturn,
+        "call" => KeywordType::KwCall,
+        _ => KeywordType::Unset
     };
 }
