@@ -86,7 +86,7 @@ pub enum RelationOperator
     BiggerEqual,        // >=
     Less,               // <
     LessEqual,          // <=
-    NotEqual,           // <>,
+    NotEqual,           // <>
     Equal,              // ==
     Unset
 }

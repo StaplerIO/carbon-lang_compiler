@@ -25,27 +25,29 @@ pub struct Expression {
     pub is_left_nested_expr: bool,
     pub is_right_nested_expr: bool,
 
-    pub left_expr: Box<Expression>,
-    pub right_expr: Box<Expression>,
+    pub left_expr: Box<Option<Expression>>,
+    pub right_expr: Box<Option<Expression>>,
 
-    pub left_term: Box<Term>,
-    pub right_term: Box<Term>,
+    pub left_term: Option<Term>,
+    pub right_term: Option<Term>,
 
-    pub single_term: Box<Term>
+    pub single_term: Option<Term>
 }
 
 pub enum TermType {
     Identifier,
     Number,
-    String
+    String,
+    Unset
 }
 
 pub struct Term {
     pub kind: TermType,
-    pub identifier: String,
-    pub number: String,
-    pub string: String,
+    pub identifier: Option<String>,
+    pub number: Option<String>,
+    pub string: Option<String>,
 
     // !foo -> True  |  foo -> False
-    pub marked_as_not: bool
+    // Not available when Term is a String
+    pub marked_as_not: Option<bool>
 }
