@@ -1,85 +1,99 @@
-use crate::shared::token::{Token, TokenType, OperatorType, ContainerType};
-use crate::shared::ast::blocks::expression::{Expression, Term, TermType};
-use crate::shared::token::TokenType::{Operator, Container};
+use crate::shared::token::{Token, TokenType, ContainerType, CalculationOperator, OperatorType, RelationOperator};
+use lazy_static::lazy_static;
+use std::borrow::Borrow;
+use std::collections::HashMap;
 
-/**
- * Parameters:
- * tokens: token serial to build a complete expression, returns nothing when encountered an illegal token
- */
-pub fn build_expression(tokens: Vec<Token>) {
-    let mut result: Expression = Expression{
-        is_single_term: false,
-        is_left_nested_expr: false,
-        is_right_nested_expr: false,
-        left_expr: Box::new(None),
-        right_expr: Box::new(None),
-        left_term: None,
-        right_term: None,
-        single_term: None
-    };
-    let mut index: usize = 0;
+lazy_static! {
+    /**
+    * Operator priority:
+    * calculation > relation > logical
+    */
+    static ref CALC_OPERATOR_PRIORITY: HashMap<CalculationOperator, u8> = [
+        (CalculationOperator::Plus, 1),
+        (CalculationOperator::Minus, 1),
+        (CalculationOperator::Times, 2),
+        (CalculationOperator::Divide, 2),
+        (CalculationOperator::Mod, 2)
+    ].iter().cloned().collect();
 
-    let mut is_operator_required = false;
+    static ref OPERATOR_PRIORITY: HashMap<OperatorType, u8> = [
+        (OperatorType::Logical, 1),
+        (OperatorType::Relation, 2),
+        (OperatorType::Calculation, 3)
+    ].iter().cloned().collect();
+}
 
-    // false means left, true means right
-    let mut expression_position = false;
-    loop {
-        let token: &Token = tokens.get(index).unwrap();
+// We leave the postfix expression for code generator (solve the expression later)
+pub fn expression_infix_to_postfix(tokens: Vec<Token>) -> Vec<Token> {
+    let mut result: Vec<Token> = Vec::new();
+    let mut operator_stack: Vec<Token> = Vec::new();
 
-        if is_operator_required {
-            if token.token_type == TokenType::Operator {}
-        } else {
-            // We require the token is an identifier or a number, others are the invalid token of the expression
-            if token.token_type == TokenType::Identifier || token.token_type == TokenType::Number {
-                let mut term = Term {
-                    kind: TermType::Unset,
-                    identifier: None,
-                    number: None,
-                    string: None,
-                    marked_as_not: None,
-                };
-
-                match token.token_type {
-                    TokenType::Identifier => {
-                        term.kind = TermType::Identifier;
-                        term.identifier = token.identifier.clone();
-                    }
-                    TokenType::Number => {
-                        term.kind = TermType::Number;
-                        term.number = token.number.clone();
-                    }
-                    _ => {}
-                }
-
-                if expression_position {
-                    // Add it to the left side of the expression
-                    result.is_left_nested_expr = false;
-                    result.left_term = Option::from(term);
+    for token in tokens {
+        if is_token_valid(token.clone()) {
+            if is_bracket(token.clone()) {
+                // Which type of bracket? Anti bracket?
+                if token.container.unwrap() == ContainerType::Bracket {
+                    // Push this bracket
+                    operator_stack.push(token.clone());
                 } else {
-                    // Add it to the right side of the expression
-                    result.is_right_nested_expr = false;
-                    result.right_term = Option::from(term);
+                    // Pop to result until the operator is a bracket (not anti-bracket)
+                    while operator_stack.last().unwrap().token_type == TokenType::Container {
+                        result.push(operator_stack.pop().unwrap());
+                    }
+
+                    operator_stack.pop();
                 }
+            } else if is_operator(token.clone()) {
+                while !operator_stack.is_empty() &&
+                    operator_stack.last().unwrap().token_type != TokenType::Container {
+                    // Pop if operator priority is higher than current operator
+                    if priority_is_higher(operator_stack.last().unwrap().clone(), token.clone()) {
+                        result.push(operator_stack.remove(operator_stack.len() - 1));
+                    } else { break; }
+                }
+
+                operator_stack.push(token.clone());
+            } else {
+                // Else: this is a term
+                // Just push it into result
+                result.push(token.clone());
             }
+        } else {
+            panic!("Illegal token encountered!");
         }
-
-        index += 1;
     }
+
+    while !operator_stack.is_empty() {
+        result.push(operator_stack.remove(operator_stack.len() - 1));
+    }
+
+    return result;
 }
 
-fn is_valid_expression_term(token_type: TokenType) -> bool {
-    return token_type == TokenType::Identifier ||
-        token_type == TokenType::Number;
+fn is_token_valid(token: Token) -> bool {
+    return is_term(token.clone()) ||
+        is_operator(token.clone()) ||
+        is_bracket(token.clone());
 }
 
-fn is_valid_operator(token: Token) -> bool {
+fn is_term(token: Token) -> bool {
+    return token.token_type == TokenType::Number ||
+        token.token_type == TokenType::Identifier;
+}
+
+fn is_operator(token: Token) -> bool {
     if token.token_type == TokenType::Operator {
         let operator = token.operator.unwrap();
-
         return operator.operator_type == OperatorType::Calculation ||
             operator.operator_type == OperatorType::Relation ||
             operator.operator_type == OperatorType::Logical;
-    } else if token.token_type == TokenType::Container {
+    }
+
+    return false;
+}
+
+fn is_bracket(token: Token) -> bool {
+    if token.token_type == TokenType::Container {
         let container = token.container.unwrap();
 
         return container == ContainerType::Bracket ||
@@ -87,4 +101,22 @@ fn is_valid_operator(token: Token) -> bool {
     }
 
     return false;
+}
+
+// Return true if the priority of "a" is higher than or equal to "b"
+fn priority_is_higher(a: Token, b: Token) -> bool {
+    if is_operator(a.clone()) && is_operator(b.clone()) {
+        return if a.operator.unwrap().operator_type != b.operator.unwrap().operator_type {
+            OPERATOR_PRIORITY[&a.operator.unwrap().operator_type] >= OPERATOR_PRIORITY[&b.operator.unwrap().operator_type]
+        } else if a.operator.unwrap().operator_type == OperatorType::Calculation {
+            // Then they are equal on operator type (ElseIf ~ End If)
+            // So we just need to compare with 1 token
+
+            CALC_OPERATOR_PRIORITY[&a.operator.unwrap().calculation.unwrap()] >= CALC_OPERATOR_PRIORITY[&b.operator.unwrap().calculation.unwrap()]
+        } else {
+            true
+        };
+    }
+
+    panic!("Token is not an operator!");
 }

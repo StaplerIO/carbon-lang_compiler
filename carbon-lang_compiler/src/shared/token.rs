@@ -57,7 +57,7 @@ pub struct Token {
     pub operator: Option<Operator>
 }
 
-#[derive(Copy, Clone, PartialEq, Debug)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Hash)]
 pub enum OperatorType {
     // Root type
     Calculation,
@@ -69,7 +69,7 @@ pub enum OperatorType {
     Unset
 }
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub enum CalculationOperator {
     Plus,               // +
     Minus,              // -
