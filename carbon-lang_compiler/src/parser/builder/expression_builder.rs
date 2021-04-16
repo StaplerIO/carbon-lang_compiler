@@ -29,51 +29,44 @@ pub fn expression_infix_to_postfix(tokens: Vec<Token>) -> Vec<Token> {
     let mut operator_stack: Vec<Token> = Vec::new();
 
     for token in tokens {
-        if is_token_valid(token.clone()) {
-            if is_bracket(token.clone()) {
-                // Which type of bracket? Anti bracket?
-                if token.container.unwrap() == ContainerType::Bracket {
-                    // Push this bracket
-                    operator_stack.push(token.clone());
-                } else {
-                    // Pop to result until the operator is a bracket (not anti-bracket)
-                    while operator_stack.last().unwrap().token_type == TokenType::Container {
-                        result.push(operator_stack.pop().unwrap());
-                    }
-
-                    operator_stack.pop();
-                }
-            } else if is_operator(token.clone()) {
-                while !operator_stack.is_empty() &&
-                    operator_stack.last().unwrap().token_type != TokenType::Container {
-                    // Pop if operator priority is higher than current operator
-                    if priority_is_higher(operator_stack.last().unwrap().clone(), token.clone()) {
-                        result.push(operator_stack.remove(operator_stack.len() - 1));
-                    } else { break; }
-                }
-
+        if is_term(token.clone()) {
+            // Push all terms into result directly (infix to postfix)
+            result.push(token.clone());
+        } else if is_bracket(token.clone()) {
+            // Which type of bracket? Anti bracket?
+            if token.container.unwrap() == ContainerType::Bracket {
+                // Push this bracket
                 operator_stack.push(token.clone());
             } else {
-                // Else: this is a term
-                // Just push it into result
-                result.push(token.clone());
+                // Pop to result until the operator is a bracket (not anti-bracket)
+                while operator_stack.last().unwrap().token_type != TokenType::Container {
+                    result.push(operator_stack.pop().unwrap());
+                }
+
+                // Pop this bracket (it won't be transferred to result)
+                operator_stack.pop();
             }
+        } else if is_operator(token.clone()) {
+            while !operator_stack.is_empty() &&
+                operator_stack.last().unwrap().token_type != TokenType::Container {
+                // Pop if operator priority is higher than current operator
+                if priority_is_higher(operator_stack.last().unwrap().clone(), token.clone()) {
+                    result.push(operator_stack.pop().unwrap());
+                } else { break; }
+            }
+
+            operator_stack.push(token.clone());
         } else {
             panic!("Illegal token encountered!");
         }
     }
 
+    // Push all operators remaining
     while !operator_stack.is_empty() {
-        result.push(operator_stack.remove(operator_stack.len() - 1));
+        result.push(operator_stack.pop().unwrap());
     }
 
     return result;
-}
-
-fn is_token_valid(token: Token) -> bool {
-    return is_term(token.clone()) ||
-        is_operator(token.clone()) ||
-        is_bracket(token.clone());
 }
 
 fn is_term(token: Token) -> bool {
