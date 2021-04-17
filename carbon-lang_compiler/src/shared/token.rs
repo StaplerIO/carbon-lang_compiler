@@ -17,6 +17,7 @@ pub enum KeywordType
     KwInt,              // int
     KwChar,             // char
     KwStr,              // str
+    KwDeclare,          // decl
     KwVar,              // var
     KwConst,            // const
     KwExport,           // export
@@ -31,6 +32,7 @@ pub enum KeywordType
     KwBreak,            // break
     KwReturn,           // return
     KwCall,             // call
+    KwNone,             // none
     Unset
 }
 
