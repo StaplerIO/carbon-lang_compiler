@@ -17,6 +17,24 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         #[allow(unused_assignments)]
             let mut lexeme = String::new();
 
+        if match_semicolon(source_code.clone()) {
+            source_code.remove(0);
+
+            let token = Token {
+                token_type: TokenType::Semicolon,
+                number: None,
+                string: None,
+                identifier: None,
+                keyword: None,
+                container: None,
+                operator: None
+            };
+
+            result.push(token);
+
+            continue;
+        }
+
         lexeme = match_identifier(source_code.clone());
         if lexeme.len() > 0 {
             // Try match keyword
@@ -133,24 +151,6 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         lexeme = match_spaces(source_code.clone());
         if lexeme.len() > 0 {
             source_code = source_code[lexeme.len()..].parse().unwrap();
-
-            continue;
-        }
-
-        if match_semicolon(source_code.clone()) {
-            source_code.remove(0);
-
-            let token = Token {
-                token_type: TokenType::Semicolon,
-                number: None,
-                string: None,
-                identifier: None,
-                keyword: None,
-                container: None,
-                operator: None
-            };
-
-            result.push(token);
 
             continue;
         }
