@@ -18,15 +18,15 @@ pub enum ActionType {
 pub struct Action {
     pub action_type: ActionType,
 
-    pub declaration_action: DeclarationAction,
-    pub assignment_action: AssignmentAction,
+    pub declaration_action: Option<DeclarationAction>,
+    pub assignment_action: Option<AssignmentAction>,
 
-    pub call_action: CallAction,
-    pub return_action: ReturnAction,
-    pub if_action: IfAction,
-    pub while_action: ConditionBlock,
-    pub loop_action: LoopAction,
-    pub switch_action: SwitchAction,
+    pub call_action: Option<CallAction>,
+    pub return_action: Option<ReturnAction>,
+    pub if_action: Option<IfAction>,
+    pub while_action: Option<ConditionBlock>,
+    pub loop_action: Option<LoopAction>,
+    pub switch_action: Option<SwitchAction>,
 
     // break and continue action don't have special blocks
 }
@@ -66,10 +66,9 @@ pub struct ReturnAction {
 pub struct IfAction {
     pub if_block: ConditionBlock,
 
-    pub elif_collection: Vec<ConditionBlock>,
+    pub elif_collection: Option<Vec<ConditionBlock>>,
 
-    pub has_else: bool,
-    pub else_actions: ActionBlock
+    pub else_actions: Option<ActionBlock>
 }
 
 pub struct SwitchAction {
