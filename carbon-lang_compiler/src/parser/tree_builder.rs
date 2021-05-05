@@ -2,9 +2,6 @@ use crate::shared::token::{Token, TokenType};
 use crate::shared::ast::tree::AstTree;
 use crate::shared::ast::blocks::function::Function;
 
-pub fn build_tree(tokens: Vec<Token>) {
-    let mut is_allow_any = true;
+pub fn decorate_token() {
 
-    for token in tokens {
-    }
 }

@@ -17,14 +17,6 @@ mod tests {
         assert_eq!(result[4].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Plus);
     }
 
-    /**
-     * Remark:
-     * This test has been disabled
-     * Because I haven't solve the problem with "expression converting with brackets"
-     * I pushed a repository to http://hserver.ranzeplay.me:25550/ranzeplay/ExpressionConverter
-     * It is a C# version of expression converting from infix to postfix.
-     * That worked, but I don't know how to translate it to Rust :(
-     */
     #[test]
     fn expression_with_bracket() {
         let token_list = tokenize(String::from("2*(3+5)-7"));
