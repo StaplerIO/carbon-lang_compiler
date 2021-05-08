@@ -7,7 +7,6 @@ pub enum TokenType {
     Keyword,
     Operator,
     Semicolon,
-    Unset
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
@@ -78,7 +77,6 @@ pub enum CalculationOperator {
     Times,              // *
     Divide,             // /
     Mod,                // %
-    Unset
 }
 
 #[derive(Copy, Clone, PartialEq)]
@@ -90,7 +88,6 @@ pub enum RelationOperator
     LessEqual,          // <=
     NotEqual,           // <>
     Equal,              // ==
-    Unset
 }
 
 #[derive(Copy, Clone, PartialEq)]
@@ -101,7 +98,7 @@ pub enum LogicalOperator {
     Unset
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Operator {
     pub operator_type: OperatorType,
 

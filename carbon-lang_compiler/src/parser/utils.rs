@@ -1,9 +1,9 @@
-use crate::shared::token::{TokenType, Token};
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 
 // Return -1 if there's no semicolon token
-pub fn find_next_semicolon(tokens: Vec<Token>) -> isize {
+pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> isize {
     for (index, token) in tokens.iter().enumerate() {
-        if token.token_type == TokenType::Semicolon {
+        if token.token_type == DecoratedTokenType::StatementEndSign {
             return index as isize;
         }
     }

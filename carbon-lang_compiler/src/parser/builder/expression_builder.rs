@@ -1,7 +1,7 @@
-use crate::shared::token::{Token, TokenType, ContainerType, CalculationOperator, OperatorType, RelationOperator};
+use crate::shared::token::{ContainerType, CalculationOperator, OperatorType};
 use lazy_static::lazy_static;
-use std::borrow::Borrow;
 use std::collections::HashMap;
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 
 lazy_static! {
     /**
@@ -24,12 +24,12 @@ lazy_static! {
 }
 
 // We leave the postfix expression for code generator (solve the expression later)
-pub fn expression_infix_to_postfix(tokens: Vec<Token>) -> Vec<Token> {
-    let mut result: Vec<Token> = Vec::new();
-    let mut operator_stack: Vec<Token> = Vec::new();
+pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
+    let mut result: Vec<DecoratedToken> = Vec::new();
+    let mut operator_stack: Vec<DecoratedToken> = Vec::new();
 
     for token in tokens {
-        if is_term(token.clone()) {
+        if token.token_type == DecoratedTokenType::Data {
             // Push all terms into result directly (infix to postfix)
             result.push(token.clone());
         } else if is_bracket(token.clone()) {
@@ -39,7 +39,7 @@ pub fn expression_infix_to_postfix(tokens: Vec<Token>) -> Vec<Token> {
                 operator_stack.push(token.clone());
             } else {
                 // Pop to result until the operator is a bracket (not anti-bracket)
-                while operator_stack.last().unwrap().token_type != TokenType::Container {
+                while operator_stack.last().unwrap().token_type != DecoratedTokenType::Container {
                     result.push(operator_stack.pop().unwrap());
                 }
 
@@ -48,7 +48,7 @@ pub fn expression_infix_to_postfix(tokens: Vec<Token>) -> Vec<Token> {
             }
         } else if is_operator(token.clone()) {
             while !operator_stack.is_empty() &&
-                operator_stack.last().unwrap().token_type != TokenType::Container {
+                operator_stack.last().unwrap().token_type != DecoratedTokenType::Container {
                 // Pop if operator priority is higher than current operator
                 if priority_is_higher(operator_stack.last().unwrap().clone(), token.clone()) {
                     result.push(operator_stack.pop().unwrap());
@@ -69,13 +69,8 @@ pub fn expression_infix_to_postfix(tokens: Vec<Token>) -> Vec<Token> {
     return result;
 }
 
-fn is_term(token: Token) -> bool {
-    return token.token_type == TokenType::Number ||
-        token.token_type == TokenType::Identifier;
-}
-
-fn is_operator(token: Token) -> bool {
-    if token.token_type == TokenType::Operator {
+fn is_operator(token: DecoratedToken) -> bool {
+    if token.token_type == DecoratedTokenType::Operator {
         let operator = token.operator.unwrap();
         return operator.operator_type == OperatorType::Calculation ||
             operator.operator_type == OperatorType::Relation ||
@@ -85,8 +80,8 @@ fn is_operator(token: Token) -> bool {
     return false;
 }
 
-fn is_bracket(token: Token) -> bool {
-    if token.token_type == TokenType::Container {
+fn is_bracket(token: DecoratedToken) -> bool {
+    if token.token_type == DecoratedTokenType::Container {
         let container = token.container.unwrap();
 
         return container == ContainerType::Bracket ||
@@ -97,7 +92,7 @@ fn is_bracket(token: Token) -> bool {
 }
 
 // Return true if the priority of "a" is higher than or equal to "b"
-fn priority_is_higher(a: Token, b: Token) -> bool {
+fn priority_is_higher(a: DecoratedToken, b: DecoratedToken) -> bool {
     if is_operator(a.clone()) && is_operator(b.clone()) {
         return if a.operator.unwrap().operator_type != b.operator.unwrap().operator_type {
             OPERATOR_PRIORITY[&a.operator.unwrap().operator_type] >= OPERATOR_PRIORITY[&b.operator.unwrap().operator_type]
