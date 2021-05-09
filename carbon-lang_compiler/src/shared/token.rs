@@ -67,6 +67,7 @@ pub enum OperatorType {
     // Absolute type
     Assignment,         // =
     Scope,              // ::
+    Comma,              // ,
     Unset
 }
 

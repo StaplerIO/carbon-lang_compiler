@@ -209,7 +209,15 @@ pub fn match_operator(content: String) -> (Operator, usize) {
                 relation: None,
                 logical: Option::from(LogicalOperator::Not),
             }, 1)
-        }
+        },
+        ',' => {
+            (Operator {
+            operator_type: OperatorType::Comma,
+            calculation: None,
+            relation: None,
+            logical: None,
+        }, 1)
+        },
         _ => {
             let capture = String::from(&content[0..2]);
             if capture.eq("&&") {
