@@ -1,5 +1,4 @@
 use crate::shared::ast::blocks::expression::Expression;
-use crate::shared::ast::parameter::Argument;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ActionType {
@@ -56,10 +55,10 @@ pub struct AssignmentAction {
     pub eval_expression: Expression
 }
 
-// TODO: Builder required
 pub struct CallAction {
     pub function_name: String,
-    pub arguments: Vec<Argument>
+    // Arguments are Expressions
+    pub arguments: Vec<Expression>
 }
 
 // TODO: Builder required

@@ -133,7 +133,6 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                     operator: None,
                 })
             }
-            TokenType::Unset => panic!("Illegal token type")
         }
     }
 

@@ -1,6 +1,6 @@
 use crate::shared::token::{ContainerType, Operator, KeywordType};
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum DecoratedTokenType {
     DecoratedKeyword,
     Container,
