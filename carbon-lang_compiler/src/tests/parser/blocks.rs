@@ -6,7 +6,8 @@ mod tests {
     use crate::parser::decorator::decorate_token;
     use crate::parser::builder::blocks::call::call_function;
     use std::any::Any;
-    use crate::shared::ast::decorated_token::DecoratedTokenType;
+    use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
+    use crate::parser::builder::blocks::return_expression::build_return_statement;
 
     #[test]
     fn assignment() {
@@ -46,4 +47,22 @@ mod tests {
         // Postfix expression: 3 2 -
         assert_eq!(result.arguments.last().unwrap().postfix_expr.last().unwrap().token_type, DecoratedTokenType::Operator);
     }
+
+    #[test]
+    fn return_from_function_no_value() {
+        let tokens = tokenize(String::from("return;"));
+        let result = build_return_statement(decorate_token(tokens.clone())).0.unwrap();
+
+        assert_eq!(result.value.postfix_expr.len(), 0);
+    }
+    #[test]
+    fn return_from_function_with_value() {
+        let tokens = tokenize(String::from("return 1 + 2 * tb_234;"));
+        let result = build_return_statement(decorate_token(tokens.clone())).0.unwrap();
+
+        assert_eq!(result.value.postfix_expr.len(), 5);
+        // Value expression: 1 2 tb_234 * +
+        assert_eq!(result.value.postfix_expr[0].clone().data.unwrap().clone().data_type, DataType::Number);
+    }
+
 }

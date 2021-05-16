@@ -61,7 +61,6 @@ pub struct CallAction {
     pub arguments: Vec<Expression>
 }
 
-// TODO: Builder required
 pub struct ReturnAction {
     pub value: Expression
 }

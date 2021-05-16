@@ -19,7 +19,7 @@ pub struct DecoratedToken {
     pub operator: Option<Operator>,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum DataType {
     Number,
     String,
