@@ -18,4 +18,4 @@ Components will be separated in future development
 
 ## Project Map
 
-![carbon-lang](.\readme_assets\carbon-lang.svg)
+![carbon-lang](readme_assets/carbon-lang.svg)
