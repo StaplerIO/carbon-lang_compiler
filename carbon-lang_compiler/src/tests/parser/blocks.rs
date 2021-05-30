@@ -8,6 +8,8 @@ mod tests {
     use std::any::Any;
     use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
     use crate::parser::builder::blocks::return_expression::build_return_statement;
+    use crate::parser::builder::blocks::short_actions::build_short_statements;
+    use crate::shared::ast::action::ActionType;
 
     #[test]
     fn assignment() {
@@ -65,4 +67,19 @@ mod tests {
         assert_eq!(result.value.postfix_expr[0].clone().data.unwrap().clone().data_type, DataType::Number);
     }
 
+    #[test]
+    fn single_token_statement_break(){
+        let tokens = tokenize(String::from("break;"));
+        let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
+
+        assert_eq!(result.action_type, ActionType::BreakStatement);
+    }
+
+    #[test]
+    fn single_token_statement_continue(){
+        let tokens = tokenize(String::from("continue;"));
+        let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
+
+        assert_eq!(result.action_type, ActionType::ContinueStatement);
+    }
 }

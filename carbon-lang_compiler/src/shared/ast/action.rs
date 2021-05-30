@@ -2,8 +2,8 @@ use crate::shared::ast::blocks::expression::Expression;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ActionType {
-    Declaration,
-    Assignment,
+    DeclarationStatement,
+    AssignmentStatement,
     CallStatement,
     ReturnStatement,
     IfStatement,

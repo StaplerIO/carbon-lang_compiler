@@ -1,5 +1,5 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::token::OperatorType;
+use crate::shared::token::{OperatorType, ContainerType};
 
 // Return -1 if there's no semicolon token
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> isize {
@@ -26,7 +26,7 @@ pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> isize {
 }
 
 pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedToken>> {
-    let mut result: Vec<Vec<DecoratedToken>> = vec![];
+    let mut result: Vec<Vec<DecoratedToken>> = Vec::new();
 
     // Initialize result by an empty Vec
     result.push(vec![]);
@@ -47,4 +47,25 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
     }
 
     return result;
+}
+
+// Ensure the first token is a brace before calling this function, or it will return immediately
+pub fn pair_brace(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
+    let mut brace_level = 0;
+    for (index, token) in tokens.iter().enumerate() {
+        if token.token_type == DecoratedTokenType::Container {
+            if token.container.unwrap() == ContainerType::Brace {
+                brace_level += 1;
+            } else if token.container.unwrap() == ContainerType::AntiBrace {
+                brace_level -= 1;
+            }
+        }
+
+        // top layer from token array start
+        if brace_level == 0 {
+            return tokens[0..index].to_vec();
+        }
+    }
+
+    return tokens;
 }
