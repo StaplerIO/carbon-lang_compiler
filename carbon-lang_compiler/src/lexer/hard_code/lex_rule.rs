@@ -1,10 +1,10 @@
 use crate::shared::token::{ContainerType, Operator, LogicalOperator, RelationOperator, CalculationOperator, OperatorType};
 
-fn is_digit(c: char) -> bool {
+pub fn is_digit(c: char) -> bool {
     return c >= '0' && c <= '9';
 }
 
-fn is_letter(c: char) -> bool {
+pub fn is_letter(c: char) -> bool {
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
 

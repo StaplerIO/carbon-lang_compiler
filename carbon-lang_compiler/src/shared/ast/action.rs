@@ -12,6 +12,7 @@ pub enum ActionType {
     SwitchStatement,
     BreakStatement,
     ContinueStatement,
+    EmptyAction
 }
 
 // TODO: Builder required
@@ -28,14 +29,14 @@ pub struct Action {
     pub loop_action: Option<LoopAction>,
     pub switch_action: Option<SwitchAction>,
 
-    // break and continue action don't have special blocks
+    // "break" and "continue" actions don't have special blocks
 }
 
-// TODO: Builder required
 pub struct ActionBlock {
     pub actions: Vec<Action>
 }
 
+// TODO: Builder required
 // Used in while, if, elif
 pub struct ConditionBlock {
     pub condition: Expression,

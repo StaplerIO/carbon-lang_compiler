@@ -1,7 +1,7 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::ast::action::{Action, ActionType};
 use crate::parser::utils::find_next_semicolon;
-use crate::shared::token::{KeywordType, TokenType, ContainerType};
+use crate::shared::token::{KeywordType, ContainerType};
 
 // Build "continue", "break" and "loop" action
 pub fn build_short_statements(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {

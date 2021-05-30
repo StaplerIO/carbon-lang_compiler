@@ -5,11 +5,11 @@ mod tests {
     use crate::parser::builder::blocks::declaration::declare_data;
     use crate::parser::decorator::decorate_token;
     use crate::parser::builder::blocks::call::call_function;
-    use std::any::Any;
     use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
     use crate::parser::builder::blocks::return_expression::build_return_statement;
     use crate::parser::builder::blocks::short_actions::build_short_statements;
     use crate::shared::ast::action::ActionType;
+    use crate::parser::builder::blocks::action_block::action_block_builder;
 
     #[test]
     fn assignment() {
@@ -81,5 +81,23 @@ mod tests {
         let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
 
         assert_eq!(result.action_type, ActionType::ContinueStatement);
+    }
+
+    #[test]
+    fn action_block() {
+        let tokens = tokenize(String::from("decl var decimal foo;\
+                                                                   foo = 1;
+                                                                   foo = foo + 1;
+                                                                   call func_1(5, 2.66, var1, 3 - 2);\
+                                                                   return 1 + 2 * tb_234;"));
+
+        let result = action_block_builder(decorate_token(tokens.clone()));
+
+        assert_eq!(result.len(), 5);
+
+        assert_eq!(result[0].action_type, ActionType::DeclarationStatement);
+        assert_eq!(result[1].action_type, ActionType::AssignmentStatement);
+        assert_eq!(result[3].action_type, ActionType::CallStatement);
+        assert_eq!(result[4].action_type, ActionType::ReturnStatement);
     }
 }
