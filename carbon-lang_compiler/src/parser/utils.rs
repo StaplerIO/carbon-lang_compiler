@@ -1,5 +1,6 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{OperatorType, ContainerType};
+use crate::shared::token::TokenType::Container;
 
 // Return -1 if there's no semicolon token
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> isize {
@@ -49,20 +50,33 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
     return result;
 }
 
-// Ensure the first token is a brace before calling this function, or it will return immediately
-pub fn pair_brace(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
-    let mut brace_level = 0;
+// Ensure the first token is a container before calling this function, or it will return immediately
+pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
+    let mut container_level = 0;
+
+    let container_type: Option<ContainerType> = None;
+    let anti_type: Option<ContainerType> = None;
     for (index, token) in tokens.iter().enumerate() {
         if token.token_type == DecoratedTokenType::Container {
-            if token.container.unwrap() == ContainerType::Brace {
-                brace_level += 1;
-            } else if token.container.unwrap() == ContainerType::AntiBrace {
-                brace_level -= 1;
+            if index == 0 {
+                container_type == token.container.clone();
+                anti_type == match container_type.unwrap() {
+                    ContainerType::Brace => Option::from(ContainerType::AntiBrace),
+                    ContainerType::Bracket => Option::from(ContainerType::AntiBracket),
+                    ContainerType::Index => Option::from(ContainerType::AntiIndex),
+                    _ => Option::from(ContainerType::Unset)
+                };
+            }
+
+            if token.container == container_type {
+                container_level += 1;
+            } else if token.container == anti_type {
+                container_level -= 1;
             }
         }
 
         // top layer from token array start
-        if brace_level == 0 {
+        if container_level == 0 {
             return tokens[0..index].to_vec();
         }
     }
