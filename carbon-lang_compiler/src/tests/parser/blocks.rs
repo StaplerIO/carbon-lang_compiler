@@ -10,6 +10,7 @@ mod tests {
     use crate::parser::builder::blocks::short_actions::build_short_statements;
     use crate::shared::ast::action::ActionType;
     use crate::parser::builder::blocks::action_block::action_block_builder;
+    use crate::parser::builder::blocks::loops::while_statement_builder;
 
     #[test]
     fn assignment() {
@@ -57,6 +58,7 @@ mod tests {
 
         assert_eq!(result.value.postfix_expr.len(), 0);
     }
+
     #[test]
     fn return_from_function_with_value() {
         let tokens = tokenize(String::from("return 1 + 2 * tb_234;"));
@@ -68,7 +70,7 @@ mod tests {
     }
 
     #[test]
-    fn single_token_statement_break(){
+    fn single_token_statement_break() {
         let tokens = tokenize(String::from("break;"));
         let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
 
@@ -76,7 +78,7 @@ mod tests {
     }
 
     #[test]
-    fn single_token_statement_continue(){
+    fn single_token_statement_continue() {
         let tokens = tokenize(String::from("continue;"));
         let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
 
@@ -99,5 +101,14 @@ mod tests {
         assert_eq!(result[1].action_type, ActionType::AssignmentStatement);
         assert_eq!(result[3].action_type, ActionType::CallStatement);
         assert_eq!(result[4].action_type, ActionType::ReturnStatement);
+    }
+
+    #[test]
+    fn while_block() {
+        let tokens = tokenize(String::from("while (1 + 1 == 2) { a = a + 1; return; }"));
+        let result = while_statement_builder(decorate_token(tokens.clone())).0.unwrap();
+
+        assert_eq!(result.condition.postfix_expr.len(), 5);
+        assert_eq!(result.body.actions.len(), 2);
     }
 }

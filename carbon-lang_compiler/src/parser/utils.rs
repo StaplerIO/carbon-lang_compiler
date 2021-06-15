@@ -54,23 +54,23 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
 pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
     let mut container_level = 0;
 
-    let container_type: Option<ContainerType> = None;
-    let anti_type: Option<ContainerType> = None;
+    let mut container_type = ContainerType::Unset;
+    let mut anti_type = ContainerType::Unset;
     for (index, token) in tokens.iter().enumerate() {
         if token.token_type == DecoratedTokenType::Container {
             if index == 0 {
-                container_type == token.container.clone();
-                anti_type == match container_type.unwrap() {
-                    ContainerType::Brace => Option::from(ContainerType::AntiBrace),
-                    ContainerType::Bracket => Option::from(ContainerType::AntiBracket),
-                    ContainerType::Index => Option::from(ContainerType::AntiIndex),
-                    _ => Option::from(ContainerType::Unset)
+                container_type = token.container.unwrap();
+                anti_type = match container_type {
+                    ContainerType::Brace => ContainerType::AntiBrace,
+                    ContainerType::Bracket => ContainerType::AntiBracket,
+                    ContainerType::Index => ContainerType::AntiIndex,
+                    _ => ContainerType::Unset
                 };
             }
 
-            if token.container == container_type {
+            if token.container.unwrap() == container_type {
                 container_level += 1;
-            } else if token.container == anti_type {
+            } else if token.container.unwrap() == anti_type {
                 container_level -= 1;
             }
         }

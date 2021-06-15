@@ -36,11 +36,11 @@ pub struct ActionBlock {
     pub actions: Vec<Action>
 }
 
-// TODO: Builder required
+// TODO: Builder required for if and elif statements
 // Used in while, if, elif
 pub struct ConditionBlock {
     pub condition: Expression,
-    pub body: ActionBlock,
+    pub body: ActionBlock
 }
 
 pub struct DeclarationAction {
