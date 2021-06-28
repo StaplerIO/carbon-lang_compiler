@@ -26,7 +26,7 @@ pub struct Action {
     pub return_action: Option<ReturnAction>,
     pub if_action: Option<IfAction>,
     pub while_action: Option<ConditionBlock>,
-    pub loop_action: Option<LoopAction>,
+    pub loop_action: Option<ActionBlock>,
     pub switch_action: Option<SwitchAction>,
 
     // "break" and "continue" actions don't have special blocks
@@ -36,7 +36,6 @@ pub struct ActionBlock {
     pub actions: Vec<Action>
 }
 
-// TODO: Builder required for if and elif statements
 // Used in while, if, elif
 pub struct ConditionBlock {
     pub condition: Expression,
@@ -66,13 +65,12 @@ pub struct ReturnAction {
     pub value: Expression
 }
 
-// TODO: Builder required
 pub struct IfAction {
     pub if_block: ConditionBlock,
 
-    pub elif_collection: Option<Vec<ConditionBlock>>,
+    pub elif_collection: Vec<ConditionBlock>,
 
-    pub else_actions: Option<ActionBlock>
+    pub else_action: Option<ActionBlock>
 }
 
 // TODO: Builder required
@@ -85,10 +83,5 @@ pub struct SwitchAction {
 pub struct SwitchCase {
     pub is_default: bool,
     pub value: String,
-    pub actions: ActionBlock
-}
-
-// TODO: Builder required
-pub struct LoopAction {
     pub actions: ActionBlock
 }

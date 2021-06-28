@@ -11,6 +11,7 @@ mod tests {
     use crate::shared::ast::action::ActionType;
     use crate::parser::builder::blocks::action_block::action_block_builder;
     use crate::parser::builder::blocks::loops::while_statement_builder;
+    use crate::parser::builder::blocks::condition::if_block_builder;
 
     #[test]
     fn assignment() {
@@ -110,5 +111,15 @@ mod tests {
 
         assert_eq!(result.condition.postfix_expr.len(), 5);
         assert_eq!(result.body.actions.len(), 2);
+    }
+
+    #[test]
+    fn if_block() {
+        let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var decimal foo; }"));
+        let result = if_block_builder(decorate_token(tokens.clone())).0.unwrap();
+
+        assert_eq!(result.if_block.condition.postfix_expr.len(), 5);
+        assert_eq!(result.elif_collection.len(), 2);
+        assert_eq!(result.else_action.unwrap().actions.len(), 1);
     }
 }

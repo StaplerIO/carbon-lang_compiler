@@ -23,18 +23,20 @@ pub fn while_statement_builder(tokens: Vec<DecoratedToken>) -> (Option<Condition
                     let expression_zone = pair_container(tokens[1..].to_vec());
                     result.condition.postfix_expr = expression_infix_to_postfix(expression_zone[1..].to_vec());
 
-                    // Build actions inside the while statement
-                    // expression_zone.len() + 2 --> Add brackets before and after
-                    if tokens[expression_zone.len() + 2].token_type == DecoratedTokenType::Container {
-                        if tokens[expression_zone.len() + 2].container.unwrap() == ContainerType::Brace {
-                            let mut action_block_zone = pair_container(tokens[(expression_zone.len() + 2)..].to_vec());
-                            // Remove the first and the last element
-                            action_block_zone = action_block_zone[1..(action_block_zone.len() /*- 1*/)].to_vec();
+                    if expression_zone.len() >= 1{
+                        // Build actions inside the while statement
+                        // expression_zone.len() + 2 --> Add brackets before and after
+                        if tokens[expression_zone.len() + 2].token_type == DecoratedTokenType::Container {
+                            if tokens[expression_zone.len() + 2].container.unwrap() == ContainerType::Brace {
+                                let mut action_block_zone = pair_container(tokens[(expression_zone.len() + 2)..].to_vec());
+                                // Remove the first and the last element
+                                action_block_zone = action_block_zone[1..(action_block_zone.len() /*- 1*/)].to_vec();
 
-                            // Build actions
-                            result.body.actions = action_block_builder(action_block_zone.clone());
+                                // Build actions
+                                result.body.actions = action_block_builder(action_block_zone.clone());
 
-                            return (Option::from(result), (expression_zone.len() + action_block_zone.len()) as isize);
+                                return (Option::from(result), (expression_zone.len() + action_block_zone.len()) as isize);
+                            }
                         }
                     }
                 }
