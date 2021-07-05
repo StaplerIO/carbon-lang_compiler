@@ -1,5 +1,5 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::ast::action::{ConditionBlock, ActionBlock};
+use crate::shared::ast::action::{ConditionBlock, ActionBlock, Action, ActionType};
 use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::utils::pair_container;
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
@@ -7,7 +7,7 @@ use crate::shared::ast::blocks::expression::Expression;
 use crate::parser::builder::blocks::action_block::action_block_builder;
 
 // result.1 : The end of the while statement (the last anti-brace)
-pub fn while_statement_builder(tokens: Vec<DecoratedToken>) -> (Option<ConditionBlock>, isize) {
+pub fn while_statement_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     // while ( expr ) { } <-- 6 tokens in total
     if tokens.len() > 6 && tokens.first().unwrap().token_type == DecoratedTokenType::DecoratedKeyword {
         if tokens.first().unwrap().keyword.unwrap() == KeywordType::KwWhile {
@@ -35,7 +35,17 @@ pub fn while_statement_builder(tokens: Vec<DecoratedToken>) -> (Option<Condition
                                 // Build actions
                                 result.body.actions = action_block_builder(action_block_zone.clone());
 
-                                return (Option::from(result), (expression_zone.len() + action_block_zone.len()) as isize);
+                                return (Option::from(Action{
+                                    action_type: ActionType::WhileStatement,
+                                    declaration_action: None,
+                                    assignment_action: None,
+                                    call_action: None,
+                                    return_action: None,
+                                    if_action: None,
+                                    while_action: Option::from(result),
+                                    loop_action: None,
+                                    switch_action: None
+                                }), (expression_zone.len() + action_block_zone.len()) as isize);
                             }
                         }
                     }

@@ -1,4 +1,4 @@
-use crate::shared::ast::action::CallAction;
+use crate::shared::ast::action::{CallAction, Action, ActionType};
 use crate::parser::utils::{find_next_semicolon, split_comma_expression};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{KeywordType, ContainerType};
@@ -6,7 +6,7 @@ use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::shared::ast::blocks::expression::Expression;
 
 // Scheme: call <identifier>(<param list>);
-pub fn call_function(tokens: Vec<DecoratedToken>) -> (Option<CallAction>, usize) {
+pub fn call_function(tokens: Vec<DecoratedToken>) -> (Option<Action>, usize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     // Check format
@@ -31,7 +31,17 @@ pub fn call_function(tokens: Vec<DecoratedToken>) -> (Option<CallAction>, usize)
                     result.arguments.push(Expression { postfix_expr: expression_infix_to_postfix(param.clone()) });
                 }
 
-                return (Option::from(result), next_semicolon_pos as usize);
+                return (Option::from(Action{
+                    action_type: ActionType::CallStatement,
+                    declaration_action: None,
+                    assignment_action: None,
+                    call_action: Option::from(result),
+                    return_action: None,
+                    if_action: None,
+                    while_action: None,
+                    loop_action: None,
+                    switch_action: None
+                }), next_semicolon_pos as usize);
             }
         }
     }

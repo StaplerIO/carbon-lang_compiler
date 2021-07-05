@@ -1,9 +1,9 @@
 use crate::shared::token::KeywordType;
-use crate::shared::ast::action::DeclarationAction;
+use crate::shared::ast::action::{DeclarationAction, Action, ActionType};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 
-pub fn declare_data(tokens: Vec<DecoratedToken>) -> (Option<DeclarationAction>, isize) {
+pub fn declare_data(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     // Each block owns 4 tokens only
     if next_semicolon_pos == 4 {
@@ -29,7 +29,17 @@ pub fn declare_data(tokens: Vec<DecoratedToken>) -> (Option<DeclarationAction>, 
                     panic!("Require keyword \'var\' or \'const\'");
                 }
 
-                return (Option::from(result), next_semicolon_pos);
+                return (Option::from(Action {
+                    action_type: ActionType::DeclarationStatement,
+                    declaration_action: Option::from(result),
+                    assignment_action: None,
+                    call_action: None,
+                    return_action: None,
+                    if_action: None,
+                    while_action: None,
+                    loop_action: None,
+                    switch_action: None
+                }), next_semicolon_pos);
             }
         }
     }

@@ -13,17 +13,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
     while tokens.len() > 0 {
         let decl = declare_data(tokens.clone());
         if decl.1 != -1 {
-            result.push(Action{
-                action_type: ActionType::DeclarationStatement,
-                declaration_action: decl.0,
-                assignment_action: None,
-                call_action: None,
-                return_action: None,
-                if_action: None,
-                while_action: None,
-                loop_action: None,
-                switch_action: None
-            });
+            result.push(decl.0.unwrap());
 
             tokens = tokens[((decl.1 as usize) + 1)..].to_vec();
             continue;
@@ -31,17 +21,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
 
         let mut assign_action = assignment_block(tokens.clone());
         if assign_action.1 != -1 {
-            result.push(Action{
-                action_type: ActionType::AssignmentStatement,
-                declaration_action: None,
-                assignment_action: assign_action.0,
-                call_action: None,
-                return_action: None,
-                if_action: None,
-                while_action: None,
-                loop_action: None,
-                switch_action: None
-            });
+            result.push(assign_action.0.unwrap());
 
             tokens = tokens[((assign_action.1 as usize) + 1)..].to_vec();
             continue;
@@ -49,17 +29,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
 
         let mut call_action = call_function(tokens.clone());
         if call_action.1 > 0 {
-            result.push(Action{
-                action_type: ActionType::CallStatement,
-                declaration_action: None,
-                assignment_action: None,
-                call_action: call_action.0,
-                return_action: None,
-                if_action: None,
-                while_action: None,
-                loop_action: None,
-                switch_action: None
-            });
+            result.push(call_action.0.unwrap());
 
             tokens = tokens[((call_action.1 as usize) + 1)..].to_vec();
             continue;
@@ -67,17 +37,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
 
         let return_action = build_return_statement(tokens.clone());
         if return_action.1 > 0 {
-            result.push(Action{
-                action_type: ActionType::ReturnStatement,
-                declaration_action: None,
-                assignment_action: None,
-                call_action: None,
-                return_action: return_action.0,
-                if_action: None,
-                while_action: None,
-                loop_action: None,
-                switch_action: None
-            });
+            result.push(return_action.0.unwrap());
 
             tokens = tokens[((return_action.1 as usize) + 1)..].to_vec();
             continue;
