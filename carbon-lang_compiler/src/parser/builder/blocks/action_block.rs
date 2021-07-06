@@ -1,17 +1,17 @@
 use crate::shared::ast::action::{Action, ActionType};
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::parser::builder::blocks::declaration::declare_data;
-use crate::parser::builder::blocks::assignment::assignment_block;
-use crate::parser::builder::blocks::call::call_function;
-use crate::parser::builder::blocks::return_expression::build_return_statement;
-use crate::parser::builder::blocks::short_actions::build_short_statements;
+use crate::parser::builder::blocks::declaration::declaration_action_builder;
+use crate::parser::builder::blocks::assignment::assignment_block_builder;
+use crate::parser::builder::blocks::call::call_action_builder;
+use crate::parser::builder::blocks::return_expression::return_action_builder;
+use crate::parser::builder::blocks::short_actions::short_statements_builder;
 
 // Lookup lexer/tokenize.rs
 pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
     let mut result: Vec<Action> = Vec::new();
 
     while tokens.len() > 0 {
-        let decl = declare_data(tokens.clone());
+        let decl = declaration_action_builder(tokens.clone());
         if decl.1 != -1 {
             result.push(decl.0.unwrap());
 
@@ -19,7 +19,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let mut assign_action = assignment_block(tokens.clone());
+        let mut assign_action = assignment_block_builder(tokens.clone());
         if assign_action.1 != -1 {
             result.push(assign_action.0.unwrap());
 
@@ -27,7 +27,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let mut call_action = call_function(tokens.clone());
+        let mut call_action = call_action_builder(tokens.clone());
         if call_action.1 > 0 {
             result.push(call_action.0.unwrap());
 
@@ -35,7 +35,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let return_action = build_return_statement(tokens.clone());
+        let return_action = return_action_builder(tokens.clone());
         if return_action.1 > 0 {
             result.push(return_action.0.unwrap());
 
@@ -43,7 +43,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let other_action = build_short_statements(tokens.clone());
+        let other_action = short_statements_builder(tokens.clone());
         if other_action.1 != -1 {
             result.push(other_action.0.unwrap());
 

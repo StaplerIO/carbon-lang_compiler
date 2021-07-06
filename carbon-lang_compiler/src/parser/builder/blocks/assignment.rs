@@ -5,7 +5,7 @@ use crate::shared::ast::blocks::expression::Expression;
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 
-pub fn assignment_block(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     if next_semicolon_pos != -1 {
         if tokens[0].is_valid_identifier() && tokens[1].token_type == DecoratedTokenType::Operator {

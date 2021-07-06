@@ -6,7 +6,7 @@ use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::shared::ast::blocks::expression::Expression;
 
 // Scheme: call <identifier>(<param list>);
-pub fn call_function(tokens: Vec<DecoratedToken>) -> (Option<Action>, usize) {
+pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, usize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     // Check format

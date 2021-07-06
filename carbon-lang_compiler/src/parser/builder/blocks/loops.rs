@@ -7,7 +7,7 @@ use crate::shared::ast::blocks::expression::Expression;
 use crate::parser::builder::blocks::action_block::action_block_builder;
 
 // result.1 : The end of the while statement (the last anti-brace)
-pub fn while_statement_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn while_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     // while ( expr ) { } <-- 6 tokens in total
     if tokens.len() > 6 && tokens.first().unwrap().token_type == DecoratedTokenType::DecoratedKeyword {
         if tokens.first().unwrap().keyword.unwrap() == KeywordType::KwWhile {

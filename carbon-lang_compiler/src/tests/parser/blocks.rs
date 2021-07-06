@@ -1,22 +1,22 @@
 mod tests {
     use crate::lexer::tokenize::tokenize;
-    use crate::parser::builder::blocks::assignment::assignment_block;
+    use crate::parser::builder::blocks::assignment::assignment_block_builder;
     use crate::shared::token::CalculationOperator;
-    use crate::parser::builder::blocks::declaration::declare_data;
+    use crate::parser::builder::blocks::declaration::declaration_action_builder;
     use crate::parser::decorator::decorate_token;
-    use crate::parser::builder::blocks::call::call_function;
+    use crate::parser::builder::blocks::call::call_action_builder;
     use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
-    use crate::parser::builder::blocks::return_expression::build_return_statement;
-    use crate::parser::builder::blocks::short_actions::build_short_statements;
+    use crate::parser::builder::blocks::return_expression::return_action_builder;
+    use crate::parser::builder::blocks::short_actions::short_statements_builder;
     use crate::shared::ast::action::ActionType;
     use crate::parser::builder::blocks::action_block::action_block_builder;
-    use crate::parser::builder::blocks::loops::while_statement_builder;
+    use crate::parser::builder::blocks::loops::while_action_builder;
     use crate::parser::builder::blocks::condition::if_block_builder;
 
     #[test]
     fn assignment() {
         let tokens = tokenize(String::from("a = 1 + 2;"));
-        let result = assignment_block(decorate_token(tokens.clone())).0.unwrap().assignment_action.unwrap();
+        let result = assignment_block_builder(decorate_token(tokens.clone())).0.unwrap().assignment_action.unwrap();
 
         assert_eq!(result.identifier, String::from("a"));
 
@@ -30,7 +30,7 @@ mod tests {
     #[test]
     fn variable_declaration() {
         let tokens = tokenize(String::from("decl var decimal foo;"));
-        let result = declare_data(decorate_token(tokens.clone())).0.unwrap().declaration_action.unwrap();
+        let result = declaration_action_builder(decorate_token(tokens.clone())).0.unwrap().declaration_action.unwrap();
 
         assert_eq!(result.identifier, String::from("foo"));
         assert_eq!(result.data_type, String::from("decimal"));
@@ -40,7 +40,7 @@ mod tests {
     #[test]
     fn function_call() {
         let tokens = tokenize(String::from("call func_1(5, 2.66, var1, 3 - 2);"));
-        let result = call_function(decorate_token(tokens.clone())).0.unwrap().call_action.unwrap();
+        let result = call_action_builder(decorate_token(tokens.clone())).0.unwrap().call_action.unwrap();
 
         assert_eq!(result.function_name, String::from("func_1"));
         assert_eq!(result.arguments.len(), 4);
@@ -55,7 +55,7 @@ mod tests {
     #[test]
     fn return_from_function_no_value() {
         let tokens = tokenize(String::from("return;"));
-        let result = build_return_statement(decorate_token(tokens.clone())).0.unwrap().return_action.unwrap();
+        let result = return_action_builder(decorate_token(tokens.clone())).0.unwrap().return_action.unwrap();
 
         assert_eq!(result.value.postfix_expr.len(), 0);
     }
@@ -63,7 +63,7 @@ mod tests {
     #[test]
     fn return_from_function_with_value() {
         let tokens = tokenize(String::from("return 1 + 2 * tb_234;"));
-        let result = build_return_statement(decorate_token(tokens.clone())).0.unwrap().return_action.unwrap();
+        let result = return_action_builder(decorate_token(tokens.clone())).0.unwrap().return_action.unwrap();
 
         assert_eq!(result.value.postfix_expr.len(), 5);
         // Value expression: 1 2 tb_234 * +
@@ -73,7 +73,7 @@ mod tests {
     #[test]
     fn single_token_statement_break() {
         let tokens = tokenize(String::from("break;"));
-        let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
+        let result = short_statements_builder(decorate_token(tokens.clone())).0.unwrap();
 
         assert_eq!(result.action_type, ActionType::BreakStatement);
     }
@@ -81,7 +81,7 @@ mod tests {
     #[test]
     fn single_token_statement_continue() {
         let tokens = tokenize(String::from("continue;"));
-        let result = build_short_statements(decorate_token(tokens.clone())).0.unwrap();
+        let result = short_statements_builder(decorate_token(tokens.clone())).0.unwrap();
 
         assert_eq!(result.action_type, ActionType::ContinueStatement);
     }
@@ -107,7 +107,7 @@ mod tests {
     #[test]
     fn while_block() {
         let tokens = tokenize(String::from("while (1 + 1 == 2) { a = a + 1; return; }"));
-        let result = while_statement_builder(decorate_token(tokens.clone())).0.unwrap().while_action.unwrap();
+        let result = while_action_builder(decorate_token(tokens.clone())).0.unwrap().while_action.unwrap();
 
         assert_eq!(result.condition.postfix_expr.len(), 5);
         assert_eq!(result.body.actions.len(), 2);

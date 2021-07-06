@@ -4,7 +4,7 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::blocks::expression::Expression;
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 
-pub fn build_return_statement(tokens: Vec<DecoratedToken>) -> (Option<Action>, usize) {
+pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, usize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     if next_semicolon_pos > 0 {

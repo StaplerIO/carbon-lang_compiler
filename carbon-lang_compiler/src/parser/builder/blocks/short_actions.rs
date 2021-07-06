@@ -4,7 +4,7 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::token::{KeywordType, ContainerType};
 
 // Build "continue", "break" and "loop" action
-pub fn build_short_statements(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {

@@ -3,7 +3,7 @@ use crate::shared::ast::action::{DeclarationAction, Action, ActionType};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 
-pub fn declare_data(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     // Each block owns 4 tokens only
     if next_semicolon_pos == 4 {
