@@ -57,7 +57,7 @@ pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<Decorated
 
             operator_stack.push(token.clone());
         } else {
-            panic!("Illegal token encountered!");
+            panic!("Illegal expression term encountered!");
         }
     }
 

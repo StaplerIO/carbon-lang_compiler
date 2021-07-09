@@ -3,8 +3,10 @@ use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::parser::builder::blocks::declaration::declaration_action_builder;
 use crate::parser::builder::blocks::assignment::assignment_block_builder;
 use crate::parser::builder::blocks::call::call_action_builder;
+use crate::parser::builder::blocks::condition::if_block_builder;
 use crate::parser::builder::blocks::return_expression::return_action_builder;
 use crate::parser::builder::blocks::short_actions::short_statements_builder;
+use crate::parser::builder::blocks::loops::while_action_builder;
 
 // Lookup lexer/tokenize.rs
 pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
@@ -40,6 +42,22 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             result.push(return_action.0.unwrap());
 
             tokens = tokens[(return_action.1 as usize)..].to_vec();
+            continue;
+        }
+
+        let if_action = if_block_builder(tokens.clone());
+        if if_action.1 != -1 {
+            result.push(if_action.0.unwrap());
+
+            tokens = tokens[(if_action.1 as usize)..].to_vec();
+            continue;
+        }
+
+        let while_action = while_action_builder(tokens.clone());
+        if while_action.1 != -1 {
+            result.push(while_action.0.unwrap());
+
+            tokens = tokens[(while_action.1 as usize)..].to_vec();
             continue;
         }
 

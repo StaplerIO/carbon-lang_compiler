@@ -110,19 +110,22 @@ mod tests {
     #[test]
     fn action_block() {
         let tokens = tokenize(String::from("decl var decimal foo;\
-                                                                   foo = 1;
-                                                                   foo = foo + 1;
-                                                                   call func_1(5, 2.66, var1, 3 - 2);\
-                                                                   return 1 + 2 * tb_234;"));
+                                                                    foo = 1;
+                                                                    foo = foo + 1;
+                                                                    call func_1(5, 2.66, var1, 3 - 2);\
+                                                                    if (foo == 2) { return; }\
+                                                                    return 1 + 2 * tb_234;\
+                                                                    while (1) { call func_1(0); }"));
 
         let result = action_block_builder(decorate_token(tokens.clone()));
 
-        assert_eq!(result.len(), 5);
+        assert_eq!(result.len(), 7);
 
         assert_eq!(result[0].action_type, ActionType::DeclarationStatement);
         assert_eq!(result[1].action_type, ActionType::AssignmentStatement);
         assert_eq!(result[3].action_type, ActionType::CallStatement);
-        assert_eq!(result[4].action_type, ActionType::ReturnStatement);
+        assert_eq!(result[4].action_type, ActionType::IfStatement);
+        assert_eq!(result[5].action_type, ActionType::ReturnStatement);
     }
 
     #[test]
