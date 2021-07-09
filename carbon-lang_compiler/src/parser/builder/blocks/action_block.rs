@@ -15,7 +15,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
         if decl.1 != -1 {
             result.push(decl.0.unwrap());
 
-            tokens = tokens[((decl.1 as usize) + 1)..].to_vec();
+            tokens = tokens[(decl.1 as usize)..].to_vec();
             continue;
         }
 
@@ -23,7 +23,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
         if assign_action.1 != -1 {
             result.push(assign_action.0.unwrap());
 
-            tokens = tokens[((assign_action.1 as usize) + 1)..].to_vec();
+            tokens = tokens[(assign_action.1 as usize) ..].to_vec();
             continue;
         }
 
@@ -31,7 +31,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
         if call_action.1 > 0 {
             result.push(call_action.0.unwrap());
 
-            tokens = tokens[((call_action.1 as usize) + 1)..].to_vec();
+            tokens = tokens[(call_action.1 as usize)..].to_vec();
             continue;
         }
 
@@ -39,7 +39,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
         if return_action.1 > 0 {
             result.push(return_action.0.unwrap());
 
-            tokens = tokens[((return_action.1 as usize) + 1)..].to_vec();
+            tokens = tokens[(return_action.1 as usize)..].to_vec();
             continue;
         }
 
@@ -47,7 +47,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
         if other_action.1 != -1 {
             result.push(other_action.0.unwrap());
 
-            tokens = tokens[((return_action.1 as usize) + 1)..].to_vec();
+            tokens = tokens[(return_action.1 as usize)..].to_vec();
             continue;
         }
 

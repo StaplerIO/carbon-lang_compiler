@@ -19,7 +19,7 @@ mod tests {
         let raw = assignment_block_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().assignment_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.identifier, String::from("a"));
 
@@ -36,7 +36,7 @@ mod tests {
         let raw = declaration_action_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().declaration_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.identifier, String::from("foo"));
         assert_eq!(result.data_type, String::from("decimal"));
@@ -49,7 +49,7 @@ mod tests {
         let raw = call_action_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().call_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.function_name, String::from("func_1"));
         assert_eq!(result.arguments.len(), 4);
@@ -67,7 +67,7 @@ mod tests {
         let raw = return_action_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().return_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.value.postfix_expr.len(), 0);
     }
@@ -78,7 +78,7 @@ mod tests {
         let raw = return_action_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().return_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.value.postfix_expr.len(), 5);
         // Value expression: 1 2 tb_234 * +
@@ -91,7 +91,7 @@ mod tests {
         let raw = short_statements_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.action_type, ActionType::BreakStatement);
     }
@@ -102,7 +102,7 @@ mod tests {
         let raw = short_statements_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.action_type, ActionType::ContinueStatement);
     }

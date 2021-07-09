@@ -26,7 +26,7 @@ pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                     while_action: None,
                     loop_action: None,
                     switch_action: None
-                }), next_semicolon_pos);
+                }), next_semicolon_pos + 1);
             }
         }
     }

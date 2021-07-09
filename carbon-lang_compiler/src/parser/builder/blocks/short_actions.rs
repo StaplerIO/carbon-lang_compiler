@@ -25,7 +25,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }), next_semicolon_pos);
+                    }), next_semicolon_pos + 1);
                 }
                 KeywordType::KwBreak => {
                     return (Option::from(Action {
@@ -38,7 +38,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }), next_semicolon_pos);
+                    }), next_semicolon_pos + 1);
                 }
                 _ => {}
             }

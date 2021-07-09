@@ -20,7 +20,7 @@ pub fn while_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isi
         }), result.1);
     }
 
-    return (None, result.1);
+    return (None, -1);
 }
 
 // Action of keyword "loop" is in file "./short_actions.rs"
