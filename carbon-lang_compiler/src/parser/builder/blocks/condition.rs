@@ -5,105 +5,57 @@ use crate::parser::utils::pair_container;
 use crate::shared::ast::blocks::expression::Expression;
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::builder::blocks::action_block::action_block_builder;
+use crate::parser::builder::templates::condition_block_builder;
 
 pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
-    if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-        if tokens[0].keyword.unwrap() == KeywordType::KwIf {
-            let mut result = IfAction {
-                if_block: ConditionBlock {
-                    condition: Expression { postfix_expr: vec![] },
-                    body: ActionBlock { actions: vec![] }
-                },
-                elif_collection: vec![],
-                else_action: None
-            };
+    let if_part = condition_block_builder(KeywordType::KwIf, tokens.clone());
+    if if_part.1 != -1 {
+        let mut result = IfAction{
+            if_block: if_part.0.unwrap(),
+            elif_collection: vec![],
+            else_action: None
+        };
 
-            if tokens[1].token_type == DecoratedTokenType::Container {
-                if tokens[1].container.unwrap() == ContainerType::Bracket {
-                    // Build `if` statement expression
-                    let expression_zone = pair_container(tokens[1..].to_vec());
-                    result.if_block.condition.postfix_expr = expression_infix_to_postfix(expression_zone[1..].to_vec());
-
-                    if expression_zone.len() >= 1 {
-                        // Build actions inside the statement
-                        if tokens[expression_zone.len() + 2].token_type == DecoratedTokenType::Container {
-                            if tokens[expression_zone.len() + 2].container.unwrap() == ContainerType::Brace {
-                                let action_zone = pair_container(tokens[(expression_zone.len() + 2)..].to_vec());
-                                result.if_block.body.actions = action_block_builder(action_zone[1..action_zone.len()].to_vec());
-
-                                // If there's any `elif` or `else` blocks
-
-                                // current_index is the end index of the `if` statement we serialized just now
-                                let mut current_index: usize = expression_zone.len() + action_zone.len() + 3;
-                                // Check `elif`
-                                loop {
-                                    let elif_block = detached_elif_block_builder(tokens[current_index..].to_vec());
-                                    if elif_block.1 != -1 {
-                                        result.elif_collection.push(elif_block.0.unwrap());
-                                        current_index += elif_block.1 as usize;
-                                    } else {
-                                        break;
-                                    }
-                                }
-
-                                // Check `else`
-                                let else_block = detached_else_block_builder(tokens[current_index..].to_vec());
-                                if else_block.1 != -1 {
-                                    result.else_action = else_block.0;
-                                    current_index += else_block.1 as usize;
-                                }
-
-                                return (Option::from(Action {
-                                    action_type: ActionType::IfStatement,
-                                    declaration_action: None,
-                                    assignment_action: None,
-                                    call_action: None,
-                                    return_action: None,
-                                    if_action: Option::from(result),
-                                    while_action: None,
-                                    loop_action: None,
-                                    switch_action: None
-                                }), current_index as isize);
-                            }
-                        }
-                    }
-                }
+        // Then we have an if_block (only), we'll try to find elif and else right after it
+        let mut current_index: usize = if_part.1 as usize;
+        loop {
+            let elif_part = detached_elif_block_builder(tokens[current_index..].to_vec());
+            if elif_part.1 != -1 {
+                result.elif_collection.push(elif_part.0.unwrap());
+                current_index += elif_part.1 as usize;
+            } else {
+                break;
             }
         }
+
+        let else_part = detached_else_block_builder(tokens[current_index..].to_vec());
+        if else_part.1 != -1 {
+            result.else_action = else_part.0;
+            current_index += else_part.1 as usize;
+        }
+
+        return (Option::from(Action{
+            action_type: ActionType::IfStatement,
+            declaration_action: None,
+            assignment_action: None,
+            call_action: None,
+            return_action: None,
+            if_action: Option::from(result),
+            while_action: None,
+            loop_action: None,
+            switch_action: None
+        }), current_index as isize);
     }
 
     return (None, -1);
 }
 
 // `elif` block must be a sub-node of `if` block, so this is a private method
+// Return -1 if there's a problem while building elif block
 fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ConditionBlock>, isize) {
-    if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-        if tokens[0].keyword.unwrap() == KeywordType::KwElseIf {
-            let mut result = ConditionBlock {
-                condition: Expression { postfix_expr: vec![] },
-                body: ActionBlock { actions: vec![] }
-            };
-
-            if tokens[1].token_type == DecoratedTokenType::Container {
-                if tokens[1].container.unwrap() == ContainerType::Bracket {
-                    // Build `if` statement expression
-                    let expression_zone = pair_container(tokens[1..].to_vec());
-                    result.condition.postfix_expr = expression_infix_to_postfix(expression_zone.clone());
-
-                    if expression_zone.len() >= 1 {
-                        // Build actions inside the statement
-                        if tokens[expression_zone.len() + 2].token_type == DecoratedTokenType::Container {
-                            if tokens[expression_zone.len() + 2].container.unwrap() == ContainerType::Brace {
-                                let action_block_zone = pair_container(tokens[(expression_zone.len() + 2)..].to_vec());
-                                result.body.actions = action_block_builder(action_block_zone[1..action_block_zone.len()].to_vec());
-
-                                return (Option::from(result), (expression_zone.len() + action_block_zone.len() + 3) as isize);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    let result = condition_block_builder(KeywordType::KwElseIf, tokens.clone());
+    if result.1 != -1 {
+        return result;
     }
 
     return (None, -1);
