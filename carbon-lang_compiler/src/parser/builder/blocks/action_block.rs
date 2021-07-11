@@ -1,4 +1,4 @@
-use crate::shared::ast::action::{Action, ActionType};
+use crate::shared::ast::action::Action;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::parser::builder::blocks::declaration::declaration_action_builder;
 use crate::parser::builder::blocks::assignment::assignment_block_builder;
@@ -21,15 +21,15 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let mut assign_action = assignment_block_builder(tokens.clone());
+        let assign_action = assignment_block_builder(tokens.clone());
         if assign_action.1 != -1 {
             result.push(assign_action.0.unwrap());
 
-            tokens = tokens[(assign_action.1 as usize) ..].to_vec();
+            tokens = tokens[(assign_action.1 as usize)..].to_vec();
             continue;
         }
 
-        let mut call_action = call_action_builder(tokens.clone());
+        let call_action = call_action_builder(tokens.clone());
         if call_action.1 > 0 {
             result.push(call_action.0.unwrap());
 

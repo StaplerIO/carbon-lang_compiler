@@ -1,6 +1,5 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{OperatorType, ContainerType};
-use crate::shared::token::TokenType::Container;
 
 // Return -1 if there's no semicolon token
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> isize {

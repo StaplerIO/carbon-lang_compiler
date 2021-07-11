@@ -1,17 +1,16 @@
 mod tests {
-    use crate::lexer::tokenize::tokenize;
-    use crate::parser::builder::blocks::assignment::assignment_block_builder;
-    use crate::shared::token::CalculationOperator;
-    use crate::parser::builder::blocks::declaration::declaration_action_builder;
-    use crate::parser::decorator::decorate_token;
-    use crate::parser::builder::blocks::call::call_action_builder;
-    use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
-    use crate::parser::builder::blocks::return_expression::return_action_builder;
-    use crate::parser::builder::blocks::short_actions::short_statements_builder;
-    use crate::shared::ast::action::ActionType;
-    use crate::parser::builder::blocks::action_block::action_block_builder;
-    use crate::parser::builder::blocks::loops::while_action_builder;
-    use crate::parser::builder::blocks::condition::if_block_builder;
+    pub use crate::lexer::tokenize::tokenize;
+    pub use crate::parser::builder::blocks::assignment::assignment_block_builder;
+    pub use crate::parser::decorator::decorate_token;
+    pub use crate::shared::token::CalculationOperator;
+    pub use crate::parser::builder::blocks::declaration::declaration_action_builder;
+    pub use crate::parser::builder::blocks::call::call_action_builder;
+    pub use crate::parser::builder::blocks::return_expression::return_action_builder;
+    pub use crate::parser::builder::blocks::short_actions::short_statements_builder;
+    pub use crate::shared::ast::action::ActionType;
+    pub use crate::parser::builder::blocks::action_block::action_block_builder;
+    pub use crate::parser::builder::blocks::loops::while_action_builder;
+    pub use crate::parser::builder::blocks::condition::if_block_builder;
 
     #[test]
     fn assignment() {
