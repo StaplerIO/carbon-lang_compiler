@@ -11,6 +11,8 @@ mod tests {
     pub use crate::parser::builder::blocks::action_block::action_block_builder;
     pub use crate::parser::builder::blocks::loops::while_action_builder;
     pub use crate::parser::builder::blocks::condition::if_block_builder;
+    use crate::parser::builder::function_builder::function_builder;
+    use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
 
     #[test]
     fn assignment() {
@@ -142,10 +144,27 @@ mod tests {
     #[test]
     fn if_block() {
         let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var decimal foo; }"));
-        let result = if_block_builder(decorate_token(tokens.clone())).0.unwrap().if_action.unwrap();
+        let raw = if_block_builder(decorate_token(tokens.clone()));
+
+        let result = raw.0.unwrap().if_action.unwrap();
+        assert_eq!(raw.1 as usize, tokens.len() - 1);
 
         assert_eq!(result.if_block.condition.postfix_expr.len(), 5);
         assert_eq!(result.elif_collection.len(), 2);
         assert_eq!(result.else_action.unwrap().actions.len(), 1);
+    }
+
+    #[test]
+    fn function_block() {
+        let tokens = tokenize(String::from("decl func main(int a, decimal b)[decimal] { return a + b; }"));
+        let raw = function_builder(decorate_token(tokens.clone()));
+
+        let result = raw.0.unwrap();
+        assert_eq!(raw.1 as usize, tokens.len());
+
+        assert_eq!(result.name, String::from("main"));
+        assert_eq!(result.return_type, String::from("decimal"));
+        assert_eq!(result.parameters.len(), 2);
+        assert_eq!(result.body.len(), 1);
     }
 }
