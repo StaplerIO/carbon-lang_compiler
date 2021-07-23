@@ -31,6 +31,7 @@ pub enum KeywordType
     KwBreak,            // break
     KwReturn,           // return
     KwCall,             // call
+    KwLink,             // link
     KwNone,             // none
     Unset
 }

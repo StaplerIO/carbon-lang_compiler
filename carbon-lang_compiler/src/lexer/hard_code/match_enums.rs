@@ -21,6 +21,7 @@ pub fn match_keyword(identifier: String) -> KeywordType {
         "break" => KeywordType::KwBreak,
         "return" => KeywordType::KwReturn,
         "call" => KeywordType::KwCall,
+        "link" => KeywordType::KwLink,
         "none" => KeywordType::KwNone,
         _ => KeywordType::Unset
     };

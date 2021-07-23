@@ -6,3 +6,4 @@ pub mod action_block;
 pub mod short_actions;
 pub mod condition;
 pub mod loops;
+pub mod link;

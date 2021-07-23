@@ -1,0 +1,15 @@
+link std;
+link os;
+
+decl func demo()[none]
+{
+    call println("demo function!");
+}
+
+decl func main()[int]
+{
+    call println("Hello, world!");
+    call demo();
+
+    return 0;
+}

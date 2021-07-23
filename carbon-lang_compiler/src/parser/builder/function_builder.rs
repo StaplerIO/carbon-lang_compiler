@@ -85,6 +85,10 @@ fn return_value_type_builder(tokens: Vec<DecoratedToken>) -> String {
     if tokens.len() == 1 {
         if tokens[0].is_valid_type() {
             return tokens[0].clone().data.unwrap().type_name.unwrap();
+        } else if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
+            if tokens[0].keyword.unwrap() == KeywordType::KwNone {
+                return String::from("");
+            }
         }
     }
 
