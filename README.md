@@ -1,18 +1,15 @@
 **The Carbon Programming Language**
-# carbon-lang
+# carbon-lang_compiler
 
 ## Components
 
-- Compiler
-  - Lexer
-  - Parser
-  - Code generator
-- Runtime
-  - Interpreter
-  - Executor
-- Dock (aka `cli`)
+The compiler has 4 parts
+- Lexer
+- Parser
+- Optimizer
+- Package generator
 
-Components will be separated in future development
+Lexer and Parser has already completed in *Project Loop 1*
 
 
 

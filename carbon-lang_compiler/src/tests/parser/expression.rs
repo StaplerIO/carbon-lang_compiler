@@ -39,8 +39,6 @@ mod tests {
         let token_list = tokenize(String::from("11+22.6*demo1(22.5)"));
         let result = expression_infix_to_postfix(decorate_token(token_list.clone()));
 
-        println!("Nothing!");
-
         assert_eq!(result.len(), 5);
     }
 }
