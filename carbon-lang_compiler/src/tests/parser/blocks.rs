@@ -11,8 +11,9 @@ mod tests {
     pub use crate::parser::builder::blocks::action_block::action_block_builder;
     pub use crate::parser::builder::blocks::loops::while_action_builder;
     pub use crate::parser::builder::blocks::condition::if_block_builder;
-    use crate::parser::builder::function_builder::function_builder;
-    use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
+    pub use crate::parser::builder::function_builder::function_builder;
+    pub use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
+    pub use crate::shared::ast::blocks::expression::TermType;
 
     #[test]
     fn assignment() {
@@ -59,7 +60,7 @@ mod tests {
         assert_eq!(result.arguments[2].postfix_expr.len(), 1);
         assert_eq!(result.arguments[2].postfix_expr[0].clone().data.unwrap().clone().identifier.unwrap(), String::from("var1"));
         // Postfix expression: 3 2 -
-        assert_eq!(result.arguments.last().unwrap().postfix_expr.last().unwrap().token_type, DecoratedTokenType::Operator);
+        assert_eq!(result.arguments.last().unwrap().postfix_expr.last().unwrap().term_type, TermType::Operator);
     }
 
     #[test]

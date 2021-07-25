@@ -33,4 +33,14 @@ mod tests {
         assert_eq!(result[5].clone().data.unwrap().number.unwrap(), String::from("7"));
         assert_eq!(result[6].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Minus);
     }
+
+    #[test]
+    fn expression_with_function_call() {
+        let token_list = tokenize(String::from("11+22.6*demo1(22.5)"));
+        let result = expression_infix_to_postfix(decorate_token(token_list.clone()));
+
+        println!("Nothing!");
+
+        assert_eq!(result.len(), 5);
+    }
 }
