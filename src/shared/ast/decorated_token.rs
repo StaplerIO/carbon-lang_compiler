@@ -1,4 +1,4 @@
-use crate::shared::token::{ContainerType, Operator, KeywordType};
+use crate::shared::token::{ContainerType, KeywordType, Operator};
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum DecoratedTokenType {
@@ -6,7 +6,7 @@ pub enum DecoratedTokenType {
     Container,
     Data,
     StatementEndSign,
-    Operator
+    Operator,
 }
 
 #[derive(Clone, PartialEq)]

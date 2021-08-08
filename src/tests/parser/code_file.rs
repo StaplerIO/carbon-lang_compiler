@@ -1,8 +1,9 @@
 mod tests {
-    pub use crate::parser::decorator::decorate_token;
-    pub use crate::lexer::tokenize::tokenize;
-    pub use crate::parser::pipeline::build_whole_file;
     pub use lazy_static::lazy_static;
+
+    pub use crate::lexer::tokenize::tokenize;
+    pub use crate::parser::decorator::decorate_token;
+    pub use crate::parser::pipeline::build_whole_file;
 
     lazy_static! {
         static ref FILE_CONTENT: &'static str = r#"

@@ -1,8 +1,8 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
-    pub use crate::shared::token::CalculationOperator;
     pub use crate::parser::decorator::decorate_token;
+    pub use crate::shared::token::CalculationOperator;
 
     #[test]
     fn simple_expression() {

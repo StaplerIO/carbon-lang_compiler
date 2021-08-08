@@ -1,19 +1,19 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
+    pub use crate::parser::builder::blocks::action_block::action_block_builder;
     pub use crate::parser::builder::blocks::assignment::assignment_block_builder;
-    pub use crate::parser::decorator::decorate_token;
-    pub use crate::shared::token::CalculationOperator;
-    pub use crate::parser::builder::blocks::declaration::declaration_action_builder;
     pub use crate::parser::builder::blocks::call::call_action_builder;
+    pub use crate::parser::builder::blocks::condition::if_block_builder;
+    pub use crate::parser::builder::blocks::declaration::declaration_action_builder;
+    pub use crate::parser::builder::blocks::loops::while_action_builder;
     pub use crate::parser::builder::blocks::return_expression::return_action_builder;
     pub use crate::parser::builder::blocks::short_actions::short_statements_builder;
-    pub use crate::shared::ast::action::ActionType;
-    pub use crate::parser::builder::blocks::action_block::action_block_builder;
-    pub use crate::parser::builder::blocks::loops::while_action_builder;
-    pub use crate::parser::builder::blocks::condition::if_block_builder;
     pub use crate::parser::builder::function_builder::function_builder;
-    pub use crate::shared::ast::decorated_token::{DecoratedTokenType, DataType};
+    pub use crate::parser::decorator::decorate_token;
+    pub use crate::shared::ast::action::ActionType;
     pub use crate::shared::ast::blocks::expression::TermType;
+    pub use crate::shared::ast::decorated_token::{DataType, DecoratedTokenType};
+    pub use crate::shared::token::CalculationOperator;
 
     #[test]
     fn assignment() {

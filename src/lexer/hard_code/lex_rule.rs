@@ -1,4 +1,4 @@
-use crate::shared::token::{ContainerType, Operator, LogicalOperator, RelationOperator, CalculationOperator, OperatorType};
+use crate::shared::token::{CalculationOperator, ContainerType, LogicalOperator, Operator, OperatorType, RelationOperator};
 
 pub fn is_digit(c: char) -> bool {
     return c >= '0' && c <= '9';
@@ -209,15 +209,15 @@ pub fn match_operator(content: String) -> (Operator, usize) {
                 relation: None,
                 logical: Option::from(LogicalOperator::Not),
             }, 1)
-        },
+        }
         ',' => {
             (Operator {
-            operator_type: OperatorType::Comma,
-            calculation: None,
-            relation: None,
-            logical: None,
-        }, 1)
-        },
+                operator_type: OperatorType::Comma,
+                calculation: None,
+                relation: None,
+                logical: None,
+            }, 1)
+        }
         _ => {
             let capture = String::from(&content[0..2]);
             if capture.eq("&&") {

@@ -6,5 +6,5 @@ pub struct ParserPackageStructure {
     pub entry_point: String,
 
     // Will be solved on package generation
-    pub linked_code_files: Vec<String>
+    pub linked_code_files: Vec<String>,
 }

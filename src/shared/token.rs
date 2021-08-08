@@ -33,7 +33,7 @@ pub enum KeywordType
     KwCall,             // call
     KwLink,             // link
     KwNone,             // none
-    Unset
+    Unset,
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
@@ -44,7 +44,7 @@ pub enum ContainerType{
     AntiBracket,        // )
     Index,              // [
     AntiIndex,          // ]
-    Unset
+    Unset,
 }
 
 #[derive(Clone)]
@@ -56,7 +56,7 @@ pub struct Token {
     pub identifier: Option<String>,
     pub keyword: Option<KeywordType>,
     pub container: Option<ContainerType>,
-    pub operator: Option<Operator>
+    pub operator: Option<Operator>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Hash)]
@@ -69,7 +69,7 @@ pub enum OperatorType {
     Assignment,         // =
     Scope,              // ::
     Comma,              // ,
-    Unset
+    Unset,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
@@ -97,7 +97,7 @@ pub enum LogicalOperator {
     Not,                // !
     And,                // &&
     Or,                 // ||
-    Unset
+    Unset,
 }
 
 #[derive(Copy, Clone, PartialEq)]

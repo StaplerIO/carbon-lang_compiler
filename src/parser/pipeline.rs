@@ -1,14 +1,14 @@
-use crate::shared::ast::package::ParserPackageStructure;
 use crate::parser::builder::blocks::link::link_statement_builder;
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::parser::builder::function_builder::function_builder;
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::package::ParserPackageStructure;
 use crate::shared::token::KeywordType;
 
 pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Option<ParserPackageStructure> {
-    let mut result = ParserPackageStructure{
+    let mut result = ParserPackageStructure {
         functions: vec![],
         entry_point,
-        linked_code_files: vec![]
+        linked_code_files: vec![],
     };
 
     // Build Link part

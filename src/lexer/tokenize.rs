@@ -1,13 +1,13 @@
+use crate::lexer::hard_code::lex_rule::*;
+use crate::lexer::hard_code::match_enums::match_keyword;
+use crate::shared::token::{ContainerType, KeywordType, OperatorType, Token, TokenType};
+
 /**
  * Regular expression sequence
  * Number: `\d+(\.\d+)?`
  * String: `"[^"]*"`
  * Identifier: `[a-zA-Z_]([a-zA-Z_0-9])*`
  */
-
-use crate::shared::token::*;
-use crate::lexer::hard_code::lex_rule::*;
-use crate::lexer::hard_code::match_enums::match_keyword;
 
 // Support code without comments only
 pub fn tokenize(mut source_code: String) -> Vec<Token> {
@@ -27,7 +27,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
                 identifier: None,
                 keyword: None,
                 container: None,
-                operator: None
+                operator: None,
             };
 
             result.push(token);

@@ -1,5 +1,5 @@
-use crate::shared::ast::decorated_token::{DecoratedToken, DataToken};
 use crate::shared::ast::action::CallAction;
+use crate::shared::ast::decorated_token::{DataToken, DecoratedToken};
 use crate::shared::token::Operator;
 
 #[derive(Clone)]
@@ -12,7 +12,7 @@ pub enum TermType {
     Data,
     FunctionCall,
     Operator,
-    Priority
+    Priority,
 }
 
 #[derive(Clone)]
@@ -23,5 +23,5 @@ pub struct ExprTerm {
     pub function_call: Option<CallAction>,
     pub operator: Option<Operator>,
     // true -> increase priority | false -> decrease priority
-    pub priority: Option<bool>
+    pub priority: Option<bool>,
 }

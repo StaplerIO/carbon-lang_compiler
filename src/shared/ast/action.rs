@@ -12,7 +12,7 @@ pub enum ActionType {
     SwitchStatement,
     BreakStatement,
     ContinueStatement,
-    EmptyAction
+    EmptyAction,
 }
 
 #[derive(Clone)]
@@ -41,7 +41,7 @@ pub struct ActionBlock {
 #[derive(Clone)]
 pub struct ConditionBlock {
     pub condition: Expression,
-    pub body: ActionBlock
+    pub body: ActionBlock,
 }
 
 #[derive(Clone)]
@@ -50,20 +50,20 @@ pub struct DeclarationAction {
     pub is_variable: bool,
 
     pub identifier: String,
-    pub data_type: String
+    pub data_type: String,
 }
 
 #[derive(Clone)]
 pub struct AssignmentAction {
     pub identifier: String,
-    pub eval_expression: Expression
+    pub eval_expression: Expression,
 }
 
 #[derive(Clone)]
 pub struct CallAction {
     pub function_name: String,
     // Arguments are Expressions
-    pub arguments: Vec<Expression>
+    pub arguments: Vec<Expression>,
 }
 
 #[derive(Clone)]
@@ -77,14 +77,14 @@ pub struct IfAction {
 
     pub elif_collection: Vec<ConditionBlock>,
 
-    pub else_action: Option<ActionBlock>
+    pub else_action: Option<ActionBlock>,
 }
 
 // TODO: Builder required
 #[derive(Clone)]
 pub struct SwitchAction {
     pub condition: Expression,
-    pub cases: Vec<SwitchCase>
+    pub cases: Vec<SwitchCase>,
 }
 
 // Builder with SwitchAction
@@ -92,5 +92,5 @@ pub struct SwitchAction {
 pub struct SwitchCase {
     pub is_default: bool,
     pub value: String,
-    pub actions: ActionBlock
+    pub actions: ActionBlock,
 }

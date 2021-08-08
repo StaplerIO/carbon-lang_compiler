@@ -1,6 +1,6 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
-    pub use crate::shared::token::{KeywordType, ContainerType, OperatorType};
+    pub use crate::shared::token::{ContainerType, KeywordType, OperatorType};
 
     #[test]
     fn simple() {
