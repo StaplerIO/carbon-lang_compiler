@@ -1,9 +1,9 @@
-use crate::shared::token::OperatorType;
-use crate::shared::ast::action::{AssignmentAction, Action, ActionType};
-use crate::parser::utils::find_next_semicolon;
-use crate::shared::ast::blocks::expression::Expression;
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+use crate::parser::utils::find_next_semicolon;
+use crate::shared::ast::action::{Action, ActionType, AssignmentAction};
+use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::token::OperatorType;
 
 pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
@@ -18,7 +18,10 @@ pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                     declaration_action: None,
                     assignment_action: Option::from(AssignmentAction {
                         identifier: tokens[0].data.clone().unwrap().clone().identifier.unwrap().clone(),
-                        eval_expression: Expression { postfix_expr },
+                        eval_expression: Expression {
+                            postfix_expr,
+                            output_type: String::new()
+                        },
                     }),
                     call_action: None,
                     return_action: None,

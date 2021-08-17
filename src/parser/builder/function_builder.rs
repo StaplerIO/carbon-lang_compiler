@@ -1,4 +1,4 @@
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType, DataType};
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::ast::parameter::Parameter;
 use crate::shared::token::{ContainerType, KeywordType};

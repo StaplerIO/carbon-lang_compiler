@@ -1,9 +1,9 @@
-use crate::shared::ast::action::{CallAction, Action, ActionType};
-use crate::parser::utils::{find_next_semicolon, split_comma_expression, pair_container};
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
+use crate::shared::ast::action::{Action, ActionType, CallAction};
 use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::token::{ContainerType, KeywordType};
 
 // Scheme: call <identifier>(<param list>);
 pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
@@ -45,7 +45,10 @@ pub fn bare_function_call_builder(tokens: Vec<DecoratedToken>) -> (Option<CallAc
 
                 let parameter_zone = pair_container(tokens[1..].to_vec());
                 for param in split_comma_expression(parameter_zone[1..parameter_zone.len()].to_vec()) {
-                    result.arguments.push(Expression { postfix_expr: expression_infix_to_postfix(param.clone()) });
+                    result.arguments.push(Expression {
+                        postfix_expr: expression_infix_to_postfix(param.clone()),
+                        output_type: String::new()
+                    });
                 }
 
                 return (Option::from(result), (parameter_zone.len() as isize) + 2);

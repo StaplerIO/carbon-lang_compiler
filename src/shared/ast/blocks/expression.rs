@@ -1,10 +1,12 @@
 use crate::shared::ast::action::CallAction;
-use crate::shared::ast::decorated_token::{DataToken, DecoratedToken};
+use crate::shared::ast::decorated_token::DataToken;
 use crate::shared::token::Operator;
 
 #[derive(Clone)]
 pub struct Expression {
-    pub postfix_expr: Vec<ExprTerm>
+    pub postfix_expr: Vec<ExprTerm>,
+
+    pub output_type: String
 }
 
 #[derive(Clone, PartialEq, Debug)]
