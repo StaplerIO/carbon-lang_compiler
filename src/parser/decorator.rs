@@ -56,28 +56,14 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                 operator: None,
             }),
             TokenType::Keyword => match token.keyword.unwrap() {
-                KeywordType::KwInt =>
-                    result.push(DecoratedToken {
-                        token_type: DecoratedTokenType::Data,
-                        data: Option::from(DataToken {
-                            data_type: DataType::Type,
-                            number: None,
-                            string: None,
-                            identifier: None,
-                            type_name: Option::from(String::from("int")),
-                        }),
-                        keyword: None,
-                        container: None,
-                        operator: None,
-                    }),
-                KeywordType::KwDecimal => result.push(DecoratedToken {
+                KeywordType::KwNumber => result.push(DecoratedToken {
                     token_type: DecoratedTokenType::Data,
                     data: Option::from(DataToken {
                         data_type: DataType::Type,
                         number: None,
                         string: None,
                         identifier: None,
-                        type_name: Option::from(String::from("decimal")),
+                        type_name: Option::from(String::from("number")),
                     }),
                     keyword: None,
                     container: None,

@@ -3,8 +3,7 @@ use crate::shared::token::KeywordType;
 pub fn match_keyword(identifier: String) -> KeywordType {
     return match identifier.as_str() {
         "decl" => KeywordType::KwDeclare,
-        "decimal" => KeywordType::KwDecimal,
-        "int" => KeywordType::KwInt,
+        "number" => KeywordType::KwNumber,
         "char" => KeywordType::KwChar,
         "str" => KeywordType::KwStr,
         "var" => KeywordType::KwVar,

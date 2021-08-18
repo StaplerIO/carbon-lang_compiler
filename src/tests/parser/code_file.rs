@@ -15,7 +15,7 @@ mod tests {
             call println("demo function!");
         }
 
-        decl func main()[int]
+        decl func main()[number]
         {
             call println("Hello, world!");
             call demo();

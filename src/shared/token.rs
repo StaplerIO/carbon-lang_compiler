@@ -12,8 +12,7 @@ pub enum TokenType {
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum KeywordType
 {
-    KwDecimal,          // decimal
-    KwInt,              // int
+    KwNumber,           // number
     KwChar,             // char
     KwStr,              // str
     KwDeclare,          // decl

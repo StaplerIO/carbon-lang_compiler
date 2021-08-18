@@ -34,14 +34,14 @@ mod tests {
 
     #[test]
     fn variable_declaration() {
-        let tokens = tokenize(String::from("decl var decimal foo;"));
+        let tokens = tokenize(String::from("decl var number foo;"));
         let raw = declaration_action_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().declaration_action.unwrap();
         assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.identifier, String::from("foo"));
-        assert_eq!(result.data_type, String::from("decimal"));
+        assert_eq!(result.data_type, String::from("number"));
         assert_eq!(result.is_variable, true);
     }
 
@@ -111,7 +111,7 @@ mod tests {
 
     #[test]
     fn action_block() {
-        let tokens = tokenize(String::from("decl var decimal foo;\
+        let tokens = tokenize(String::from("decl var number foo;\
                                                                     foo = 1;
                                                                     foo = foo + 1;
                                                                     call func_1(5, 2.66, var1, 3 - 2);\
@@ -144,7 +144,7 @@ mod tests {
 
     #[test]
     fn if_block() {
-        let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var decimal foo; }"));
+        let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var number foo; }"));
         let raw = if_block_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap().if_action.unwrap();
@@ -157,14 +157,14 @@ mod tests {
 
     #[test]
     fn function_block() {
-        let tokens = tokenize(String::from("decl func main(int a, decimal b)[decimal] { return a + b; }"));
+        let tokens = tokenize(String::from("decl func main(number a, number b)[number] { return a + b; }"));
         let raw = function_builder(decorate_token(tokens.clone()));
 
         let result = raw.0.unwrap();
         assert_eq!(raw.1 as usize, tokens.len());
 
         assert_eq!(result.name, String::from("main"));
-        assert_eq!(result.return_type, String::from("decimal"));
+        assert_eq!(result.return_type, String::from("number"));
         assert_eq!(result.parameters.len(), 2);
         assert_eq!(result.body.len(), 1);
     }

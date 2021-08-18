@@ -4,9 +4,9 @@ mod tests {
 
     #[test]
     fn simple() {
-        let result = tokenize(String::from("int 132211{ 32.85dd } >! = >= ,"));
+        let result = tokenize(String::from("number 132211{ 32.85dd } >! = >= ,"));
 
-        assert_eq!(result.get(0).unwrap().clone().keyword.unwrap(), KeywordType::KwInt);
+        assert_eq!(result.get(0).unwrap().clone().keyword.unwrap(), KeywordType::KwNumber);
         assert_eq!(result.get(1).unwrap().clone().number.unwrap(), String::from("132211"));
         assert_eq!(result.get(3).unwrap().clone().number.unwrap(), String::from("32.85"));
         assert_eq!(result.last().unwrap().clone().operator.unwrap().operator_type, OperatorType::Comma);
