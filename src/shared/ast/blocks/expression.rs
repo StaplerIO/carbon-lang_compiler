@@ -15,6 +15,9 @@ pub enum TermType {
     FunctionCall,
     Operator,
     Priority,
+
+    // Only available in compile time
+    Validated
 }
 
 #[derive(Clone)]

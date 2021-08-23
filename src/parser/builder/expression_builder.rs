@@ -156,7 +156,8 @@ pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm>
                     // Pop this bracket (it won't be transferred to result)
                     operator_stack.pop();
                 }
-            }
+            },
+            _ => {}
         };
     }
 

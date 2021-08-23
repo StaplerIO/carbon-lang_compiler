@@ -1,4 +1,7 @@
 use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::parameter::Parameter;
+
+pub type VariableDefinition = Parameter;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum ActionType {
