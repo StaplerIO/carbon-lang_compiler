@@ -14,6 +14,7 @@ mod tests {
     pub use crate::shared::ast::blocks::expression::TermType;
     pub use crate::shared::ast::decorated_token::{DataType, DecoratedTokenType};
     pub use crate::shared::token::CalculationOperator;
+    use crate::shared::ast::blocks::expression::ExprDataTermType;
 
     #[test]
     fn assignment() {
@@ -84,7 +85,7 @@ mod tests {
 
         assert_eq!(result.value.postfix_expr.len(), 5);
         // Value expression: 1 2 tb_234 * +
-        assert_eq!(result.value.postfix_expr[0].clone().data.unwrap().clone().data_type, DataType::Number);
+        assert_eq!(result.value.postfix_expr[0].clone().data.unwrap().clone().data_type, ExprDataTermType::Number);
     }
 
     #[test]

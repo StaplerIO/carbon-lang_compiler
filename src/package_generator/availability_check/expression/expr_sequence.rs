@@ -19,7 +19,6 @@ pub fn check_expression_sequence(expression: Expression) -> bool {
                 expr_sequence.insert(index, ExprTerm {
                     term_type: TermType::Validated,
                     data: None,
-                    function_call: None,
                     operator: None,
                     priority: None
                 });
@@ -37,6 +36,5 @@ pub fn check_expression_sequence(expression: Expression) -> bool {
 
 fn is_valid_data_term(term: ExprTerm) -> bool {
     return term.term_type == TermType::Validated ||
-        term.term_type == TermType::Data ||
-        term.term_type == TermType::FunctionCall;
+        term.term_type == TermType::Data;
 }

@@ -2,7 +2,7 @@ use crate::shared::token::{ContainerType, CalculationOperator, OperatorType};
 use lazy_static::lazy_static;
 use std::collections::HashMap;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType, DataType};
-use crate::shared::ast::blocks::expression::{ExprTerm, TermType};
+use crate::shared::ast::blocks::expression::{ExprTerm, TermType, ExprDataTerm, ExprDataTermType};
 use crate::parser::builder::blocks::call::bare_function_call_builder;
 
 lazy_static! {
@@ -37,9 +37,15 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
             let function_call = bare_function_call_builder(tokens.clone());
             if function_call.1 != -1 {
                 result.push(ExprTerm {
-                    term_type: TermType::FunctionCall,
-                    data: None,
-                    function_call: function_call.0,
+                    term_type: TermType::Data,
+                    data: Option::from(ExprDataTerm {
+                        data_type: ExprDataTermType::FunctionCall,
+                        number: None,
+                        string: None,
+                        identifier: None,
+                        function_call: function_call.0,
+                        type_name: None
+                    }),
                     operator: None,
                     priority: None
                 });
@@ -53,8 +59,7 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
             if data.data_type != DataType::Type {
                 result.push(ExprTerm {
                     term_type: TermType::Data,
-                    data: Option::from(data),
-                    function_call: None,
+                    data: Option::from(ExprDataTerm::from_data_token(data.clone())),
                     operator: None,
                     priority: None
                 });
@@ -66,7 +71,6 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
             result.push(ExprTerm {
                 term_type: TermType::Priority,
                 data: None,
-                function_call: None,
                 operator: None,
                 priority: Option::from(token.container.unwrap() == ContainerType::Bracket)
             });
@@ -77,7 +81,6 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
             result.push(ExprTerm {
                 term_type: TermType::Operator,
                 data: None,
-                function_call: None,
                 operator: token.operator,
                 priority: None
             });
@@ -126,10 +129,6 @@ pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm>
         match token.term_type {
             TermType::Data => {
                 // Push all terms into result directly (infix to postfix)
-                result.push(token.clone());
-            },
-            TermType::FunctionCall => {
-                // FunctionCall == Data, because the result of a FunctionCall is a value
                 result.push(token.clone());
             },
             TermType::Operator => {
