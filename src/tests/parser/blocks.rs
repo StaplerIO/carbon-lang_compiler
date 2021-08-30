@@ -14,7 +14,7 @@ mod tests {
     pub use crate::shared::ast::blocks::expression::TermType;
     pub use crate::shared::ast::decorated_token::{DataType, DecoratedTokenType};
     pub use crate::shared::token::CalculationOperator;
-    use crate::shared::ast::blocks::expression::ExprDataTermType;
+    pub use crate::shared::ast::blocks::expression::ExprDataTermType;
 
     #[test]
     fn assignment() {

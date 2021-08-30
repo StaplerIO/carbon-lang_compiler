@@ -1,5 +1,5 @@
-use crate::shared::ast::blocks::expression::{Expression, ExprTerm, TermType, ExprDataTerm, ExprDataTermType};
 use crate::shared::ast::action::VariableDefinition;
+use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, Expression, ExprTerm, TermType};
 use crate::shared::ast::blocks::function::Function;
 
 // Term must be DataTerm
@@ -10,7 +10,7 @@ pub fn infer_expression_term_data_type(term: ExprDataTerm, defined_functions: Ve
         ExprDataTermType::Identifier => {
             for def_var in defined_variables {
                 if def_var.identifier == term.clone().identifier.unwrap() {
-                    return Option::from(def_var.identifier);
+                    return Option::from(def_var.type_name);
                 }
             }
 
