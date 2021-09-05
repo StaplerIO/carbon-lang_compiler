@@ -21,8 +21,8 @@ mod tests {
         let tokens = tokenize(String::from("a = 1 + 2;"));
         let raw = assignment_block_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().assignment_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0.assignment_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.identifier, String::from("a"));
 
@@ -38,8 +38,8 @@ mod tests {
         let tokens = tokenize(String::from("decl var number foo;"));
         let raw = declaration_action_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().declaration_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0.declaration_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.identifier, String::from("foo"));
         assert_eq!(result.data_type, String::from("number"));
@@ -51,8 +51,8 @@ mod tests {
         let tokens = tokenize(String::from("call func_1(5, 2.66, var1, 3 - 2);"));
         let raw = call_action_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().call_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0.call_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.function_name, String::from("func_1"));
         assert_eq!(result.arguments.len(), 4);
@@ -69,8 +69,8 @@ mod tests {
         let tokens = tokenize(String::from("return;"));
         let raw = return_action_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().return_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0.return_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.value.postfix_expr.len(), 0);
     }
@@ -80,8 +80,8 @@ mod tests {
         let tokens = tokenize(String::from("return 1 + 2 * tb_234;"));
         let raw = return_action_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().return_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0.return_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.value.postfix_expr.len(), 5);
         // Value expression: 1 2 tb_234 * +
@@ -93,8 +93,8 @@ mod tests {
         let tokens = tokenize(String::from("break;"));
         let raw = short_statements_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0;
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.action_type, ActionType::BreakStatement);
     }
@@ -104,8 +104,8 @@ mod tests {
         let tokens = tokenize(String::from("continue;"));
         let raw = short_statements_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0;
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.action_type, ActionType::ContinueStatement);
     }
@@ -136,8 +136,8 @@ mod tests {
         let tokens = tokenize(String::from("while (1 + 1 == 2) { a = a + 1; return; }"));
         let raw = while_action_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().while_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0.while_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.condition.postfix_expr.len(), 5);
         assert_eq!(result.body.actions.len(), 2);
@@ -148,8 +148,8 @@ mod tests {
         let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var number foo; }"));
         let raw = if_block_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap().if_action.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len() - 1);
+        let result = raw.clone().ok().unwrap().0.if_action.unwrap();
+        assert_eq!(raw.ok().unwrap().1, tokens.len() - 1);
 
         assert_eq!(result.if_block.condition.postfix_expr.len(), 5);
         assert_eq!(result.elif_collection.len(), 2);
@@ -161,8 +161,8 @@ mod tests {
         let tokens = tokenize(String::from("decl func main(number a, number b)[number] { return a + b; }"));
         let raw = function_builder(decorate_token(tokens.clone()));
 
-        let result = raw.0.unwrap();
-        assert_eq!(raw.1 as usize, tokens.len());
+        let result = raw.clone().ok().unwrap().0;
+        assert_eq!(raw.ok().unwrap().1, tokens.len());
 
         assert_eq!(result.name, String::from("main"));
         assert_eq!(result.return_type, String::from("number"));

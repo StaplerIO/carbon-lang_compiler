@@ -20,7 +20,7 @@ mod tests {
             String::from("char")
         ].to_vec();
 
-        assert!(check_variable_definition(stmt.0.unwrap().declaration_action.unwrap(), vec![], defined_types));
+        assert!(check_variable_definition(stmt.ok().unwrap().0.declaration_action.unwrap(), vec![], defined_types));
     }
 
     #[test]
@@ -41,7 +41,7 @@ mod tests {
             String::from("char")
         ].to_vec();
 
-        let mut action = stmt.0.unwrap().assignment_action.unwrap();
+        let mut action = stmt.unwrap().0.assignment_action.unwrap();
         action.eval_expression = infer_every_expression_data_term_type(action.eval_expression, vec![], defined_vars.clone());
 
         assert!(check_variable_assignment(action, defined_vars, defined_types));
