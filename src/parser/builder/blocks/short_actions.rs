@@ -3,9 +3,10 @@ use crate::shared::ast::action::{Action, ActionType, ActionBlock};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::builder::blocks::action_block::action_block_builder;
+use crate::shared::error::general_error::GeneralError;
 
 // Build "continue", "break" and "loop" action
-pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
@@ -15,7 +16,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
             // "break" or "continue"
             match keyword {
                 KeywordType::KwContinue => {
-                    return (Option::from(Action {
+                    return Ok((Action {
                         action_type: ActionType::ContinueStatement,
                         declaration_action: None,
                         assignment_action: None,
@@ -25,10 +26,10 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }), next_semicolon_pos + 1);
+                    }, next_semicolon_pos as usize + 1));
                 }
                 KeywordType::KwBreak => {
-                    return (Option::from(Action {
+                    return Ok((Action {
                         action_type: ActionType::BreakStatement,
                         declaration_action: None,
                         assignment_action: None,
@@ -38,7 +39,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }), next_semicolon_pos + 1);
+                    }, next_semicolon_pos as usize + 1));
                 }
                 _ => {}
             }
@@ -53,7 +54,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                     tokens[next_semicolon_pos as usize - 1].container.unwrap() == ContainerType::AntiBrace {
                     let container_content = tokens[2..(next_semicolon_pos as usize - 2)].to_vec();
 
-                    return (Option::from(Action{
+                    return Ok((Action{
                         action_type: ActionType::LoopStatement,
                         declaration_action: None,
                         assignment_action: None,
@@ -63,11 +64,11 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                         while_action: None,
                         loop_action: Option::from(ActionBlock { actions: action_block_builder(container_content.clone()) }),
                         switch_action: None
-                    }), -1);
+                    }, 0));
                 }
             }
         }
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }

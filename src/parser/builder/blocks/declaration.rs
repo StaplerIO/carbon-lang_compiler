@@ -2,8 +2,9 @@ use crate::shared::token::KeywordType;
 use crate::shared::ast::action::{DeclarationAction, Action, ActionType};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::error::general_error::GeneralError;
 
-pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     // Each block owns 4 tokens only
     if next_semicolon_pos == 4 {
@@ -26,10 +27,10 @@ pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action
                 } else if tokens[1].keyword.unwrap() == KeywordType::KwConst {
                     result.is_variable = false;
                 } else {
-                    panic!("Require keyword \'var\' or \'const\'");
+                    return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Require keyword \'var\' or \'const\'".to_string()) });
                 }
 
-                return (Option::from(Action {
+                return Ok((Action {
                     action_type: ActionType::DeclarationStatement,
                     declaration_action: Option::from(result),
                     assignment_action: None,
@@ -39,10 +40,10 @@ pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action
                     while_action: None,
                     loop_action: None,
                     switch_action: None
-                }), next_semicolon_pos + 1);
+                }, next_semicolon_pos as usize + 1));
             }
         }
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }

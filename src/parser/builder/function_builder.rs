@@ -4,10 +4,11 @@ use crate::shared::ast::parameter::Parameter;
 use crate::shared::token::{ContainerType, KeywordType};
 use crate::parser::utils::{pair_container, split_comma_expression};
 use crate::parser::builder::blocks::action_block::action_block_builder;
+use crate::shared::error::general_error::GeneralError;
 
 // Minimum: decl func <name> () [<typename>] {} : 11 tokens
 // Set <typename> as "none" to return nothing
-pub fn function_builder(tokens: Vec<DecoratedToken>) -> (Option<Function>, isize) {
+pub fn function_builder(tokens: Vec<DecoratedToken>) -> Result<(Function, usize), GeneralError<String>> {
     if tokens.len() >= 10 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword &&
             tokens[1].token_type == DecoratedTokenType::DecoratedKeyword &&
@@ -42,7 +43,7 @@ pub fn function_builder(tokens: Vec<DecoratedToken>) -> (Option<Function>, isize
                                 result.body = action_block_builder(action_block_area[1..action_block_area.len()].to_vec());
                                 current_index += action_block_area.len();
 
-                                return (Option::from(result), (current_index as isize) + 1);
+                                return Ok((result, current_index + 1));
                             }
                         }
                     }
@@ -51,7 +52,7 @@ pub fn function_builder(tokens: Vec<DecoratedToken>) -> (Option<Function>, isize
         }
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }
 
 // Need raw argument list

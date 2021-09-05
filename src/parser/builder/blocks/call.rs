@@ -4,9 +4,10 @@ use crate::shared::ast::action::{Action, ActionType, CallAction};
 use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{ContainerType, KeywordType};
+use crate::shared::error::general_error::GeneralError;
 
 // Scheme: call <identifier>(<param list>);
-pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     // Check format
@@ -14,27 +15,27 @@ pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isiz
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
             if tokens[0].keyword.unwrap() == KeywordType::KwCall {
                 let result = bare_function_call_builder(tokens[1..].to_vec());
-                if result.1 != -1 {
-                    return (Option::from(Action {
+                if result.is_ok() {
+                    return Ok((Action {
                         action_type: ActionType::CallStatement,
                         declaration_action: None,
                         assignment_action: None,
-                        call_action: result.0,
+                        call_action: Option::from(result.ok().unwrap().0),
                         return_action: None,
                         if_action: None,
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }), next_semicolon_pos + 1);
+                    }, next_semicolon_pos as usize + 1));
                 }
             }
         }
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }
 
-pub fn bare_function_call_builder(tokens: Vec<DecoratedToken>) -> (Option<CallAction>, isize) {
+pub fn bare_function_call_builder(tokens: Vec<DecoratedToken>) -> Result<(CallAction, usize), GeneralError<String>> {
     if tokens.len() >= 3 {
         if tokens[0].is_valid_identifier() && tokens[1].token_type == DecoratedTokenType::Container {
             if tokens[1].container.unwrap() == ContainerType::Bracket {
@@ -51,10 +52,10 @@ pub fn bare_function_call_builder(tokens: Vec<DecoratedToken>) -> (Option<CallAc
                     });
                 }
 
-                return (Option::from(result), (parameter_zone.len() as isize) + 2);
+                return Ok((result, parameter_zone.len() + 2));
             }
         }
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }

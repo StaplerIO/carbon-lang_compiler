@@ -4,18 +4,19 @@ use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::utils::pair_container;
 use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::templates::condition_block_builder;
+use crate::shared::error::general_error::GeneralError;
 
-pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let if_part = condition_block_builder(KeywordType::KwIf, tokens.clone());
-    if if_part.1 != -1 {
+    if if_part.is_ok() {
         let mut result = IfAction{
-            if_block: if_part.0.unwrap(),
+            if_block: if_part.clone().ok().unwrap().0,
             elif_collection: vec![],
             else_action: None
         };
 
         // Then we have an if_block (only), we'll try to find elif and else right after it
-        let mut current_index: usize = if_part.1 as usize;
+        let mut current_index: usize = if_part.clone().ok().unwrap().1 as usize;
         loop {
             let elif_part = detached_elif_block_builder(tokens[current_index..].to_vec());
             if elif_part.1 != -1 {
@@ -32,7 +33,7 @@ pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) 
             current_index += else_part.1 as usize;
         }
 
-        return (Option::from(Action{
+        return Ok((Action{
             action_type: ActionType::IfStatement,
             declaration_action: None,
             assignment_action: None,
@@ -42,18 +43,18 @@ pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) 
             while_action: None,
             loop_action: None,
             switch_action: None
-        }), current_index as isize);
+        }, current_index));
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }
 
 // `elif` block must be a sub-node of `if` block, so this is a private method
 // Return -1 if there's a problem while building elif block
 fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ConditionBlock>, isize) {
     let result = condition_block_builder(KeywordType::KwElseIf, tokens.clone());
-    if result.1 != -1 {
-        return result;
+    if result.is_ok() {
+        return (Option::from(result.clone().ok().unwrap().0), result.clone().ok().unwrap().1 as isize);
     }
 
     return (None, -1);

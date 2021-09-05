@@ -4,8 +4,9 @@ use crate::shared::ast::action::{Action, ActionType, AssignmentAction};
 use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::OperatorType;
+use crate::shared::error::general_error::GeneralError;
 
-pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     if next_semicolon_pos != -1 {
         if tokens[0].is_valid_identifier() && tokens[1].token_type == DecoratedTokenType::Operator {
@@ -13,7 +14,7 @@ pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                 // Convert expression
                 let postfix_expr = expression_infix_to_postfix(tokens.clone()[2..(next_semicolon_pos as usize)].to_vec());
 
-                return (Option::from(Action {
+                return Ok((Action {
                     action_type: ActionType::AssignmentStatement,
                     declaration_action: None,
                     assignment_action: Option::from(AssignmentAction {
@@ -29,10 +30,10 @@ pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>,
                     while_action: None,
                     loop_action: None,
                     switch_action: None
-                }), next_semicolon_pos + 1);
+                }, next_semicolon_pos as usize + 1));
             }
         }
     }
 
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }

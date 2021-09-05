@@ -4,8 +4,9 @@ use crate::shared::ast::action::{Action, ActionType, ReturnAction};
 use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::KeywordType;
+use crate::shared::error::general_error::GeneralError;
 
-pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, isize) {
+pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     // Minimum: return ; (2 tokens in total)
     if tokens.len() >= 2 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
@@ -36,7 +37,7 @@ pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, is
                         });
                     }
 
-                    return (Option::from(Action {
+                    return Ok((Action {
                         action_type: ActionType::ReturnStatement,
                         declaration_action: None,
                         assignment_action: None,
@@ -46,10 +47,10 @@ pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> (Option<Action>, is
                         while_action: None,
                         loop_action: None,
                         switch_action: None,
-                    }), next_semicolon_pos + 1);
+                    }, next_semicolon_pos as usize + 1));
                 }
             }
         }
     }
-    return (None, -1);
+    return Err(GeneralError{ code: "-1".to_string(), decription: None });
 }

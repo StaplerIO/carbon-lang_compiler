@@ -35,7 +35,7 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
 
             // 1) function call
             let function_call = bare_function_call_builder(tokens.clone());
-            if function_call.1 != -1 {
+            if function_call.is_ok() {
                 result.push(ExprTerm {
                     term_type: TermType::Data,
                     data: Option::from(ExprDataTerm {
@@ -43,14 +43,14 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
                         number: None,
                         string: None,
                         identifier: None,
-                        function_call: function_call.0,
+                        function_call: Option::from(function_call.clone().ok().unwrap().0),
                         type_name: None
                     }),
                     operator: None,
                     priority: None
                 });
 
-                tokens = tokens[(function_call.1 as usize)..].to_vec();
+                tokens = tokens[function_call.ok().unwrap().1 ..].to_vec();
                 continue;
             }
 

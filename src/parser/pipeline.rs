@@ -3,8 +3,9 @@ use crate::parser::builder::function_builder::function_builder;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::ast::package::ParserPackageStructure;
 use crate::shared::token::KeywordType;
+use crate::shared::error::general_error::GeneralError;
 
-pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Option<ParserPackageStructure> {
+pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Result<ParserPackageStructure, GeneralError<String>> {
     let mut result = ParserPackageStructure {
         functions: vec![],
         entry_point,
@@ -15,19 +16,19 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Opt
     let mut current_index = 0;
     loop {
         let current_link = link_statement_builder(tokens[current_index..].to_vec());
-        if current_link.1 == -1 {
+        if current_link.is_ok() {
             break;
         }
 
-        result.linked_code_files.push(current_link.0.unwrap());
-        current_index += current_link.1 as usize + 1;
+        result.linked_code_files.push(current_link.clone().ok().unwrap().0);
+        current_index += current_link.ok().unwrap().1 + 1;
     }
 
     if tokens[current_index].token_type != DecoratedTokenType::DecoratedKeyword {
-        panic!("Invalid token stream encountered!");
+        return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Invalid token stream encountered!".to_string()) });
     } else {
         if tokens[current_index].keyword.unwrap() != KeywordType::KwDeclare {
-            panic!("Invalid token stream encountered!");
+            return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Invalid token stream encountered!".to_string()) });
         }
     }
 
@@ -39,13 +40,13 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Opt
         }
 
         let current_function = function_builder(tokens[current_index..].to_vec());
-        if current_function.1 == -1 {
+        if current_function.is_ok() {
             break;
         }
 
-        result.functions.push(current_function.0.unwrap());
-        current_index += current_function.1 as usize;
+        result.functions.push(current_function.clone().ok().unwrap().0);
+        current_index += current_function.ok().unwrap().1;
     }
 
-    return Option::from(result);
+    return Ok(result);
 }
