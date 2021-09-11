@@ -1,12 +1,18 @@
-use crate::lexer::hard_code::lex_rule::*;
-use crate::lexer::hard_code::match_enums::match_keyword;
 use crate::shared::token::{ContainerType, KeywordType, OperatorType, Token, TokenType};
+use crate::lexer::lex_rules::semicolon::match_semicolon;
+use crate::lexer::lex_rules::identifier::match_identifier;
+use crate::lexer::lex_rules::keyword::match_keyword;
+use crate::lexer::lex_rules::number::match_number;
+use crate::lexer::lex_rules::string::match_string;
+use crate::lexer::lex_rules::container::match_container;
+use crate::lexer::lex_rules::operator::match_operator;
+use crate::lexer::lex_rules::space::match_spaces;
 
 /**
- * Regular expression sequence
- * Number: `\d+(\.\d+)?`
- * String: `"[^"]*"`
- * Identifier: `[a-zA-Z_]([a-zA-Z_0-9])*`
+ * ## Regular expression sequence for lexing source code
+ * - Number: `\d+(\.\d+)?`
+ * - String: `"[^"]*"`
+ * - Identifier: `[a-zA-Z_]([a-zA-Z_0-9])*`
  */
 
 // Support code without comments only
@@ -150,6 +156,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
         lexeme = match_spaces(source_code.clone());
         if lexeme.len() > 0 {
+            // Remove spaces
             source_code = source_code[lexeme.len()..].parse().unwrap();
 
             continue;

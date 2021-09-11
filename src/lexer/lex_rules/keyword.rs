@@ -1,5 +1,6 @@
 use crate::shared::token::KeywordType;
 
+// Convert keyword string to token
 pub fn match_keyword(identifier: String) -> KeywordType {
     return match identifier.as_str() {
         "decl" => KeywordType::KwDeclare,
@@ -22,6 +23,6 @@ pub fn match_keyword(identifier: String) -> KeywordType {
         "call" => KeywordType::KwCall,
         "link" => KeywordType::KwLink,
         "none" => KeywordType::KwNone,
-        _ => KeywordType::Unset
+        _ => KeywordType::Unset,
     };
 }
