@@ -28,7 +28,7 @@ pub struct Action {
     pub call_action: Option<CallAction>,
     pub return_action: Option<ReturnAction>,
     pub if_action: Option<IfAction>,
-    pub while_action: Option<ConditionBlock>,
+    pub while_action: Option<WhileBlock>,
     pub loop_action: Option<ActionBlock>,
     pub switch_action: Option<SwitchAction>,
 
@@ -39,6 +39,10 @@ pub struct Action {
 pub struct ActionBlock {
     pub actions: Vec<Action>
 }
+
+pub type IfBlock = ConditionBlock;
+pub type ElifBlock = ConditionBlock;
+pub type WhileBlock = ConditionBlock;
 
 // Used in while, if, elif
 #[derive(Clone)]
@@ -77,9 +81,7 @@ pub struct ReturnAction {
 #[derive(Clone)]
 pub struct IfAction {
     pub if_block: ConditionBlock,
-
-    pub elif_collection: Vec<ConditionBlock>,
-
+    pub elif_collection: Vec<ElifBlock>,
     pub else_action: Option<ActionBlock>,
 }
 

@@ -10,7 +10,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-        if next_semicolon_pos == 1 {
+        if next_semicolon_pos.unwrap_or(0) == 1 {
             let keyword = tokens[0].keyword.unwrap();
 
             // "break" or "continue"
@@ -26,7 +26,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }, next_semicolon_pos as usize + 1));
+                    }, next_semicolon_pos.unwrap() + 1));
                 }
                 KeywordType::KwBreak => {
                     return Ok((Action {
@@ -39,7 +39,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }, next_semicolon_pos as usize + 1));
+                    }, next_semicolon_pos.unwrap() + 1));
                 }
                 _ => {}
             }
@@ -47,12 +47,12 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
             // Match a "loop" action
             if tokens[0].keyword.unwrap() == KeywordType::KwLoop &&
                 tokens[1].token_type == DecoratedTokenType::Container &&
-                tokens[next_semicolon_pos as usize - 1].token_type == DecoratedTokenType::Container {
+                tokens[next_semicolon_pos.unwrap() - 1].token_type == DecoratedTokenType::Container {
                 // The shortest token stream: loop { }
                 // Check if the statement is lead by keyword "loop"
                 if tokens[1].container.unwrap() == ContainerType::Brace &&
-                    tokens[next_semicolon_pos as usize - 1].container.unwrap() == ContainerType::AntiBrace {
-                    let container_content = tokens[2..(next_semicolon_pos as usize - 2)].to_vec();
+                    tokens[next_semicolon_pos.unwrap() - 1].container.unwrap() == ContainerType::AntiBrace {
+                    let container_content = tokens[2..(next_semicolon_pos.unwrap() - 2)].to_vec();
 
                     return Ok((Action{
                         action_type: ActionType::LoopStatement,

@@ -13,11 +13,11 @@ pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usi
             if tokens[0].keyword.unwrap() == KeywordType::KwReturn {
                 let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
-                if next_semicolon_pos > 0 {
+                if next_semicolon_pos.unwrap_or(0) > 0 {
                     #[allow(unused_assignments)]
                         let mut result: Option<ReturnAction> = None;
 
-                    if next_semicolon_pos == 1 {
+                    if next_semicolon_pos.unwrap() == 1 {
                         // No return value
                         result = Option::from(ReturnAction {
                             value: Expression {
@@ -27,7 +27,7 @@ pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usi
                         });
                     } else {
                         // With return value
-                        let expression_zone = tokens[1..(next_semicolon_pos as usize)].to_vec();
+                        let expression_zone = tokens[1..next_semicolon_pos.unwrap()].to_vec();
 
                         result = Option::from(ReturnAction {
                             value: Expression {
@@ -47,7 +47,7 @@ pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usi
                         while_action: None,
                         loop_action: None,
                         switch_action: None,
-                    }, next_semicolon_pos as usize + 1));
+                    }, next_semicolon_pos.unwrap() + 1));
                 }
             }
         }

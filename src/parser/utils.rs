@@ -1,28 +1,28 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{OperatorType, ContainerType};
 
-// Return -1 if there's no semicolon token
-pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> isize {
+// Return the distance to next semicolon token, None to find nothing
+pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> Option<usize> {
     for (index, token) in tokens.iter().enumerate() {
         if token.token_type == DecoratedTokenType::StatementEndSign {
-            return index as isize;
+            return Option::from(index);
         }
     }
 
-    return -1;
+    return None;
 }
 
-// Return -1 if there's no semicolon token
-pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> isize {
+// Return the distance to next comma token, None to find nothing
+pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> Option<usize> {
     for (index, token) in tokens.iter().enumerate() {
         if token.token_type == DecoratedTokenType::Operator {
             if token.operator.unwrap().operator_type == OperatorType::Comma {
-                return index as isize;
+                return Option::from(index);
             }
         }
     }
 
-    return -1;
+    return None;
 }
 
 pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedToken>> {

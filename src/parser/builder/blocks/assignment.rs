@@ -8,11 +8,11 @@ use crate::shared::error::general_error::GeneralError;
 
 pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
-    if next_semicolon_pos != -1 {
+    if next_semicolon_pos.is_some() {
         if tokens[0].is_valid_identifier() && tokens[1].token_type == DecoratedTokenType::Operator {
             if tokens[1].operator.unwrap().operator_type == OperatorType::Assignment {
                 // Convert expression
-                let postfix_expr = expression_infix_to_postfix(tokens.clone()[2..(next_semicolon_pos as usize)].to_vec());
+                let postfix_expr = expression_infix_to_postfix(tokens.clone()[2..next_semicolon_pos.unwrap()].to_vec());
 
                 return Ok((Action {
                     action_type: ActionType::AssignmentStatement,
@@ -30,7 +30,7 @@ pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
                     while_action: None,
                     loop_action: None,
                     switch_action: None
-                }, next_semicolon_pos as usize + 1));
+                }, next_semicolon_pos.unwrap() + 1));
             }
         }
     }

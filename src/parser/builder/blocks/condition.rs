@@ -1,5 +1,5 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::ast::action::{IfAction, ActionBlock, ConditionBlock, Action, ActionType};
+use crate::shared::ast::action::{IfAction, ActionBlock, Action, ActionType, ElifBlock};
 use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::utils::pair_container;
 use crate::parser::builder::blocks::action_block::action_block_builder;
@@ -51,7 +51,7 @@ pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), 
 
 // `elif` block must be a sub-node of `if` block, so this is a private method
 // Return -1 if there's a problem while building elif block
-fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ConditionBlock>, isize) {
+fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ElifBlock>, isize) {
     let result = condition_block_builder(KeywordType::KwElseIf, tokens.clone());
     if result.is_ok() {
         return (Option::from(result.clone().ok().unwrap().0), result.clone().ok().unwrap().1 as isize);

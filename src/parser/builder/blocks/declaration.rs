@@ -7,7 +7,7 @@ use crate::shared::error::general_error::GeneralError;
 pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     // Each block owns 4 tokens only
-    if next_semicolon_pos == 4 {
+    if next_semicolon_pos.unwrap_or(0) == 4 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword &&
             tokens[1].token_type == DecoratedTokenType::DecoratedKeyword &&
             tokens[2].is_valid_type() &&
@@ -40,7 +40,7 @@ pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action
                     while_action: None,
                     loop_action: None,
                     switch_action: None
-                }, next_semicolon_pos as usize + 1));
+                }, next_semicolon_pos.unwrap() + 1));
             }
         }
     }

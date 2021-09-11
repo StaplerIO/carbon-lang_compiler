@@ -11,7 +11,7 @@ pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     // Check format
-    if next_semicolon_pos >= 4 {
+    if next_semicolon_pos.unwrap_or(0) >= 4 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
             if tokens[0].keyword.unwrap() == KeywordType::KwCall {
                 let result = bare_function_call_builder(tokens[1..].to_vec());
@@ -26,7 +26,7 @@ pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize
                         while_action: None,
                         loop_action: None,
                         switch_action: None
-                    }, next_semicolon_pos as usize + 1));
+                    }, next_semicolon_pos.unwrap() + 1));
                 }
             }
         }
