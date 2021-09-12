@@ -1,27 +1,12 @@
 use crate::package_generator::type_inference::expression::infer_expression_term_data_type;
-use crate::shared::ast::action::{ActionBlock, ActionType, VariableDefinition};
+use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::{Expression, TermType};
 use crate::shared::ast::blocks::function::Function;
 
-pub fn filter_action_by_action_type(action_type: ActionType, action_block: ActionBlock) -> ActionBlock {
-    let mut result = ActionBlock {
-        actions: vec![]
-    };
-
-    for action in action_block.actions {
-        if action.action_type == action_type {
-            result.actions.push(action.clone());
-        }
-    }
-
-    return result;
-}
-
 pub fn find_function(name: String, available_functions: Vec<Function>) -> Option<Function> {
-    for func in available_functions {
-        if func.name == name {
-            return Option::from(func);
-        }
+    let result = available_functions.iter().find(|&e| e.name == name);
+    if result.is_some() {
+        return Option::from(result.unwrap().clone())
     }
 
     return None;

@@ -12,6 +12,7 @@ use crate::parser::builder::blocks::loops::while_action_builder;
 pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
     let mut result: Vec<Action> = Vec::new();
 
+    // Needs to be simplified
     while tokens.len() > 0 {
         let decl = declaration_action_builder(tokens.clone());
         if decl.is_ok() {
