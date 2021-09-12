@@ -7,73 +7,33 @@ use crate::shared::token::{Operator, OperatorType, LogicalOperator, RelationOper
 pub fn match_operator(content: String) -> (Operator, usize) {
     return match content.chars().nth(0).unwrap() {
         '+' => {
-            (Operator {
-                operator_type: OperatorType::Calculation,
-                calculation: Option::from(CalculationOperator::Plus),
-                relation: None,
-                logical: None,
-            }, 1)
+            (Operator::new_calculation(CalculationOperator::Plus), 1)
         }
         '-' => {
-            (Operator {
-                operator_type: OperatorType::Calculation,
-                calculation: Option::from(CalculationOperator::Minus),
-                relation: None,
-                logical: None,
-            }, 1)
+            (Operator::new_calculation(CalculationOperator::Minus), 1)
         }
         '*' => {
-            (Operator {
-                operator_type: OperatorType::Calculation,
-                calculation: Option::from(CalculationOperator::Times),
-                relation: None,
-                logical: None,
-            }, 1)
+            (Operator::new_calculation(CalculationOperator::Times), 1)
         }
         '/' => {
-            (Operator {
-                operator_type: OperatorType::Calculation,
-                calculation: Option::from(CalculationOperator::Divide),
-                relation: None,
-                logical: None,
-            }, 1)
+            (Operator::new_calculation(CalculationOperator::Divide), 1)
         }
         '%' => {
-            (Operator {
-                operator_type: OperatorType::Calculation,
-                calculation: Option::from(CalculationOperator::Mod),
-                relation: None,
-                logical: None,
-            }, 1)
+            (Operator::new_calculation(CalculationOperator::Mod), 1)
         }
         '<' => {
             match content.chars().nth(1).unwrap() {
                 '=' => {
                     // Matches a "<=" sequence
-                    (Operator {
-                        operator_type: OperatorType::Relation,
-                        calculation: None,
-                        relation: Option::from(RelationOperator::LessEqual),
-                        logical: None,
-                    }, 2)
+                    (Operator::new_relation(RelationOperator::LessEqual), 2)
                 }
                 '>' => {
                     // Matches a "<>" sequence
-                    (Operator {
-                        operator_type: OperatorType::Relation,
-                        calculation: None,
-                        relation: Option::from(RelationOperator::NotEqual),
-                        logical: None,
-                    }, 2)
+                    (Operator::new_relation(RelationOperator::NotEqual), 2)
                 }
                 _ => {
                     // Matches a "<" sequence
-                    (Operator {
-                        operator_type: OperatorType::Relation,
-                        calculation: None,
-                        relation: Option::from(RelationOperator::Less),
-                        logical: None,
-                    }, 1)
+                    (Operator::new_relation(RelationOperator::Less), 1)
                 }
             }
         }
@@ -81,21 +41,11 @@ pub fn match_operator(content: String) -> (Operator, usize) {
             match content.chars().nth(1).unwrap() {
                 '=' => {
                     // Matches a ">=" sequence
-                    (Operator {
-                        operator_type: OperatorType::Relation,
-                        calculation: None,
-                        relation: Option::from(RelationOperator::BiggerEqual),
-                        logical: None,
-                    }, 2)
+                    (Operator::new_relation(RelationOperator::BiggerEqual), 2)
                 }
                 _ => {
                     // Matches a ">" sequence
-                    (Operator {
-                        operator_type: OperatorType::Relation,
-                        calculation: None,
-                        relation: Option::from(RelationOperator::Bigger),
-                        logical: None,
-                    }, 1)
+                    (Operator::new_relation(RelationOperator::Bigger), 1)
                 }
             }
         }
@@ -103,12 +53,7 @@ pub fn match_operator(content: String) -> (Operator, usize) {
             match content.chars().nth(1).unwrap() {
                 '=' => {
                     // Matches a "==" sequence
-                    (Operator {
-                        operator_type: OperatorType::Relation,
-                        calculation: None,
-                        relation: Option::from(RelationOperator::Equal),
-                        logical: None,
-                    }, 2)
+                    (Operator::new_relation(RelationOperator::Equal), 2)
                 }
                 _ => {
                     // Matches a "=" sequence
@@ -122,12 +67,7 @@ pub fn match_operator(content: String) -> (Operator, usize) {
             }
         }
         '!' => {
-            (Operator {
-                operator_type: OperatorType::Logical,
-                calculation: None,
-                relation: None,
-                logical: Option::from(LogicalOperator::Not),
-            }, 1)
+            (Operator::new_logical(LogicalOperator::Not), 1)
         }
         ',' => {
             (Operator {
@@ -140,19 +80,9 @@ pub fn match_operator(content: String) -> (Operator, usize) {
         _ => {
             let capture = String::from(&content[0..2]);
             if capture.eq("&&") {
-                (Operator {
-                    operator_type: OperatorType::Logical,
-                    calculation: None,
-                    relation: None,
-                    logical: Option::from(LogicalOperator::And),
-                }, 2)
+                (Operator::new_logical(LogicalOperator::And), 2)
             } else if capture.eq("||") {
-                (Operator {
-                    operator_type: OperatorType::Logical,
-                    calculation: None,
-                    relation: None,
-                    logical: Option::from(LogicalOperator::Or),
-                }, 2)
+                (Operator::new_logical(LogicalOperator::Or), 2)
             } else if capture.eq("::") {
                 (Operator {
                     operator_type: OperatorType::Scope,
