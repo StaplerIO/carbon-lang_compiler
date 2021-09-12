@@ -1,5 +1,5 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::ast::action::{IfAction, ActionBlock, Action, ActionType, ElifBlock};
+use crate::shared::ast::action::{IfAction, ActionBlock, Action, ElifBlock};
 use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::utils::pair_container;
 use crate::parser::builder::blocks::action_block::action_block_builder;
@@ -33,17 +33,7 @@ pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), 
             current_index += else_part.1 as usize;
         }
 
-        return Ok((Action{
-            action_type: ActionType::IfStatement,
-            declaration_action: None,
-            assignment_action: None,
-            call_action: None,
-            return_action: None,
-            if_action: Option::from(result),
-            while_action: None,
-            loop_action: None,
-            switch_action: None
-        }, current_index));
+        return Ok((Action::new_if(result), current_index));
     }
 
     return Err(GeneralError{ code: "-1".to_string(), decription: None });

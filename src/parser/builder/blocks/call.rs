@@ -1,6 +1,6 @@
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
-use crate::shared::ast::action::{Action, ActionType, CallAction};
+use crate::shared::ast::action::{Action, CallAction};
 use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{ContainerType, KeywordType};
@@ -16,17 +16,7 @@ pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize
             if tokens[0].keyword.unwrap() == KeywordType::KwCall {
                 let result = bare_function_call_builder(tokens[1..].to_vec());
                 if result.is_ok() {
-                    return Ok((Action {
-                        action_type: ActionType::CallStatement,
-                        declaration_action: None,
-                        assignment_action: None,
-                        call_action: Option::from(result.ok().unwrap().0),
-                        return_action: None,
-                        if_action: None,
-                        while_action: None,
-                        loop_action: None,
-                        switch_action: None
-                    }, next_semicolon_pos.unwrap() + 1));
+                    return Ok((Action::new_call(result.unwrap().0), next_semicolon_pos.unwrap() + 1));
                 }
             }
         }

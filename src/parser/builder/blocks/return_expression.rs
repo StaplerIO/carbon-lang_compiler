@@ -1,6 +1,6 @@
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::utils::find_next_semicolon;
-use crate::shared::ast::action::{Action, ActionType, ReturnAction};
+use crate::shared::ast::action::{Action, ReturnAction};
 use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::KeywordType;
@@ -37,17 +37,7 @@ pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usi
                         });
                     }
 
-                    return Ok((Action {
-                        action_type: ActionType::ReturnStatement,
-                        declaration_action: None,
-                        assignment_action: None,
-                        call_action: None,
-                        return_action: result,
-                        if_action: None,
-                        while_action: None,
-                        loop_action: None,
-                        switch_action: None,
-                    }, next_semicolon_pos.unwrap() + 1));
+                    return Ok((Action::new_return(result.unwrap()), next_semicolon_pos.unwrap() + 1));
                 }
             }
         }

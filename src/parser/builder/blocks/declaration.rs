@@ -1,5 +1,5 @@
 use crate::shared::token::KeywordType;
-use crate::shared::ast::action::{DeclarationAction, Action, ActionType};
+use crate::shared::ast::action::{DeclarationAction, Action};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
@@ -30,17 +30,7 @@ pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action
                     return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Require keyword \'var\' or \'const\'".to_string()) });
                 }
 
-                return Ok((Action {
-                    action_type: ActionType::DeclarationStatement,
-                    declaration_action: Option::from(result),
-                    assignment_action: None,
-                    call_action: None,
-                    return_action: None,
-                    if_action: None,
-                    while_action: None,
-                    loop_action: None,
-                    switch_action: None
-                }, next_semicolon_pos.unwrap() + 1));
+                return Ok((Action::new_decl(result), next_semicolon_pos.unwrap() + 1));
             }
         }
     }

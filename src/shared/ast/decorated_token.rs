@@ -1,5 +1,4 @@
 use crate::shared::token::{ContainerType, KeywordType, Operator};
-use crate::shared::ast::blocks::expression::ExprTerm;
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum DecoratedTokenType {

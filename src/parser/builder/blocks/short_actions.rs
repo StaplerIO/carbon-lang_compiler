@@ -1,5 +1,5 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::ast::action::{Action, ActionType, ActionBlock};
+use crate::shared::ast::action::{Action, LoopBlock};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::token::{KeywordType, ContainerType};
 use crate::parser::builder::blocks::action_block::action_block_builder;
@@ -16,30 +16,10 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
             // "break" or "continue"
             match keyword {
                 KeywordType::KwContinue => {
-                    return Ok((Action {
-                        action_type: ActionType::ContinueStatement,
-                        declaration_action: None,
-                        assignment_action: None,
-                        call_action: None,
-                        return_action: None,
-                        if_action: None,
-                        while_action: None,
-                        loop_action: None,
-                        switch_action: None
-                    }, next_semicolon_pos.unwrap() + 1));
+                    return Ok((Action::new_continue(), next_semicolon_pos.unwrap() + 1));
                 }
                 KeywordType::KwBreak => {
-                    return Ok((Action {
-                        action_type: ActionType::BreakStatement,
-                        declaration_action: None,
-                        assignment_action: None,
-                        call_action: None,
-                        return_action: None,
-                        if_action: None,
-                        while_action: None,
-                        loop_action: None,
-                        switch_action: None
-                    }, next_semicolon_pos.unwrap() + 1));
+                    return Ok((Action::new_break(), next_semicolon_pos.unwrap() + 1));
                 }
                 _ => {}
             }
@@ -54,17 +34,7 @@ pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, 
                     tokens[next_semicolon_pos.unwrap() - 1].container.unwrap() == ContainerType::AntiBrace {
                     let container_content = tokens[2..(next_semicolon_pos.unwrap() - 2)].to_vec();
 
-                    return Ok((Action{
-                        action_type: ActionType::LoopStatement,
-                        declaration_action: None,
-                        assignment_action: None,
-                        call_action: None,
-                        return_action: None,
-                        if_action: None,
-                        while_action: None,
-                        loop_action: Option::from(ActionBlock { actions: action_block_builder(container_content.clone()) }),
-                        switch_action: None
-                    }, 0));
+                    return Ok((Action::new_loop(LoopBlock { actions: action_block_builder(container_content.clone()) }), 0));
                 }
             }
         }

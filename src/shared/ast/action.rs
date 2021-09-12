@@ -29,11 +29,13 @@ pub struct Action {
     pub return_action: Option<ReturnAction>,
     pub if_action: Option<IfAction>,
     pub while_action: Option<WhileBlock>,
-    pub loop_action: Option<ActionBlock>,
+    pub loop_action: Option<LoopBlock>,
     pub switch_action: Option<SwitchAction>,
 
     // "break" and "continue" actions don't have special blocks
 }
+
+pub type LoopBlock = ActionBlock;
 
 #[derive(Clone)]
 pub struct ActionBlock {

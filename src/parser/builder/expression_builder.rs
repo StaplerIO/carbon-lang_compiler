@@ -1,9 +1,11 @@
-use crate::shared::token::{ContainerType, CalculationOperator, OperatorType};
-use lazy_static::lazy_static;
 use std::collections::HashMap;
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType, DataType};
-use crate::shared::ast::blocks::expression::{ExprTerm, TermType, ExprDataTerm, ExprDataTermType};
+
+use lazy_static::lazy_static;
+
 use crate::parser::builder::blocks::call::bare_function_call_builder;
+use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, TermType};
+use crate::shared::ast::decorated_token::{DataType, DecoratedToken, DecoratedTokenType};
+use crate::shared::token::{CalculationOperator, ContainerType, OperatorType};
 
 lazy_static! {
     /**
