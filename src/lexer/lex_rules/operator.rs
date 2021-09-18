@@ -4,7 +4,7 @@ use crate::shared::token::{Operator, OperatorType, LogicalOperator, RelationOper
  * Return:
  * A tuple (Operator, number) : The number is the length of the operator
  */
-pub fn match_operator(content: String) -> (Operator, usize) {
+pub fn match_operator(content: &str) -> (Operator, usize) {
     return match content.chars().nth(0).unwrap() {
         '+' => {
             (Operator::new_calculation(CalculationOperator::Plus), 1)

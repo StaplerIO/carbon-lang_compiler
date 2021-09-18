@@ -1,7 +1,7 @@
 use crate::shared::token::ContainerType;
 
 // Convert character to token
-pub fn match_container(content: String) -> ContainerType {
+pub fn match_container(content: &str) -> ContainerType {
     return match content.chars().nth(0).unwrap() {
         '{' => ContainerType::Brace,
         '}' => ContainerType::AntiBrace,

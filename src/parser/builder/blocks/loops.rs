@@ -5,7 +5,7 @@ use crate::shared::ast::action::Action;
 use crate::shared::error::general_error::GeneralError;
 
 // result.1 : The end of the while statement (the last anti-brace)
-pub fn while_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn while_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let result = condition_block_builder(KeywordType::KwWhile, tokens.clone());
     if result.is_ok() {
         return Ok((Action::new_while(result.clone().ok().unwrap().0), result.ok().unwrap().1));

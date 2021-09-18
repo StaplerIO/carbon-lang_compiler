@@ -3,14 +3,14 @@ use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, Exp
 use crate::shared::ast::blocks::function::Function;
 
 // Term must be DataTerm
-pub fn infer_expression_term_data_type(term: ExprDataTerm, defined_functions: Vec<Function>, defined_variables: Vec<VariableDefinition>) -> Option<String> {
+pub fn infer_expression_term_data_type(term: &ExprDataTerm, defined_functions: &Vec<Function>, defined_variables: &Vec<VariableDefinition>) -> Option<String> {
     return match term.clone().data_type {
         ExprDataTermType::Number => Option::from(String::from("number")),
         ExprDataTermType::String => Option::from(String::from("str")),
         ExprDataTermType::Identifier => {
             for def_var in defined_variables {
                 if def_var.identifier == term.clone().identifier.unwrap() {
-                    return Option::from(def_var.type_name);
+                    return Option::from(def_var.type_name.clone());
                 }
             }
 
@@ -19,7 +19,7 @@ pub fn infer_expression_term_data_type(term: ExprDataTerm, defined_functions: Ve
         ExprDataTermType::FunctionCall => {
             for def_func in defined_functions {
                 if def_func.name == term.clone().function_call.unwrap().function_name {
-                    return Option::from(def_func.return_type);
+                    return Option::from(def_func.return_type.clone());
                 }
             }
 
@@ -29,9 +29,9 @@ pub fn infer_expression_term_data_type(term: ExprDataTerm, defined_functions: Ve
     }
 }
 
-pub fn infer_expression_output_type(expression: Expression, defined_types: Vec<String>) -> Option<String> {
+pub fn infer_expression_output_type(expression: &Expression, defined_types: &Vec<String>) -> Option<String> {
     let mut possible_types = defined_types.clone();
-    for term in expression.postfix_expr {
+    for term in &expression.postfix_expr {
         let mut indexes_to_remove: Vec<usize> = vec![];
         // Find out impossible data type
         if term.term_type == TermType::Data {

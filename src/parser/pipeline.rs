@@ -15,7 +15,7 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Res
     // Build Link part
     let mut current_index = 0;
     loop {
-        let current_link = link_statement_builder(tokens[current_index..].to_vec());
+        let current_link = link_statement_builder(&tokens[current_index..].to_vec());
         if current_link.is_err() {
             break;
         }
@@ -39,7 +39,7 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Res
             break;
         }
 
-        let current_function = function_builder(tokens[current_index..].to_vec());
+        let current_function = function_builder(&tokens[current_index..].to_vec());
         if current_function.is_err() {
             break;
         }

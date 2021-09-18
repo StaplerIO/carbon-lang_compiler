@@ -6,7 +6,7 @@ use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::templates::condition_block_builder;
 use crate::shared::error::general_error::GeneralError;
 
-pub fn if_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn if_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let if_part = condition_block_builder(KeywordType::KwIf, tokens.clone());
     if if_part.is_ok() {
         let mut result = IfAction{

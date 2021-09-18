@@ -1,4 +1,4 @@
-pub fn match_spaces(content: String) -> String {
+pub fn match_spaces(content: &str) -> String {
     let mut result = String::new();
 
     for c in content.chars() {

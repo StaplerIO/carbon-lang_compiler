@@ -12,7 +12,7 @@ mod tests {
     #[test]
     fn check_def() {
         let tokens = tokenize(String::from("decl var number a;"));
-        let stmt = declaration_action_builder(decorate_token(tokens));
+        let stmt = declaration_action_builder(&decorate_token(tokens));
 
         let defined_types: Vec<String> = [
             String::from("number"),
@@ -20,13 +20,13 @@ mod tests {
             String::from("char")
         ].to_vec();
 
-        assert!(check_variable_definition(stmt.ok().unwrap().0.declaration_action.unwrap(), vec![], defined_types));
+        assert!(check_variable_definition(&stmt.ok().unwrap().0.declaration_action.unwrap(), &vec![], &defined_types));
     }
 
     #[test]
     fn check_assignment() {
         let tokens = tokenize(String::from("bcd = bcd + 2;"));
-        let stmt = assignment_block_builder(decorate_token(tokens));
+        let stmt = assignment_block_builder(&decorate_token(tokens));
 
         let defined_vars: Vec<VariableDefinition> = [
             VariableDefinition {
@@ -42,8 +42,8 @@ mod tests {
         ].to_vec();
 
         let mut action = stmt.unwrap().0.assignment_action.unwrap();
-        action.eval_expression = infer_every_expression_data_term_type(action.eval_expression, vec![], defined_vars.clone());
+        action.eval_expression = infer_every_expression_data_term_type(&action.eval_expression, &vec![], &defined_vars);
 
-        assert!(check_variable_assignment(action, defined_vars, defined_types));
+        assert!(check_variable_assignment(&action, defined_vars, defined_types));
     }
 }

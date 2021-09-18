@@ -6,7 +6,7 @@ use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::shared::error::general_error::GeneralError;
 
 // Build "continue", "break" and "loop" action
-pub fn short_statements_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn short_statements_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {

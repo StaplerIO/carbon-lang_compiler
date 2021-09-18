@@ -19,7 +19,7 @@ mod tests {
     #[test]
     fn assignment() {
         let tokens = tokenize(String::from("a = 1 + 2;"));
-        let raw = assignment_block_builder(decorate_token(tokens.clone()));
+        let raw = assignment_block_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.assignment_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -36,7 +36,7 @@ mod tests {
     #[test]
     fn variable_declaration() {
         let tokens = tokenize(String::from("decl var number foo;"));
-        let raw = declaration_action_builder(decorate_token(tokens.clone()));
+        let raw = declaration_action_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.declaration_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -49,7 +49,7 @@ mod tests {
     #[test]
     fn function_call() {
         let tokens = tokenize(String::from("call func_1(5, 2.66, var1, 3 - 2);"));
-        let raw = call_action_builder(decorate_token(tokens.clone()));
+        let raw = call_action_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.call_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -67,7 +67,7 @@ mod tests {
     #[test]
     fn return_from_function_no_value() {
         let tokens = tokenize(String::from("return;"));
-        let raw = return_action_builder(decorate_token(tokens.clone()));
+        let raw = return_action_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.return_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -78,7 +78,7 @@ mod tests {
     #[test]
     fn return_from_function_with_value() {
         let tokens = tokenize(String::from("return 1 + 2 * tb_234;"));
-        let raw = return_action_builder(decorate_token(tokens.clone()));
+        let raw = return_action_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.return_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -91,7 +91,7 @@ mod tests {
     #[test]
     fn single_token_statement_break() {
         let tokens = tokenize(String::from("break;"));
-        let raw = short_statements_builder(decorate_token(tokens.clone()));
+        let raw = short_statements_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0;
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -102,7 +102,7 @@ mod tests {
     #[test]
     fn single_token_statement_continue() {
         let tokens = tokenize(String::from("continue;"));
-        let raw = short_statements_builder(decorate_token(tokens.clone()));
+        let raw = short_statements_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0;
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -134,7 +134,7 @@ mod tests {
     #[test]
     fn while_block() {
         let tokens = tokenize(String::from("while (1 + 1 == 2) { a = a + 1; return; }"));
-        let raw = while_action_builder(decorate_token(tokens.clone()));
+        let raw = while_action_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.while_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -146,7 +146,7 @@ mod tests {
     #[test]
     fn if_block() {
         let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var number foo; }"));
-        let raw = if_block_builder(decorate_token(tokens.clone()));
+        let raw = if_block_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.if_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len() - 1);
@@ -159,7 +159,7 @@ mod tests {
     #[test]
     fn function_block() {
         let tokens = tokenize(String::from("decl func main(number a, number b)[number] { return a + b; }"));
-        let raw = function_builder(decorate_token(tokens.clone()));
+        let raw = function_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0;
         assert_eq!(raw.ok().unwrap().1, tokens.len());

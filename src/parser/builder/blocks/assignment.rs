@@ -6,7 +6,7 @@ use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::OperatorType;
 
-pub fn assignment_block_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn assignment_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     if next_semicolon_pos.is_some() {
         if tokens[0].is_valid_identifier() && tokens[1].token_type == DecoratedTokenType::Operator {

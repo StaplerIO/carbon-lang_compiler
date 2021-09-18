@@ -8,7 +8,7 @@ use crate::shared::error::general_error::GeneralError;
 
 // Minimum: decl func <name> () [<typename>] {} : 11 tokens
 // Set <typename> as "none" to return nothing
-pub fn function_builder(tokens: Vec<DecoratedToken>) -> Result<(Function, usize), GeneralError<String>> {
+pub fn function_builder(tokens: &Vec<DecoratedToken>) -> Result<(Function, usize), GeneralError<String>> {
     if tokens.len() >= 10 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword &&
             tokens[1].token_type == DecoratedTokenType::DecoratedKeyword &&

@@ -1,8 +1,8 @@
 use crate::shared::token::KeywordType;
 
 // Convert keyword string to token
-pub fn match_keyword(identifier: String) -> KeywordType {
-    return match identifier.as_str() {
+pub fn match_keyword(identifier: &str) -> KeywordType {
+    return match identifier {
         "decl" => KeywordType::KwDeclare,
         "number" => KeywordType::KwNumber,
         "char" => KeywordType::KwChar,

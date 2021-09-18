@@ -7,7 +7,7 @@ use crate::shared::token::{ContainerType, KeywordType};
 use crate::shared::error::general_error::GeneralError;
 
 // Scheme: call <identifier>(<param list>);
-pub fn call_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn call_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     // Check format

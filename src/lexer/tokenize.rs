@@ -23,17 +23,17 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         #[allow(unused_assignments)]
             let mut lexeme = String::new();
 
-        if match_semicolon(source_code.clone()) {
+        if match_semicolon(source_code.as_str()) {
             result.push(Token::new_semicolon());
 
             source_code.remove(0);
             continue;
         }
 
-        lexeme = match_identifier(source_code.clone());
+        lexeme = match_identifier(source_code.as_str());
         if lexeme.len() > 0 {
             // Try match keyword
-            let keyword = match_keyword(lexeme.clone());
+            let keyword = match_keyword(lexeme.as_str());
             if keyword != KeywordType::Unset {
                 result.push(Token::new_keyword(keyword));
             } else {
@@ -44,7 +44,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
             continue;
         }
 
-        lexeme = match_number(source_code.clone());
+        lexeme = match_number(source_code.as_str());
         if lexeme.len() > 0 {
             result.push(Token::new_number(lexeme.clone()));
 
@@ -52,7 +52,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
             continue;
         }
 
-        lexeme = match_string(source_code.clone());
+        lexeme = match_string(source_code.as_str());
         if lexeme.len() > 0 {
             result.push(Token::new_string(lexeme.clone()));
 
@@ -60,7 +60,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
             continue;
         }
 
-        let container_type = match_container(source_code.clone());
+        let container_type = match_container(source_code.as_str());
         if container_type != ContainerType::Unset {
             // Add new token
             result.push(Token::new_container(container_type));
@@ -70,7 +70,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
             continue;
         }
 
-        let operator_result = match_operator(source_code.clone());
+        let operator_result = match_operator(source_code.as_str());
         if operator_result.0.operator_type != OperatorType::Unset {
             result.push(Token::new_operator(operator_result.0));
 
@@ -79,7 +79,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         }
 
         // Remove spaces
-        lexeme = match_spaces(source_code.clone());
+        lexeme = match_spaces(source_code.as_str());
         if !lexeme.is_empty() {
             source_code = source_code[lexeme.len()..].parse().unwrap();
             continue;

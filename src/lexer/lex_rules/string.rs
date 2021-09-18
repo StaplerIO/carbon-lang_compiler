@@ -1,4 +1,4 @@
-pub fn match_string(content: String) -> String {
+pub fn match_string(content: &str) -> String {
     let mut result = String::new();
 
     if content.starts_with('\"') {

@@ -4,7 +4,7 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 
-pub fn declaration_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn declaration_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     // Each block owns 4 tokens only
     if next_semicolon_pos.unwrap_or(0) == 4 {

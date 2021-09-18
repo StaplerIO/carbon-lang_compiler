@@ -1,4 +1,4 @@
-pub fn match_number(content: String) -> String {
+pub fn match_number(content: &str) -> String {
     let mut result = String::new();
 
     let mut is_dot_exist: bool = false;

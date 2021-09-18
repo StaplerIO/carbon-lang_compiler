@@ -14,7 +14,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
 
     // Needs to be simplified
     while tokens.len() > 0 {
-        let decl = declaration_action_builder(tokens.clone());
+        let decl = declaration_action_builder(&tokens.clone());
         if decl.is_ok() {
             result.push(decl.clone().ok().unwrap().0);
 
@@ -22,7 +22,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let assign_action = assignment_block_builder(tokens.clone());
+        let assign_action = assignment_block_builder(&tokens.clone());
         if assign_action.is_ok() {
             result.push(assign_action.clone().ok().unwrap().0);
 
@@ -30,7 +30,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let call_action = call_action_builder(tokens.clone());
+        let call_action = call_action_builder(&tokens.clone());
         if call_action.is_ok() {
             result.push(call_action.clone().ok().unwrap().0);
 
@@ -38,7 +38,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let return_action = return_action_builder(tokens.clone());
+        let return_action = return_action_builder(&tokens.clone());
         if return_action.is_ok() {
             result.push(return_action.clone().ok().unwrap().0);
 
@@ -46,7 +46,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let if_action = if_block_builder(tokens.clone());
+        let if_action = if_block_builder(&tokens.clone());
         if if_action.is_ok() {
             result.push(if_action.clone().ok().unwrap().0);
 
@@ -54,7 +54,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let while_action = while_action_builder(tokens.clone());
+        let while_action = while_action_builder(&tokens.clone());
         if while_action.is_ok() {
             result.push(while_action.clone().ok().unwrap().0);
 
@@ -62,7 +62,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        let other_action = short_statements_builder(tokens.clone());
+        let other_action = short_statements_builder(&tokens.clone());
         if other_action.is_ok() {
             result.push(other_action.clone().ok().unwrap().0);
 

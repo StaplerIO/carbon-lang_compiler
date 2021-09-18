@@ -29,8 +29,8 @@ mod tests {
         ].to_vec();
 
         // Infer every DataTerm's type
-        expr = infer_every_expression_data_term_type(expr, vec![], defined_vars);
+        expr = infer_every_expression_data_term_type(&expr, &vec![], &defined_vars);
 
-        assert_eq!(infer_expression_output_type(expr, defined_types).unwrap(), String::from("number"));
+        assert_eq!(infer_expression_output_type(&expr, &defined_types).unwrap(), String::from("number"));
     }
 }

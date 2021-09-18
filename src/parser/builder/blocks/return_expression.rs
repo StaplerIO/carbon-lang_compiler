@@ -6,7 +6,7 @@ use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::token::KeywordType;
 use crate::shared::error::general_error::GeneralError;
 
-pub fn return_action_builder(tokens: Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn return_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
     // Minimum: return ; (2 tokens in total)
     if tokens.len() >= 2 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
