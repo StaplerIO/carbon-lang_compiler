@@ -58,6 +58,15 @@ pub struct Token {
     pub operator: Option<Operator>,
 }
 
+#[derive(Copy, Clone, PartialEq)]
+pub struct Operator {
+    pub operator_type: OperatorType,
+
+    pub calculation: Option<CalculationOperator>,
+    pub relation: Option<RelationOperator>,
+    pub logical: Option<LogicalOperator>
+}
+
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Hash)]
 pub enum OperatorType {
     // Root type
@@ -97,13 +106,4 @@ pub enum LogicalOperator {
     And,                // &&
     Or,                 // ||
     Unset,
-}
-
-#[derive(Copy, Clone, PartialEq)]
-pub struct Operator {
-    pub operator_type: OperatorType,
-
-    pub calculation: Option<CalculationOperator>,
-    pub relation: Option<RelationOperator>,
-    pub logical: Option<LogicalOperator>
 }

@@ -1,4 +1,4 @@
-use crate::shared::token::{ContainerType, KeywordType, OperatorType, Token, TokenType};
+use crate::shared::token::{ContainerType, KeywordType, OperatorType, Token};
 use crate::lexer::lex_rules::semicolon::match_semicolon;
 use crate::lexer::lex_rules::identifier::match_identifier;
 use crate::lexer::lex_rules::keyword::match_keyword;
@@ -24,20 +24,9 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
             let mut lexeme = String::new();
 
         if match_semicolon(source_code.clone()) {
+            result.push(Token::new_semicolon());
+
             source_code.remove(0);
-
-            let token = Token {
-                token_type: TokenType::Semicolon,
-                number: None,
-                string: None,
-                identifier: None,
-                keyword: None,
-                container: None,
-                operator: None,
-            };
-
-            result.push(token);
-
             continue;
         }
 
@@ -46,119 +35,53 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
             // Try match keyword
             let keyword = match_keyword(lexeme.clone());
             if keyword != KeywordType::Unset {
-                let token = Token {
-                    token_type: TokenType::Keyword,
-                    number: None,
-                    string: None,
-                    identifier: Option::from(lexeme.clone()),
-                    keyword: Option::from(keyword),
-                    container: None,
-                    operator: None,
-                };
-
-                result.push(token);
+                result.push(Token::new_keyword(keyword));
             } else {
-                let token = Token {
-                    token_type: TokenType::Identifier,
-                    number: None,
-                    string: None,
-                    identifier: Option::from(lexeme.clone()),
-                    keyword: None,
-                    container: None,
-                    operator: None,
-                };
-
-                result.push(token);
+                result.push(Token::new_identifier(lexeme.clone()));
             }
 
             source_code = source_code[lexeme.len()..].parse().unwrap();
-
             continue;
         }
 
         lexeme = match_number(source_code.clone());
         if lexeme.len() > 0 {
-            let token = Token {
-                token_type: TokenType::Number,
-                number: Option::from(lexeme.clone()),
-                string: None,
-                identifier: None,
-                keyword: None,
-                container: None,
-                operator: None,
-            };
-
-            result.push(token);
+            result.push(Token::new_number(lexeme.clone()));
 
             source_code = source_code[lexeme.len()..].parse().unwrap();
-
             continue;
         }
 
         lexeme = match_string(source_code.clone());
         if lexeme.len() > 0 {
-            let token = Token {
-                token_type: TokenType::String,
-                number: None,
-                string: Option::from(lexeme.clone()),
-                identifier: None,
-                keyword: None,
-                container: None,
-                operator: None,
-            };
-
-            result.push(token);
+            result.push(Token::new_string(lexeme.clone()));
 
             source_code = source_code[(lexeme.len() + 2)..].parse().unwrap();
-
             continue;
         }
 
         let container_type = match_container(source_code.clone());
         if container_type != ContainerType::Unset {
-            let token = Token {
-                token_type: TokenType::Container,
-                number: None,
-                string: None,
-                identifier: None,
-                keyword: None,
-                container: Option::from(container_type),
-                operator: None,
-            };
-
             // Add new token
-            result.push(token);
+            result.push(Token::new_container(container_type));
 
             // All containers have only 1 character
             source_code.remove(0);
-
             continue;
         }
 
         let operator_result = match_operator(source_code.clone());
         if operator_result.0.operator_type != OperatorType::Unset {
-            let token = Token {
-                token_type: TokenType::Operator,
-                number: None,
-                string: None,
-                identifier: None,
-                keyword: None,
-                container: None,
-                operator: Option::from(operator_result.0),
-            };
-
-            result.push(token);
+            result.push(Token::new_operator(operator_result.0));
 
             source_code = source_code[(operator_result.1)..].parse().unwrap();
-
             continue;
         }
 
+        // Remove spaces
         lexeme = match_spaces(source_code.clone());
-        if lexeme.len() > 0 {
-            // Remove spaces
+        if !lexeme.is_empty() {
             source_code = source_code[lexeme.len()..].parse().unwrap();
-
             continue;
         }
     }
