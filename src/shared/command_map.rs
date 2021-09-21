@@ -14,7 +14,7 @@ lazy_static! {
 
     pub static ref OBJECT_COMMAND_OPCODE: HashMap<ObjectCommand, u8> = [
         (ObjectCommand::Create, 0x1),
-        (ObjectCommand::Destory, 0x2),
+        (ObjectCommand::Destroy, 0x2),
     ].iter().cloned().collect();
 
     pub static ref STACK_COMMAND_OPCODE: HashMap<StackCommand, u8> = [
@@ -73,7 +73,7 @@ pub enum RootCommand {
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum ObjectCommand {
     Create,
-    Destory
+    Destroy
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
