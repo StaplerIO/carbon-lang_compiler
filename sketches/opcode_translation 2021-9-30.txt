@@ -51,3 +51,12 @@ Package content:
 0xB2000003
 0xE3
 # region ends
+
+------------------------------------------
+
+Update #1 : Math opcodes (2021.10.1)
+
+Example: 0xF102 --> Minus two top numbers on stack
+Format: 0xF     <-- Math root command
+        0x1     <-- Indicates a MathCalculationCommand
+        0x02    <-- Indicates a sub-command: Minus
