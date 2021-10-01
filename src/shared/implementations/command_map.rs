@@ -1,4 +1,4 @@
-use crate::shared::command_map::{RootCommand, ObjectCommand, StackCommand, DomainCommand, JumpCommand, MathRelationCommand, MathCalcCommand, MathCommand, FunctionCommand};
+use crate::shared::command_map::{RootCommand, ObjectCommand, StackCommand, DomainCommand, JumpCommand, MathLogicalCommand, MathCalcCommand, MathCommand, FunctionCommand};
 use std::collections::HashMap;
 
 use lazy_static::lazy_static;
@@ -54,10 +54,10 @@ lazy_static! {
         (MathCalcCommand::Mod, 0x5),
     ].iter().cloned().collect();
 
-    pub static ref MATH_RELATION_OPCODE: HashMap<MathRelationCommand, u8> = [
-        (MathRelationCommand::And, 0x1),
-        (MathRelationCommand::Or, 0x2),
-        (MathRelationCommand::Not, 0x3),
+    pub static ref MATH_LOGICAL_OPCODE: HashMap<MathLogicalCommand, u8> = [
+        (MathLogicalCommand::And, 0x1),
+        (MathLogicalCommand::Or, 0x2),
+        (MathLogicalCommand::Not, 0x3),
     ].iter().cloned().collect();
 }
 
@@ -109,8 +109,8 @@ impl MathCalcCommand {
   }
 }
 
-impl MathRelationCommand {
+impl MathLogicalCommand {
   pub fn to_opcode(&self) -> u8 {
-      return MATH_RELATION_OPCODE[self];
+      return MATH_LOGICAL_OPCODE[self];
   }
 }

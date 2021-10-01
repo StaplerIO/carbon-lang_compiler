@@ -1,3 +1,5 @@
+pub const PLACE_HOLDER: u8 = 0x0;
+
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum RootCommand {
     Object,
@@ -57,7 +59,7 @@ pub enum MathCalcCommand {
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
-pub enum MathRelationCommand {
+pub enum MathLogicalCommand {
     And,
     Or,
     Not,
