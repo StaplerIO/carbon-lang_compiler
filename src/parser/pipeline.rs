@@ -25,10 +25,10 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Res
     }
 
     if tokens[current_index].token_type != DecoratedTokenType::DecoratedKeyword {
-        return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Invalid token stream encountered!".to_string()) });
+        return Err(GeneralError{ code: "-1".to_string(), description: Option::from("Invalid token stream encountered!".to_string()) });
     } else {
         if tokens[current_index].keyword.unwrap() != KeywordType::KwDeclare {
-            return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Invalid token stream encountered!".to_string()) });
+            return Err(GeneralError{ code: "-1".to_string(), description: Option::from("Invalid token stream encountered!".to_string()) });
         }
     }
 

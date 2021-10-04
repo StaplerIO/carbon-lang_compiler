@@ -51,5 +51,5 @@ pub fn condition_block_builder(leading_keyword: KeywordType, tokens: Vec<Decorat
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }

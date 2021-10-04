@@ -22,7 +22,7 @@ pub fn call_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usiz
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }
 
 pub fn bare_function_call_builder(tokens: Vec<DecoratedToken>) -> Result<(CallAction, usize), GeneralError<String>> {
@@ -47,5 +47,5 @@ pub fn bare_function_call_builder(tokens: Vec<DecoratedToken>) -> Result<(CallAc
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }

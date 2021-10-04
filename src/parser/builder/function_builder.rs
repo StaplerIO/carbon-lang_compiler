@@ -52,7 +52,7 @@ pub fn function_builder(tokens: &Vec<DecoratedToken>) -> Result<(Function, usize
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }
 
 // Need raw argument list

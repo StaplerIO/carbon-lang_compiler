@@ -40,5 +40,5 @@ pub fn short_statements_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action,
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }

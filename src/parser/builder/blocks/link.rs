@@ -13,5 +13,5 @@ pub fn link_statement_builder(tokens: &Vec<DecoratedToken>) -> Result<(String, u
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }

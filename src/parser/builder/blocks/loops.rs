@@ -11,7 +11,7 @@ pub fn while_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usi
         return Ok((Action::new_while(result.clone().ok().unwrap().0), result.ok().unwrap().1));
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }
 
 // Action of keyword "loop" is in file "./short_actions.rs"

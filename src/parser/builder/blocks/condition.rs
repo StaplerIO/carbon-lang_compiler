@@ -36,7 +36,7 @@ pub fn if_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize),
         return Ok((Action::new_if(result), current_index));
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }
 
 // `elif` block must be a sub-node of `if` block, so this is a private method

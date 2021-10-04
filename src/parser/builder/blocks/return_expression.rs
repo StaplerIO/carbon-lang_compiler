@@ -42,5 +42,5 @@ pub fn return_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, us
             }
         }
     }
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }

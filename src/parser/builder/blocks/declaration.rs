@@ -27,7 +27,7 @@ pub fn declaration_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Actio
                 } else if tokens[1].keyword.unwrap() == KeywordType::KwConst {
                     result.is_variable = false;
                 } else {
-                    return Err(GeneralError{ code: "-1".to_string(), decription: Option::from("Require keyword \'var\' or \'const\'".to_string()) });
+                    return Err(GeneralError{ code: "-1".to_string(), description: Option::from("Require keyword \'var\' or \'const\'".to_string()) });
                 }
 
                 return Ok((Action::new_decl(result), next_semicolon_pos.unwrap() + 1));
@@ -35,5 +35,5 @@ pub fn declaration_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Actio
         }
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), decription: None });
+    return Err(GeneralError{ code: "-1".to_string(), description: None });
 }
