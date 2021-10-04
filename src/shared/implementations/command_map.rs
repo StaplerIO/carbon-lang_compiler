@@ -27,7 +27,7 @@ lazy_static! {
 
     pub static ref DOMAIN_COMMAND_OPCODE: HashMap<DomainCommand, u8> = [
         (DomainCommand::Create, 0x1),
-        (DomainCommand::Destory, 0x2),
+        (DomainCommand::Destroy, 0x2),
     ].iter().cloned().collect();
 
     pub static ref JUMP_COMMAND_OPCODE: HashMap<JumpCommand, u8> = [

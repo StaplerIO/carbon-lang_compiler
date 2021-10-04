@@ -27,7 +27,7 @@ pub enum StackCommand {
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum DomainCommand {
     Create,
-    Destory,
+    Destroy,
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
