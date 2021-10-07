@@ -3,9 +3,14 @@
 version = 3
 
 [[package]]
+name = "apa"
+version = "0.1.0"
+
+[[package]]
 name = "carbon-lang_compiler"
 version = "0.0.1-alpha"
 dependencies = [
+ "apa",
  "lazy_static",
 ]
 
