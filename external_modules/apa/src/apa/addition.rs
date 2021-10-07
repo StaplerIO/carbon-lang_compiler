@@ -1,8 +1,8 @@
 use std::cmp::max;
-use std::ops::Index;
 use crate::apa::utils::reverse_string;
 
 pub fn add(mut augend: String, mut addend: String) -> String {
+    // Reverse two numbers, make them 0-index aligned
     augend = reverse_string(augend);
     addend = reverse_string(addend);
 
