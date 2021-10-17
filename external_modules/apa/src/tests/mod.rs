@@ -1,3 +1,4 @@
 mod addition;
-mod multiplication;
 mod subtraction;
+mod multiplication;
+mod division;

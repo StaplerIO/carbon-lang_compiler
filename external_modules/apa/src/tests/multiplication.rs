@@ -1,5 +1,5 @@
 mod tests {
-    use crate::apa::multiplication::multiply;
+    pub use crate::apa::multiplication::multiply;
 
     #[test]
     fn simple_multiplication() {
