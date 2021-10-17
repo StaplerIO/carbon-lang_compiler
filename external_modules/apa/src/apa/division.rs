@@ -1,6 +1,6 @@
 use crate::apa::multiplication::multiply;
 use crate::apa::subtraction::subtract;
-use crate::apa::utils::compare_str_number;
+use crate::apa::utils::{compare_str_number, remove_more_zeros};
 
 pub fn divide(dividend: String, divisor: String, precision: usize) -> String {
     let mut result = String::new();
@@ -8,9 +8,10 @@ pub fn divide(dividend: String, divisor: String, precision: usize) -> String {
     let mut cached_number = String::new();
     for digit in dividend.chars() {
         // Remove useless zeros in the front of number
-        result = result.trim_start_matches(|x| x == '0').parse().unwrap();
-        cached_number = cached_number.trim_start_matches(|x| x == '0').parse().unwrap();
+        result = remove_more_zeros(&result);
+        cached_number = remove_more_zeros(&cached_number);
 
+        // Send current digit to the number waiting to divide
         cached_number.push(digit);
 
         // If the digit count in cached_number is less than divisor, it can't be divided.
@@ -20,7 +21,7 @@ pub fn divide(dividend: String, divisor: String, precision: usize) -> String {
         }
 
         let mut prev_res = String::from("0");
-        let mut quotient: u8 = 0;
+        let mut quotient: usize = 0;
         while quotient <= 10 {
             let current_res = multiply(divisor.clone(), quotient.to_string());
 
@@ -35,6 +36,6 @@ pub fn divide(dividend: String, divisor: String, precision: usize) -> String {
         }
     }
 
-    result = result.trim_start_matches(|x| x == '0').parse().unwrap();
+    result = remove_more_zeros(&result);
     return result;
 }

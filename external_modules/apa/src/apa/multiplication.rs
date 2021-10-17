@@ -1,5 +1,5 @@
 use crate::apa::addition::add;
-use crate::apa::utils::reverse_string;
+use crate::apa::utils::{remove_more_zeros, reverse_string};
 
 pub fn multiply(mut multiplier: String, mut multiplicand: String) -> String {
     // reverse multiplicand and multiplier, make them 0-index aligned
@@ -25,5 +25,6 @@ pub fn multiply(mut multiplier: String, mut multiplicand: String) -> String {
         result = add(result, current_iteration_result);
     }
 
+    result = remove_more_zeros(&result);
     return result;
 }
