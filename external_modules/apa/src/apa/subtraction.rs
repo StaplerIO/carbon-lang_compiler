@@ -17,7 +17,7 @@ pub fn subtract(mut minuend: String, mut subtrahend: String) -> String {
         let tb: u8 = if index < subtrahend.len() { subtrahend.chars().nth(index).unwrap() as u8 - '0' as u8 } else { 0 };
 
         // If previous calculation is less than 0, then minus 1 to this iteration
-        let mut single_digit_result: i8 = (ta - tb) as i8;
+        let mut single_digit_result: i8 = ta as i8 - tb as i8;
         if borrow_flag { single_digit_result -= 1; }
         borrow_flag = false;
 

@@ -27,6 +27,8 @@ pub fn compare_str_number(a: &String, b: &String) -> i8 {
 }
 
 pub fn remove_more_zeros(s: &String) -> String {
+    if s.is_empty() { return String::new(); }
+
     let result: String = s.trim_start_matches(|x| x == '0').parse().unwrap();
     if result.is_empty() {
         return String::from("0");
