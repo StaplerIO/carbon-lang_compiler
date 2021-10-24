@@ -10,6 +10,20 @@ pub enum RootCommand {
     Math,
 }
 
+/**
+ * ## About DataLocator
+ *
+ * Example: `0xA10000000002`
+ *
+ * Format: `A1 00 00 00 00 02`
+ *
+ * Abstraction:  `<Command> <GDF> <Slot>`
+ *
+ * ### About GlobalDataFlag(GDF)
+ *
+ * If data is a global data, then `GDF` is set to `0x01`.
+ * If data is a private data, `GDF` is set to `0x00`
+ */
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum ObjectCommand {
     Create,
