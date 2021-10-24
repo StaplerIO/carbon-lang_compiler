@@ -25,3 +25,7 @@ pub fn infer_every_expression_data_term_type(expression: &Expression, defined_fu
 
     return expr;
 }
+
+pub fn combine_command(master: u8, sub: u8) -> u8 {
+    return master * 0x10 + sub;
+}
