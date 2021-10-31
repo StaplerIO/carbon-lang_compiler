@@ -1,5 +1,5 @@
 mod tests {
-    use crate::apa::subtraction::subtract;
+    pub use crate::apa::subtraction::subtract;
 
     #[test]
     fn simple_subtraction() {
