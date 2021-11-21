@@ -1,11 +1,11 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
-    use crate::package_generator::command_builder::expression_evaluation::expression_command_set_builder;
+    pub use crate::package_generator::command_builder::expression_evaluation::expression_command_set_builder;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
     pub use crate::parser::decorator::decorate_token;
-    use crate::shared::ast::blocks::expression::Expression;
-    use crate::shared::package_generation::data_declaration::DataDeclaration;
-    use crate::shared::package_generation::descriptor::PackageMetadata;
+    pub use crate::shared::ast::blocks::expression::Expression;
+    pub use crate::shared::package_generation::data_declaration::DataDeclaration;
+    pub use crate::shared::package_generation::descriptor::PackageMetadata;
 
     // TODO: Validate the possibility of the test
     #[test]
@@ -26,7 +26,11 @@ mod tests {
         // This is very abstract, needs to be validated
         let commands = expression_command_set_builder(expression, vec![], metadata);
         assert_eq!(commands,
-                   vec![0xb1, 0, 0, 0, 0, 0, 0, 0, 1, 0xb1, 0, 0, 0, 0, 0, 0, 0, 2, 0xb1, 0, 0, 0, 0, 0, 0, 0, 3, 0xf1, 0x03, 0xf1, 0x01]);
+                   vec![0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01,
+                        0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02,
+                        0xb1, 0, 0, 0, 0, 0, 0, 0, 0x03,
+                        0xf1, 0x03,
+                        0xf1, 0x01]);
 
         // println!("{:?}", commands);
     }
@@ -61,7 +65,11 @@ mod tests {
 
         let commands = expression_command_set_builder(expression, defined_data, metadata);
         assert_eq!(commands,
-                   vec![0xb2, 0, 0, 0, 0xb2, 0, 0, 1, 0xb1, 0, 0, 0, 0, 0, 0, 0, 2, 0xf1, 0x03, 0xf1, 0x01]);
+                   vec![0xb2, 0, 0, 0,
+                        0xb2, 0, 0, 1,
+                        0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02,
+                        0xf1, 0x03,
+                        0xf1, 0x01]);
 
         // println!("{:?}", commands);
     }

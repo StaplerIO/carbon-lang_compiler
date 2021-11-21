@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct DataDeclaration {
     pub name: String,
     pub slot: Vec<u8>,
