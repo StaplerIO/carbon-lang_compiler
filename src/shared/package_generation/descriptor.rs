@@ -8,4 +8,14 @@ pub struct PackageDescriptor {
     // Description
     pub compiler_version: String,
     pub author: String,
+
+    // Metadata
+    pub metadata: PackageMetadata,
+}
+
+pub struct PackageMetadata {
+    pub variable_slot_alignment: u8,
+    pub data_alignment: u8,
+    pub command_alignment: u8,
+    pub entry_point_offset: u8
 }
