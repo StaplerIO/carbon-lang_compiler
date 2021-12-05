@@ -20,11 +20,12 @@ mod tests {
             variable_slot_alignment: 0,
             data_alignment: 8,
             command_alignment: 0,
-            entry_point_offset: 0
+            entry_point_offset: 0,
+            domain_layer_count_alignment: 0
         };
 
         // This is very abstract, needs to be validated
-        let commands = expression_command_set_builder(expression, vec![], metadata);
+        let commands = expression_command_set_builder(expression, &vec![], &metadata);
         assert_eq!(commands,
                    vec![0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01,
                         0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02,
@@ -47,7 +48,8 @@ mod tests {
             variable_slot_alignment: 2,
             data_alignment: 8,
             command_alignment: 0,
-            entry_point_offset: 0
+            entry_point_offset: 0,
+            domain_layer_count_alignment: 0
         };
 
         let defined_data = vec![
@@ -63,7 +65,7 @@ mod tests {
             }
         ];
 
-        let commands = expression_command_set_builder(expression, defined_data, metadata);
+        let commands = expression_command_set_builder(expression, &defined_data, &metadata);
         assert_eq!(commands,
                    vec![0xb2, 0, 0, 0,
                         0xb2, 0, 0, 1,

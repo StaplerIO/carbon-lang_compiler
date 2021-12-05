@@ -5,7 +5,7 @@ use crate::shared::command_map::{PLACE_HOLDER, RootCommand, StackCommand};
 use crate::shared::package_generation::data_declaration::DataDeclaration;
 use crate::shared::package_generation::descriptor::PackageMetadata;
 
-pub fn build_assignment_command(action: AssignmentAction, defined_data: Vec<DataDeclaration>, metadata: PackageMetadata) -> Vec<u8> {
+pub fn build_assignment_command(action: AssignmentAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
     let mut result = vec![];
     let target_data = defined_data.iter().find(|&x| x.name == action.identifier).unwrap().clone();
 

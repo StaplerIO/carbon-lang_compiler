@@ -7,7 +7,7 @@ use crate::shared::package_generation::descriptor::PackageMetadata;
 use crate::shared::token::{CalculationOperator, Operator, OperatorType};
 use apa::apa::modulo::modulo;
 
-pub fn expression_command_set_builder(expr: Expression, defined_data: Vec<DataDeclaration>, metadata: PackageMetadata) -> Vec<u8> {
+pub fn expression_command_set_builder(expr: Expression, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
     let mut result: Vec<u8> = vec![];
 
     for term in expr.postfix_expr {
