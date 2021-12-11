@@ -1,9 +1,9 @@
 use crate::package_generator::command_builder::math::calculation::{divide_command, minus_command, mod_command, multiplication_command, plus_command};
-use crate::package_generator::utils::{combine_command, convert_to_u8_array, string_to_hex_char};
+use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array, string_to_hex_char};
 use crate::shared::ast::blocks::expression::{ExprDataTermType, Expression, TermType};
 use crate::shared::command_map::{PLACE_HOLDER, RootCommand, StackCommand};
-use crate::shared::package_generation::data_declaration::DataDeclaration;
-use crate::shared::package_generation::descriptor::PackageMetadata;
+use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::token::{CalculationOperator, Operator, OperatorType};
 use apa::apa::modulo::modulo;
 
@@ -28,18 +28,9 @@ pub fn expression_command_set_builder(expr: Expression, defined_data: &Vec<DataD
                 result.push(combine_command(RootCommand::Stack.to_opcode(), StackCommand::Push.to_opcode()));
 
                 let hex = convert_number_to_hex(data.number.unwrap());
-                let mut hex_array = convert_to_u8_array(hex);
+                let hex_array = convert_to_u8_array(hex);
 
-                // Align to width assigned in package_metadata
-                if hex_array.len() < metadata.data_alignment as usize {
-                    for _ in 0..(metadata.data_alignment as usize - hex_array.len()) {
-                        hex_array.insert(0, 0x00);
-                    }
-                } else if hex_array.len() > metadata.data_alignment as usize {
-                    panic!("Data width is too short, consider changing it into a longer width")
-                }
-
-                result.extend(hex_array);
+                result.extend(align_data_width(hex_array, metadata.data_alignment));
             } else {
                 panic!("Other types of ExprTerm are not implemented yet!");
             }

@@ -43,7 +43,6 @@ pub fn convert_to_u8_array(number: String) -> Vec<u8> {
         }
 
         result[0] *= 0x10;
-        result[0] *= 0x10;
         if digit >= '0' && digit <= '9' {
             result[0] += (digit as u8 - '0' as u8) as u8;
         } else if digit >= 'a' && digit <= 'f' {
@@ -52,6 +51,21 @@ pub fn convert_to_u8_array(number: String) -> Vec<u8> {
             result[0] += ((digit as u8 - 'A' as u8) + 0xA) as u8;
         }
 	}
+
+    return result;
+}
+
+pub fn align_data_width(data_array: Vec<u8>, target_len: u8) -> Vec<u8> {
+    let mut result = data_array.clone();
+
+    // Align to width assigned in package_metadata
+    if data_array.len() < target_len as usize {
+        for _ in 0..(target_len as usize - data_array.len()) {
+            result.insert(0, 0x00);
+        }
+    } else if data_array.len() > target_len as usize {
+        panic!("Data width is too short, consider changing it into a longer width")
+    }
 
     return result;
 }

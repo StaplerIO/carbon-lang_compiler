@@ -3,8 +3,8 @@ mod tests {
     pub use crate::package_generator::command_builder::assignment_action::build_assignment_command;
     pub use crate::parser::builder::blocks::assignment::assignment_block_builder;
     pub use crate::parser::decorator::decorate_token;
-    pub use crate::shared::package_generation::data_declaration::DataDeclaration;
-    pub use crate::shared::package_generation::descriptor::PackageMetadata;
+    pub use crate::shared::package_generation::data_descriptor::DataDeclaration;
+    pub use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
     #[test]
     fn simple_test() {

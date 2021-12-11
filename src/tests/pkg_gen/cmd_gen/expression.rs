@@ -4,8 +4,8 @@ mod tests {
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::ast::blocks::expression::Expression;
-    pub use crate::shared::package_generation::data_declaration::DataDeclaration;
-    pub use crate::shared::package_generation::descriptor::PackageMetadata;
+    pub use crate::shared::package_generation::data_descriptor::DataDeclaration;
+    pub use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
     // TODO: Validate the possibility of the test
     #[test]
