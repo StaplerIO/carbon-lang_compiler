@@ -5,11 +5,11 @@ use crate::shared::command_map::{PLACE_HOLDER, RootCommand, StackCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
-pub fn build_assignment_command(action: AssignmentAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
+pub fn build_assignment_command(action: &AssignmentAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
     let mut result = vec![];
     let target_data = defined_data.iter().find(|&x| x.name == action.identifier).unwrap().clone();
 
-    let expression_command_set = expression_command_set_builder(action.eval_expression, defined_data, metadata);
+    let expression_command_set = expression_command_set_builder(&action.eval_expression, defined_data, metadata);
     result.extend(expression_command_set);
 
     // Push stack top to target data slot

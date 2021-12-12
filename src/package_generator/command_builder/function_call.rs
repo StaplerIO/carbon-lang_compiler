@@ -35,7 +35,7 @@ fn calculate_parameters(action: &CallAction, defined_data: &Vec<DataDeclaration>
     for (idx, param) in action.arguments.iter().enumerate() {
         // Data of current parameter is on the top of the stack
         // Evaluate the value of the expression
-        let expression_eval_cmd = expression_command_set_builder(Expression {
+        let expression_eval_cmd = expression_command_set_builder(&Expression {
             postfix_expr: param.postfix_expr.clone(),
             output_type: "".to_string()
         }, defined_data, metadata);

@@ -25,7 +25,7 @@ mod tests {
         };
 
         // This is very abstract, needs to be validated
-        let commands = expression_command_set_builder(expression, &vec![], &metadata);
+        let commands = expression_command_set_builder(&expression, &vec![], &metadata);
         assert_eq!(commands,
                    vec![0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01,
                         0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02,
@@ -65,7 +65,7 @@ mod tests {
             }
         ];
 
-        let commands = expression_command_set_builder(expression, &defined_data, &metadata);
+        let commands = expression_command_set_builder(&expression, &defined_data, &metadata);
         assert_eq!(commands,
                    vec![0xb2, 0, 0, 0,
                         0xb2, 0, 0, 1,

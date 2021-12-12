@@ -31,7 +31,7 @@ mod tests {
             }
         ];
 
-        let commands = build_assignment_command(action, &defined_data, &metadata);
+        let commands = build_assignment_command(&action, &defined_data, &metadata);
         assert_eq!(commands,
                    vec![0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01,
                         0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02,

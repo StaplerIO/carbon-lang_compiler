@@ -7,12 +7,12 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::token::{CalculationOperator, Operator, OperatorType};
 use apa::apa::modulo::modulo;
 
-pub fn expression_command_set_builder(expr: Expression, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
+pub fn expression_command_set_builder(expr: &Expression, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
     let mut result: Vec<u8> = vec![];
 
-    for term in expr.postfix_expr {
+    for term in &expr.postfix_expr {
         if term.term_type == TermType::Data {
-            let data = term.data.unwrap();
+            let data = term.clone().data.unwrap();
 
             // push data to stack
             if data.data_type == ExprDataTermType::Identifier {
