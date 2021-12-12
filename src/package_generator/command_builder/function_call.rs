@@ -8,19 +8,33 @@ use crate::shared::package_generation::data_descriptor::{DataAccessDescriptor, D
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::function::{FunctionCallDescriptor, FunctionDescriptor};
 
-pub fn function_call_builder(action: &CallAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata, defined_functions: &Vec<FunctionDescriptor>) -> (Vec<u8>, FunctionCallDescriptor) {
+pub fn function_call_builder(action: &CallAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata, defined_functions: &Vec<FunctionDescriptor>) -> Vec<u8> {
     let mut result = vec![];
-    let descriptor: FunctionCallDescriptor = FunctionCallDescriptor {
-        target_function_identifier: action.function_name.clone(),
-        relocation_start_loc: 0,
-    };
-    // let target_function = defined_functions.iter().find(|&x| x.identifier.eq(&descriptor.target_function_identifier)).unwrap();
 
-    let mut dac_list = vec![];
+    // let target_function = defined_functions.iter().find(|&x| x.identifier.eq(&descriptor.target_function_identifier)).unwrap();
+    let mut dac_list: Vec<DataAccessDescriptor> = vec![];
 
     // Calculate parameters
+    let calculate_result = calculate_parameters(action, defined_data, metadata, defined_functions, dac_list);
+    result.extend(calculate_result.0);
+    dac_list = calculate_result.1;
+
+    // Push all values to new domain
+    // Create domain
+    result.push(combine_command(RootCommand::Domain.to_opcode(), DomainCommand::Create.to_opcode()));
+    // Push all parameters
+    result.extend(push_parameters(&dac_list, metadata));
+    // Remove old data in parent domain
+    result.extend(remove_old_data(action, defined_data, metadata));
+    return result;
+}
+
+fn calculate_parameters(action: &CallAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata, defined_functions: &Vec<FunctionDescriptor>, mut dac_list: Vec<DataAccessDescriptor>) -> (Vec<u8>, Vec<DataAccessDescriptor>) {
+    let mut result = vec![];
+
     for (idx, param) in action.arguments.iter().enumerate() {
         // Data of current parameter is on the top of the stack
+        // Evaluate the value of the expression
         let expression_eval_cmd = expression_command_set_builder(Expression {
             postfix_expr: param.postfix_expr.clone(),
             output_type: "".to_string()
@@ -49,11 +63,11 @@ pub fn function_call_builder(action: &CallAction, defined_data: &Vec<DataDeclara
         result.extend(pop_data);
     }
 
-    // Push all values to new domain
-    // Create domain
-    result.push(combine_command(RootCommand::Domain.to_opcode(), DomainCommand::Create.to_opcode()));
+    return (result, dac_list);
+}
 
-    // Push all parameters
+fn push_parameters(dac_list: &Vec<DataAccessDescriptor>, metadata: &PackageMetadata) -> Vec<u8> {
+    let mut result = vec![];
     for (idx, dac) in dac_list.iter().enumerate() {
         let mut cloned_dac = dac.clone();
         // For a new domain, the data we want to move here is in the parent domain
@@ -87,7 +101,12 @@ pub fn function_call_builder(action: &CallAction, defined_data: &Vec<DataDeclara
         result.extend(pop_data);
     }
 
-    // Remove old data in parent domain
+    return result;
+}
+
+fn remove_old_data(action: &CallAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8>{
+    let mut result = vec![];
+
     for idx in 0..action.arguments.len() {
         // Pop stack data to data slot
         let mut pop_data = vec![];
@@ -108,5 +127,5 @@ pub fn function_call_builder(action: &CallAction, defined_data: &Vec<DataDeclara
         result.extend(destroy_data);
     }
 
-    return (result, descriptor);
+    return result;
 }

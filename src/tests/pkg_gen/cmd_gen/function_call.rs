@@ -28,10 +28,10 @@ mod tests {
             }
         ];
 
-        let commands = function_call_builder(&action, &defined_data, &metadata, &vec![]).0;
+        let _commands = function_call_builder(&action, &defined_data, &metadata, &vec![]);
 
-        for element in commands {
-            print!("{},", convert_number_to_hex(element.to_string()));
-        }
+        // for element in commands {
+        //     print!("{},", convert_number_to_hex(element.to_string()));
+        // }
     }
 }
