@@ -1,3 +1,4 @@
+pub mod action_block;
 pub mod data_commands;
 pub mod expression_evaluation;
 pub mod assignment_action;
