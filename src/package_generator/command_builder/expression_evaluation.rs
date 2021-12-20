@@ -64,10 +64,7 @@ pub fn operator_opcode_builder(operator: &Operator) -> Vec<u8> {
 pub fn convert_number_to_hex(mut number: String) -> String {
     // Means it is already a hex number
     if number.starts_with("0x") {
-        number.remove(0);
-        number.remove(0);
-
-        return number;
+        return number[2..].to_string();
     }
 
     // Otherwise, it is a decimal. Convert it to hex
