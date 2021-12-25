@@ -3,10 +3,12 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ReturnAction};
 use crate::shared::ast::blocks::expression::Expression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::token::KeywordType;
 use crate::shared::error::general_error::GeneralError;
+use crate::shared::token::KeywordType;
 
-pub fn return_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn return_action_builder(
+    tokens: &Vec<DecoratedToken>,
+) -> Result<(Action, usize), GeneralError<String>> {
     // Minimum: return ; (2 tokens in total)
     if tokens.len() >= 2 {
         if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
@@ -15,15 +17,15 @@ pub fn return_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, us
 
                 if next_semicolon_pos.unwrap_or(0) > 0 {
                     #[allow(unused_assignments)]
-                        let mut result: Option<ReturnAction> = None;
+                    let mut result: Option<ReturnAction> = None;
 
                     if next_semicolon_pos.unwrap() == 1 {
                         // No return value
                         result = Option::from(ReturnAction {
                             value: Expression {
                                 postfix_expr: vec![],
-                                output_type: String::new()
-                            }
+                                output_type: String::new(),
+                            },
                         });
                     } else {
                         // With return value
@@ -32,15 +34,21 @@ pub fn return_action_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, us
                         result = Option::from(ReturnAction {
                             value: Expression {
                                 postfix_expr: expression_infix_to_postfix(expression_zone.clone()),
-                                output_type: String::new()
-                            }
+                                output_type: String::new(),
+                            },
                         });
                     }
 
-                    return Ok((Action::new_return(result.unwrap()), next_semicolon_pos.unwrap() + 1));
+                    return Ok((
+                        Action::new_return(result.unwrap()),
+                        next_semicolon_pos.unwrap() + 1,
+                    ));
                 }
             }
         }
     }
-    return Err(GeneralError{ code: "-1".to_string(), description: None });
+    return Err(GeneralError {
+        code: "-1".to_string(),
+        description: None,
+    });
 }

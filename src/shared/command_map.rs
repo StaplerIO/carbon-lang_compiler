@@ -27,7 +27,7 @@ pub enum RootCommand {
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum ObjectCommand {
     Create,
-    Destroy
+    Destroy,
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
@@ -60,7 +60,7 @@ pub enum FunctionCommand {
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum MathCommand {
     Calculation,
-    Logical
+    Logical,
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]

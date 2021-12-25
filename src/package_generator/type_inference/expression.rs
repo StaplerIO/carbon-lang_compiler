@@ -1,9 +1,15 @@
 use crate::shared::ast::action::VariableDefinition;
-use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, Expression, ExprTerm, TermType};
+use crate::shared::ast::blocks::expression::{
+    ExprDataTerm, ExprDataTermType, ExprTerm, Expression, TermType,
+};
 use crate::shared::ast::blocks::function::Function;
 
 // Term must be DataTerm
-pub fn infer_expression_term_data_type(term: &ExprDataTerm, defined_functions: &Vec<Function>, defined_variables: &Vec<VariableDefinition>) -> Option<String> {
+pub fn infer_expression_term_data_type(
+    term: &ExprDataTerm,
+    defined_functions: &Vec<Function>,
+    defined_variables: &Vec<VariableDefinition>,
+) -> Option<String> {
     return match term.clone().data_type {
         ExprDataTermType::Number => Option::from(String::from("number")),
         ExprDataTermType::String => Option::from(String::from("str")),
@@ -15,7 +21,7 @@ pub fn infer_expression_term_data_type(term: &ExprDataTerm, defined_functions: &
             }
 
             None
-        },
+        }
         ExprDataTermType::FunctionCall => {
             for def_func in defined_functions {
                 if def_func.name == term.clone().function_call.unwrap().function_name {
@@ -24,12 +30,15 @@ pub fn infer_expression_term_data_type(term: &ExprDataTerm, defined_functions: &
             }
 
             None
-        },
-        _ => None
-    }
+        }
+        _ => None,
+    };
 }
 
-pub fn infer_expression_output_type(expression: &Expression, defined_types: &Vec<String>) -> Option<String> {
+pub fn infer_expression_output_type(
+    expression: &Expression,
+    defined_types: &Vec<String>,
+) -> Option<String> {
     let mut possible_types = defined_types.clone();
     for term in &expression.postfix_expr {
         let mut indexes_to_remove: Vec<usize> = vec![];
@@ -53,7 +62,9 @@ pub fn infer_expression_output_type(expression: &Expression, defined_types: &Vec
 
     return if possible_types.len() == 1 {
         Option::from(possible_types[0].clone())
-    } else { None }
+    } else {
+        None
+    };
 }
 
 // TermType must be Data, check it before calling this function

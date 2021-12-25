@@ -1,4 +1,6 @@
-use crate::shared::token::{Operator, OperatorType, LogicalOperator, RelationOperator, CalculationOperator};
+use crate::shared::token::{
+    CalculationOperator, LogicalOperator, Operator, OperatorType, RelationOperator,
+};
 
 /**
  * Return:
@@ -6,21 +8,11 @@ use crate::shared::token::{Operator, OperatorType, LogicalOperator, RelationOper
  */
 pub fn match_operator(content: &str) -> (Operator, usize) {
     return match content.chars().nth(0).unwrap() {
-        '+' => {
-            (Operator::new_calculation(CalculationOperator::Plus), 1)
-        }
-        '-' => {
-            (Operator::new_calculation(CalculationOperator::Minus), 1)
-        }
-        '*' => {
-            (Operator::new_calculation(CalculationOperator::Times), 1)
-        }
-        '/' => {
-            (Operator::new_calculation(CalculationOperator::Divide), 1)
-        }
-        '%' => {
-            (Operator::new_calculation(CalculationOperator::Mod), 1)
-        }
+        '+' => (Operator::new_calculation(CalculationOperator::Plus), 1),
+        '-' => (Operator::new_calculation(CalculationOperator::Minus), 1),
+        '*' => (Operator::new_calculation(CalculationOperator::Times), 1),
+        '/' => (Operator::new_calculation(CalculationOperator::Divide), 1),
+        '%' => (Operator::new_calculation(CalculationOperator::Mod), 1),
         '<' => {
             match content.chars().nth(1).unwrap() {
                 '=' => {
@@ -57,26 +49,28 @@ pub fn match_operator(content: &str) -> (Operator, usize) {
                 }
                 _ => {
                     // Matches a "=" sequence
-                    (Operator {
-                        operator_type: OperatorType::Assignment,
-                        calculation: None,
-                        relation: None,
-                        logical: None,
-                    }, 1)
+                    (
+                        Operator {
+                            operator_type: OperatorType::Assignment,
+                            calculation: None,
+                            relation: None,
+                            logical: None,
+                        },
+                        1,
+                    )
                 }
             }
         }
-        '!' => {
-            (Operator::new_logical(LogicalOperator::Not), 1)
-        }
-        ',' => {
-            (Operator {
+        '!' => (Operator::new_logical(LogicalOperator::Not), 1),
+        ',' => (
+            Operator {
                 operator_type: OperatorType::Comma,
                 calculation: None,
                 relation: None,
                 logical: None,
-            }, 1)
-        }
+            },
+            1,
+        ),
         _ => {
             let capture = String::from(&content[0..2]);
             if capture.eq("&&") {
@@ -84,19 +78,25 @@ pub fn match_operator(content: &str) -> (Operator, usize) {
             } else if capture.eq("||") {
                 (Operator::new_logical(LogicalOperator::Or), 2)
             } else if capture.eq("::") {
-                (Operator {
-                    operator_type: OperatorType::Scope,
-                    calculation: None,
-                    relation: None,
-                    logical: Option::from(LogicalOperator::Unset),
-                }, 2)
+                (
+                    Operator {
+                        operator_type: OperatorType::Scope,
+                        calculation: None,
+                        relation: None,
+                        logical: Option::from(LogicalOperator::Unset),
+                    },
+                    2,
+                )
             } else {
-                (Operator {
-                    operator_type: OperatorType::Unset,
-                    calculation: None,
-                    relation: None,
-                    logical: None,
-                }, 0)
+                (
+                    Operator {
+                        operator_type: OperatorType::Unset,
+                        calculation: None,
+                        relation: None,
+                        logical: None,
+                    },
+                    0,
+                )
             }
         }
     };

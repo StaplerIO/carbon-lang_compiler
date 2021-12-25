@@ -10,39 +10,38 @@ pub enum TokenType {
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
-pub enum KeywordType
-{
-    KwNumber,           // number
-    KwChar,             // char
-    KwStr,              // str
-    KwDeclare,          // decl
-    KwVar,              // var
-    KwConst,            // const
-    KwExport,           // export
-    KwFunc,             // func
-    KwIf,               // if
-    KwElseIf,           // elif
-    KwElse,             // else
-    KwWhile,            // while
-    KwLoop,             // loop
-    KwSwitch,           // switch
-    KwContinue,         // continue
-    KwBreak,            // break
-    KwReturn,           // return
-    KwCall,             // call
-    KwLink,             // link
-    KwNone,             // none
+pub enum KeywordType {
+    KwNumber,   // number
+    KwChar,     // char
+    KwStr,      // str
+    KwDeclare,  // decl
+    KwVar,      // var
+    KwConst,    // const
+    KwExport,   // export
+    KwFunc,     // func
+    KwIf,       // if
+    KwElseIf,   // elif
+    KwElse,     // else
+    KwWhile,    // while
+    KwLoop,     // loop
+    KwSwitch,   // switch
+    KwContinue, // continue
+    KwBreak,    // break
+    KwReturn,   // return
+    KwCall,     // call
+    KwLink,     // link
+    KwNone,     // none
     Unset,
 }
 
 #[derive(Copy, Clone, PartialEq, Debug)]
-pub enum ContainerType{
-    Brace,              // {
-    AntiBrace,          // }
-    Bracket,            // (
-    AntiBracket,        // )
-    Index,              // [
-    AntiIndex,          // ]
+pub enum ContainerType {
+    Brace,       // {
+    AntiBrace,   // }
+    Bracket,     // (
+    AntiBracket, // )
+    Index,       // [
+    AntiIndex,   // ]
     Unset,
 }
 
@@ -64,7 +63,7 @@ pub struct Operator {
 
     pub calculation: Option<CalculationOperator>,
     pub relation: Option<RelationOperator>,
-    pub logical: Option<LogicalOperator>
+    pub logical: Option<LogicalOperator>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Hash)]
@@ -74,36 +73,35 @@ pub enum OperatorType {
     Relation,
     Logical,
     // Absolute type
-    Assignment,         // =
-    Scope,              // ::
-    Comma,              // ,
+    Assignment, // =
+    Scope,      // ::
+    Comma,      // ,
     Unset,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub enum CalculationOperator {
-    Plus,               // +
-    Minus,              // -
-    Times,              // *
-    Divide,             // /
-    Mod,                // %
+    Plus,   // +
+    Minus,  // -
+    Times,  // *
+    Divide, // /
+    Mod,    // %
 }
 
 #[derive(Copy, Clone, PartialEq)]
-pub enum RelationOperator
-{
-    Bigger,             // >
-    BiggerEqual,        // >=
-    Less,               // <
-    LessEqual,          // <=
-    NotEqual,           // <>
-    Equal,              // ==
+pub enum RelationOperator {
+    Bigger,      // >
+    BiggerEqual, // >=
+    Less,        // <
+    LessEqual,   // <=
+    NotEqual,    // <>
+    Equal,       // ==
 }
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum LogicalOperator {
-    Not,                // !
-    And,                // &&
-    Or,                 // ||
+    Not, // !
+    And, // &&
+    Or,  // ||
     Unset,
 }

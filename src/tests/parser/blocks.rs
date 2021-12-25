@@ -11,10 +11,10 @@ mod tests {
     pub use crate::parser::builder::function_builder::function_builder;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::ast::action::ActionType;
+    pub use crate::shared::ast::blocks::expression::ExprDataTermType;
     pub use crate::shared::ast::blocks::expression::TermType;
     pub use crate::shared::ast::decorated_token::{DataType, DecoratedTokenType};
     pub use crate::shared::token::CalculationOperator;
-    pub use crate::shared::ast::blocks::expression::ExprDataTermType;
 
     #[test]
     fn assignment() {
@@ -28,9 +28,18 @@ mod tests {
 
         let expr = result.eval_expression.postfix_expr;
         assert_eq!(expr.len(), 3);
-        assert_eq!(expr[0].clone().data.unwrap().number.unwrap(), String::from("1"));
-        assert_eq!(expr[1].clone().data.unwrap().number.unwrap(), String::from("2"));
-        assert_eq!(expr[2].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Plus);
+        assert_eq!(
+            expr[0].clone().data.unwrap().number.unwrap(),
+            String::from("1")
+        );
+        assert_eq!(
+            expr[1].clone().data.unwrap().number.unwrap(),
+            String::from("2")
+        );
+        assert_eq!(
+            expr[2].clone().operator.unwrap().calculation.unwrap(),
+            CalculationOperator::Plus
+        );
     }
 
     #[test]
@@ -59,9 +68,28 @@ mod tests {
         assert_eq!(result.arguments[0].postfix_expr.len(), 1);
         assert_eq!(result.arguments[1].postfix_expr.len(), 1);
         assert_eq!(result.arguments[2].postfix_expr.len(), 1);
-        assert_eq!(result.arguments[2].postfix_expr[0].clone().data.unwrap().clone().identifier.unwrap(), String::from("var1"));
+        assert_eq!(
+            result.arguments[2].postfix_expr[0]
+                .clone()
+                .data
+                .unwrap()
+                .clone()
+                .identifier
+                .unwrap(),
+            String::from("var1")
+        );
         // Postfix expression: 3 2 -
-        assert_eq!(result.arguments.last().unwrap().postfix_expr.last().unwrap().term_type, TermType::Operator);
+        assert_eq!(
+            result
+                .arguments
+                .last()
+                .unwrap()
+                .postfix_expr
+                .last()
+                .unwrap()
+                .term_type,
+            TermType::Operator
+        );
     }
 
     #[test]
@@ -85,7 +113,15 @@ mod tests {
 
         assert_eq!(result.value.postfix_expr.len(), 5);
         // Value expression: 1 2 tb_234 * +
-        assert_eq!(result.value.postfix_expr[0].clone().data.unwrap().clone().data_type, ExprDataTermType::Number);
+        assert_eq!(
+            result.value.postfix_expr[0]
+                .clone()
+                .data
+                .unwrap()
+                .clone()
+                .data_type,
+            ExprDataTermType::Number
+        );
     }
 
     #[test]
@@ -158,7 +194,9 @@ mod tests {
 
     #[test]
     fn function_block() {
-        let tokens = tokenize(String::from("decl func main(number a, number b)[number] { return a + b; }"));
+        let tokens = tokenize(String::from(
+            "decl func main(number a, number b)[number] { return a + b; }",
+        ));
         let raw = function_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0;

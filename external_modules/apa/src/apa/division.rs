@@ -20,7 +20,6 @@ pub fn divide(dividend: String, divisor: String, precision: usize) -> String {
             continue;
         }
 
-
         let mut prev_res = String::from("0");
         let mut quotient: usize = 0;
         while quotient <= 10 {

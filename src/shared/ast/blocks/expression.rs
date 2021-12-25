@@ -5,7 +5,7 @@ use crate::shared::token::Operator;
 pub struct Expression {
     pub postfix_expr: Vec<ExprTerm>,
 
-    pub output_type: String
+    pub output_type: String,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -15,7 +15,7 @@ pub enum TermType {
     Priority,
 
     // Only available in compile time
-    Validated
+    Validated,
 }
 
 #[derive(Clone)]

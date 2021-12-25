@@ -1,19 +1,27 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::token::{OperatorType, ContainerType, Operator};
+use crate::shared::token::{ContainerType, Operator, OperatorType};
 
 // Return the distance to next semicolon token, None to find nothing
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> Option<usize> {
-    return tokens.iter().position(|t| t.token_type == DecoratedTokenType::StatementEndSign);
+    return tokens
+        .iter()
+        .position(|t| t.token_type == DecoratedTokenType::StatementEndSign);
 }
 
 // Return the distance to next comma token, None to find nothing
 pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> Option<usize> {
-    return tokens.iter().position(|t| t.token_type == DecoratedTokenType::Operator && t.operator.unwrap_or(Operator{
-        operator_type: OperatorType::Unset,
-        calculation: None,
-        relation: None,
-        logical: None
-    }).operator_type == OperatorType::Comma);
+    return tokens.iter().position(|t| {
+        t.token_type == DecoratedTokenType::Operator
+            && t.operator
+                .unwrap_or(Operator {
+                    operator_type: OperatorType::Unset,
+                    calculation: None,
+                    relation: None,
+                    logical: None,
+                })
+                .operator_type
+                == OperatorType::Comma
+    });
 }
 
 pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedToken>> {
@@ -54,7 +62,7 @@ pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
                     ContainerType::Brace => ContainerType::AntiBrace,
                     ContainerType::Bracket => ContainerType::AntiBracket,
                     ContainerType::Index => ContainerType::AntiIndex,
-                    _ => ContainerType::Unset
+                    _ => ContainerType::Unset,
                 };
             }
 

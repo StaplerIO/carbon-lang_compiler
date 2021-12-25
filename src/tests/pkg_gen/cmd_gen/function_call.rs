@@ -10,23 +10,25 @@ mod tests {
     #[test]
     fn function_call() {
         let tokens = tokenize("call foo(23, bar);".to_string());
-        let action = call_action_builder(&decorate_token(tokens)).unwrap().0.call_action.unwrap();
+        let action = call_action_builder(&decorate_token(tokens))
+            .unwrap()
+            .0
+            .call_action
+            .unwrap();
 
         let metadata = PackageMetadata {
             variable_slot_alignment: 2,
             data_alignment: 4,
             command_alignment: 0,
             entry_point_offset: 0,
-            domain_layer_count_alignment: 2
+            domain_layer_count_alignment: 2,
         };
 
-        let defined_data = vec![
-            DataDeclaration{
-                name: "bar".to_string(),
-                slot: vec![0x00, 0x00],
-                is_global: false
-            }
-        ];
+        let defined_data = vec![DataDeclaration {
+            name: "bar".to_string(),
+            slot: vec![0x00, 0x00],
+            is_global: false,
+        }];
 
         let _commands = function_call_builder(&action, &defined_data, &metadata, &vec![]);
 

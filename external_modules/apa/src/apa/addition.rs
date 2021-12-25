@@ -1,4 +1,5 @@
 use std::cmp::max;
+
 use crate::apa::utils::reverse_string;
 
 pub fn add(mut augend: String, mut addend: String) -> String {
@@ -12,12 +13,22 @@ pub fn add(mut augend: String, mut addend: String) -> String {
     let mut carry_flag = false;
 
     for index in 0..max_length {
-        let ta: u8 = if index < augend.len() { augend.chars().nth(index).unwrap() as u8 - '0' as u8 } else { 0 };
-        let tb: u8 = if index < addend.len() { addend.chars().nth(index).unwrap() as u8 - '0' as u8 } else { 0 };
+        let ta: u8 = if index < augend.len() {
+            augend.chars().nth(index).unwrap() as u8 - '0' as u8
+        } else {
+            0
+        };
+        let tb: u8 = if index < addend.len() {
+            addend.chars().nth(index).unwrap() as u8 - '0' as u8
+        } else {
+            0
+        };
 
         // If previous calculation is bigger than 10, then add 1 to this iteration
         let mut single_digit_result = ta + tb;
-        if carry_flag { single_digit_result += 1; }
+        if carry_flag {
+            single_digit_result += 1;
+        }
         carry_flag = false;
 
         if single_digit_result >= 10 {
@@ -29,7 +40,9 @@ pub fn add(mut augend: String, mut addend: String) -> String {
     }
 
     // Add last carry flag
-    if carry_flag { result.push('1'); }
+    if carry_flag {
+        result.push('1');
+    }
     result = reverse_string(result);
 
     return result;

@@ -1,7 +1,9 @@
 mod tests {
     #[test]
     fn no_comment() {
-        let result = crate::lexer::preprocess::remove_comments(String::from("func main() -> int { return 0; }"));
+        let result = crate::lexer::preprocess::remove_comments(String::from(
+            "func main() -> int { return 0; }",
+        ));
 
         assert_eq!(result, String::from("func main() -> int { return 0; }"));
     }
@@ -14,7 +16,9 @@ mod tests {
 
     #[test]
     fn complex_comment() {
-        let result = crate::lexer::preprocess::remove_comments(String::from("#asas22# \"car#bo#n\" #t1# func main(\'#\')"));
+        let result = crate::lexer::preprocess::remove_comments(String::from(
+            "#asas22# \"car#bo#n\" #t1# func main(\'#\')",
+        ));
         assert_eq!(result, String::from(" \"car#bo#n\"  func main(\'#\')"));
     }
 }

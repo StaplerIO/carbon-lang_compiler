@@ -46,13 +46,13 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
                         string: None,
                         identifier: None,
                         function_call: Option::from(function_call.clone().ok().unwrap().0),
-                        type_name: None
+                        type_name: None,
                     }),
                     operator: None,
-                    priority: None
+                    priority: None,
                 });
 
-                tokens = tokens[function_call.ok().unwrap().1 ..].to_vec();
+                tokens = tokens[function_call.ok().unwrap().1..].to_vec();
                 continue;
             }
 
@@ -63,7 +63,7 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
                     term_type: TermType::Data,
                     data: Option::from(ExprDataTerm::from_data_token(data.clone())),
                     operator: None,
-                    priority: None
+                    priority: None,
                 });
 
                 tokens = tokens[1..].to_vec();
@@ -74,7 +74,7 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
                 term_type: TermType::Priority,
                 data: None,
                 operator: None,
-                priority: Option::from(token.container.unwrap() == ContainerType::Bracket)
+                priority: Option::from(token.container.unwrap() == ContainerType::Bracket),
             });
 
             tokens = tokens[1..].to_vec();
@@ -84,7 +84,7 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
                 term_type: TermType::Operator,
                 data: None,
                 operator: token.operator,
-                priority: None
+                priority: None,
             });
 
             tokens = tokens[1..].to_vec();
@@ -101,9 +101,9 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
 fn is_operator_dt(token: DecoratedToken) -> bool {
     if token.token_type == DecoratedTokenType::Operator {
         let operator = token.operator.unwrap();
-        return operator.operator_type == OperatorType::Calculation ||
-            operator.operator_type == OperatorType::Relation ||
-            operator.operator_type == OperatorType::Logical;
+        return operator.operator_type == OperatorType::Calculation
+            || operator.operator_type == OperatorType::Relation
+            || operator.operator_type == OperatorType::Logical;
     }
 
     return false;
@@ -113,8 +113,7 @@ fn is_bracket(token: DecoratedToken) -> bool {
     if token.token_type == DecoratedTokenType::Container {
         let container = token.container.unwrap();
 
-        return container == ContainerType::Bracket ||
-            container == ContainerType::AntiBracket;
+        return container == ContainerType::Bracket || container == ContainerType::AntiBracket;
     }
 
     return false;
@@ -132,19 +131,22 @@ pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm>
             TermType::Data => {
                 // Push all terms into result directly (infix to postfix)
                 result.push(token.clone());
-            },
+            }
             TermType::Operator => {
                 // The previous TermType::Priority must increased the priority level
-                while !operator_stack.is_empty() &&
-                    operator_stack.last().unwrap().term_type != TermType::Priority {
+                while !operator_stack.is_empty()
+                    && operator_stack.last().unwrap().term_type != TermType::Priority
+                {
                     // Pop if operator priority is higher than current operator
                     if priority_is_higher(operator_stack.last().unwrap().clone(), token.clone()) {
                         result.push(operator_stack.pop().unwrap());
-                    } else { break; }
+                    } else {
+                        break;
+                    }
                 }
 
                 operator_stack.push(token.clone());
-            },
+            }
             TermType::Priority => {
                 if token.priority.unwrap() {
                     operator_stack.push(token.clone());
@@ -157,7 +159,7 @@ pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm>
                     // Pop this bracket (it won't be transferred to result)
                     operator_stack.pop();
                 }
-            },
+            }
             _ => {}
         };
     }
@@ -174,9 +176,9 @@ pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm>
 fn is_operator_et(token: ExprTerm) -> bool {
     if token.term_type == TermType::Operator {
         let operator = token.operator.unwrap();
-        return operator.operator_type == OperatorType::Calculation ||
-            operator.operator_type == OperatorType::Relation ||
-            operator.operator_type == OperatorType::Logical;
+        return operator.operator_type == OperatorType::Calculation
+            || operator.operator_type == OperatorType::Relation
+            || operator.operator_type == OperatorType::Logical;
     }
 
     return false;
@@ -186,12 +188,14 @@ fn is_operator_et(token: ExprTerm) -> bool {
 fn priority_is_higher(a: ExprTerm, b: ExprTerm) -> bool {
     if is_operator_et(a.clone()) && is_operator_et(b.clone()) {
         return if a.operator.unwrap().operator_type != b.operator.unwrap().operator_type {
-            OPERATOR_PRIORITY[&a.operator.unwrap().operator_type] >= OPERATOR_PRIORITY[&b.operator.unwrap().operator_type]
+            OPERATOR_PRIORITY[&a.operator.unwrap().operator_type]
+                >= OPERATOR_PRIORITY[&b.operator.unwrap().operator_type]
         } else if a.operator.unwrap().operator_type == OperatorType::Calculation {
             // Then they are equal on operator type (ElseIf ~ End If)
             // So we just need to compare with 1 token
 
-            CALC_OPERATOR_PRIORITY[&a.operator.unwrap().calculation.unwrap()] >= CALC_OPERATOR_PRIORITY[&b.operator.unwrap().calculation.unwrap()]
+            CALC_OPERATOR_PRIORITY[&a.operator.unwrap().calculation.unwrap()]
+                >= CALC_OPERATOR_PRIORITY[&b.operator.unwrap().calculation.unwrap()]
         } else {
             true
         };

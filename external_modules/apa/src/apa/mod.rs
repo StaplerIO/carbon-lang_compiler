@@ -1,6 +1,6 @@
 pub mod addition;
-pub mod subtraction;
-pub mod multiplication;
 pub mod division;
 pub mod modulo;
+pub mod multiplication;
+pub mod subtraction;
 mod utils;

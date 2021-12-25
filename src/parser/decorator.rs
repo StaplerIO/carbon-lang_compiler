@@ -1,5 +1,7 @@
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType, DataToken, DataType};
-use crate::shared::token::{Token, TokenType, KeywordType};
+use crate::shared::ast::decorated_token::{
+    DataToken, DataType, DecoratedToken, DecoratedTokenType,
+};
+use crate::shared::token::{KeywordType, Token, TokenType};
 
 pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
     let mut result: Vec<DecoratedToken> = Vec::new();
@@ -101,8 +103,8 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                     keyword: token.keyword.clone(),
                     container: None,
                     operator: None,
-                })
-            }
+                }),
+            },
             TokenType::Operator => result.push(DecoratedToken {
                 token_type: DecoratedTokenType::Operator,
                 data: None,
@@ -110,15 +112,13 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                 container: None,
                 operator: token.operator.clone(),
             }),
-            TokenType::Semicolon => {
-                result.push(DecoratedToken {
-                    token_type: DecoratedTokenType::StatementEndSign,
-                    data: None,
-                    keyword: None,
-                    container: None,
-                    operator: None,
-                })
-            }
+            TokenType::Semicolon => result.push(DecoratedToken {
+                token_type: DecoratedTokenType::StatementEndSign,
+                data: None,
+                keyword: None,
+                container: None,
+                operator: None,
+            }),
         }
     }
 

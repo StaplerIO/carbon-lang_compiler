@@ -1,2 +1,2 @@
-mod tokenize;
 mod preprocess_test;
+mod tokenize;

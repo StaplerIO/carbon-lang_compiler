@@ -12,4 +12,3 @@ pub fn match_spaces(content: &str) -> String {
 
     return result;
 }
-

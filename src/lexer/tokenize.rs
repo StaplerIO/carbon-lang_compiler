@@ -1,12 +1,12 @@
-use crate::shared::token::{ContainerType, KeywordType, OperatorType, Token};
-use crate::lexer::lex_rules::semicolon::match_semicolon;
+use crate::lexer::lex_rules::container::match_container;
 use crate::lexer::lex_rules::identifier::match_identifier;
 use crate::lexer::lex_rules::keyword::match_keyword;
 use crate::lexer::lex_rules::number::match_number;
-use crate::lexer::lex_rules::string::match_string;
-use crate::lexer::lex_rules::container::match_container;
 use crate::lexer::lex_rules::operator::match_operator;
+use crate::lexer::lex_rules::semicolon::match_semicolon;
 use crate::lexer::lex_rules::space::match_spaces;
+use crate::lexer::lex_rules::string::match_string;
+use crate::shared::token::{ContainerType, KeywordType, OperatorType, Token};
 
 /**
  * ## Regular expression sequence for lexing source code
@@ -21,7 +21,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
 
     while source_code.len() > 0 {
         #[allow(unused_assignments)]
-            let mut lexeme = String::new();
+        let mut lexeme = String::new();
 
         if match_semicolon(source_code.as_str()) {
             result.push(Token::new_semicolon());

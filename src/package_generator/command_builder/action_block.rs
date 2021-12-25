@@ -1,4 +1,5 @@
 use apa::apa::addition::add;
+
 use crate::package_generator::command_builder::assignment_action::build_assignment_command;
 use crate::package_generator::command_builder::data_commands::data_declaration_builder;
 use crate::package_generator::command_builder::expression_evaluation::convert_number_to_hex;
@@ -20,17 +21,29 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
                 result.extend(data_declaration_builder(false));
                 defined_data.push(DataDeclaration {
                     name: action.clone().declaration_action.unwrap().identifier,
-                    slot: align_data_width(convert_to_u8_array(convert_number_to_hex(data_count.clone())), metadata.data_alignment),
-                    is_global: false
+                    slot: align_data_width(
+                        convert_to_u8_array(convert_number_to_hex(data_count.clone())),
+                        metadata.data_alignment,
+                    ),
+                    is_global: false,
                 });
 
                 data_count = add(data_count.clone(), String::from("1"));
             }
             ActionType::AssignmentStatement => {
-                result.extend(build_assignment_command(&action.clone().assignment_action.unwrap(), &defined_data, metadata));
+                result.extend(build_assignment_command(
+                    &action.clone().assignment_action.unwrap(),
+                    &defined_data,
+                    metadata,
+                ));
             }
             ActionType::CallStatement => {
-                result.extend(function_call_builder(&action.clone().call_action.unwrap(), &defined_data, metadata, &vec![]));
+                result.extend(function_call_builder(
+                    &action.clone().call_action.unwrap(),
+                    &defined_data,
+                    metadata,
+                    &vec![],
+                ));
             }
             ActionType::ReturnStatement => {}
             ActionType::IfStatement => {}

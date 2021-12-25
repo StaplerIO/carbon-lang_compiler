@@ -1,4 +1,7 @@
-use crate::shared::ast::action::{Action, ActionType, AssignmentAction, CallAction, DeclarationAction, IfAction, LoopBlock, ReturnAction, SwitchAction, WhileBlock};
+use crate::shared::ast::action::{
+    Action, ActionType, AssignmentAction, CallAction, DeclarationAction, IfAction, LoopBlock,
+    ReturnAction, SwitchAction, WhileBlock,
+};
 
 impl Action {
     pub fn new_decl(decl: DeclarationAction) -> Action {
@@ -11,8 +14,8 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_assignment(assignment: AssignmentAction) -> Action {
@@ -25,8 +28,8 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_call(call: CallAction) -> Action {
@@ -39,8 +42,8 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_return(ret: ReturnAction) -> Action {
@@ -53,8 +56,8 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_if(if_action: IfAction) -> Action {
@@ -67,8 +70,8 @@ impl Action {
             if_action: Option::from(if_action),
             while_action: None,
             loop_action: None,
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_while(while_action: WhileBlock) -> Action {
@@ -81,8 +84,8 @@ impl Action {
             if_action: None,
             while_action: Option::from(while_action),
             loop_action: None,
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_loop(loop_block: LoopBlock) -> Action {
@@ -95,8 +98,8 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: Option::from(loop_block),
-            switch_action: None
-        }
+            switch_action: None,
+        };
     }
 
     pub fn new_switch(switch: SwitchAction) -> Action {
@@ -109,8 +112,8 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: Option::from(switch)
-        }
+            switch_action: Option::from(switch),
+        };
     }
 
     pub fn new_break() -> Action {
@@ -123,7 +126,7 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: None
+            switch_action: None,
         };
     }
 
@@ -137,7 +140,7 @@ impl Action {
             if_action: None,
             while_action: None,
             loop_action: None,
-            switch_action: None
+            switch_action: None,
         };
     }
 }

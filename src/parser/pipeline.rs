@@ -2,10 +2,13 @@ use crate::parser::builder::blocks::link::link_statement_builder;
 use crate::parser::builder::function_builder::function_builder;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::ast::package::ParserPackageStructure;
-use crate::shared::token::KeywordType;
 use crate::shared::error::general_error::GeneralError;
+use crate::shared::token::KeywordType;
 
-pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Result<ParserPackageStructure, GeneralError<String>> {
+pub fn build_whole_file(
+    tokens: Vec<DecoratedToken>,
+    entry_point: String,
+) -> Result<ParserPackageStructure, GeneralError<String>> {
     let mut result = ParserPackageStructure {
         functions: vec![],
         entry_point,
@@ -20,15 +23,23 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Res
             break;
         }
 
-        result.linked_code_files.push(current_link.clone().ok().unwrap().0);
+        result
+            .linked_code_files
+            .push(current_link.clone().ok().unwrap().0);
         current_index += current_link.ok().unwrap().1 + 1;
     }
 
     if tokens[current_index].token_type != DecoratedTokenType::DecoratedKeyword {
-        return Err(GeneralError{ code: "-1".to_string(), description: Option::from("Invalid token stream encountered!".to_string()) });
+        return Err(GeneralError {
+            code: "-1".to_string(),
+            description: Option::from("Invalid token stream encountered!".to_string()),
+        });
     } else {
         if tokens[current_index].keyword.unwrap() != KeywordType::KwDeclare {
-            return Err(GeneralError{ code: "-1".to_string(), description: Option::from("Invalid token stream encountered!".to_string()) });
+            return Err(GeneralError {
+                code: "-1".to_string(),
+                description: Option::from("Invalid token stream encountered!".to_string()),
+            });
         }
     }
 
@@ -44,7 +55,9 @@ pub fn build_whole_file(tokens: Vec<DecoratedToken>, entry_point: String) -> Res
             break;
         }
 
-        result.functions.push(current_function.clone().ok().unwrap().0);
+        result
+            .functions
+            .push(current_function.clone().ok().unwrap().0);
         current_index += current_function.ok().unwrap().1;
     }
 

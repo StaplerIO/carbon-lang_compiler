@@ -11,11 +11,26 @@ mod tests {
 
         assert_eq!(result.len(), 5);
 
-        assert_eq!(result[0].clone().data.unwrap().number.unwrap(), String::from("1"));
-        assert_eq!(result[1].clone().data.unwrap().number.unwrap(), String::from("2"));
-        assert_eq!(result[2].clone().data.unwrap().number.unwrap(), String::from("3"));
-        assert_eq!(result[3].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Times);
-        assert_eq!(result[4].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Plus);
+        assert_eq!(
+            result[0].clone().data.unwrap().number.unwrap(),
+            String::from("1")
+        );
+        assert_eq!(
+            result[1].clone().data.unwrap().number.unwrap(),
+            String::from("2")
+        );
+        assert_eq!(
+            result[2].clone().data.unwrap().number.unwrap(),
+            String::from("3")
+        );
+        assert_eq!(
+            result[3].clone().operator.unwrap().calculation.unwrap(),
+            CalculationOperator::Times
+        );
+        assert_eq!(
+            result[4].clone().operator.unwrap().calculation.unwrap(),
+            CalculationOperator::Plus
+        );
     }
 
     #[test]
@@ -25,13 +40,34 @@ mod tests {
 
         assert_eq!(result.len(), 7);
 
-        assert_eq!(result[0].clone().data.unwrap().number.unwrap(), String::from("2"));
-        assert_eq!(result[1].clone().data.unwrap().number.unwrap(), String::from("3"));
-        assert_eq!(result[2].clone().data.unwrap().number.unwrap(), String::from("5"));
-        assert_eq!(result[3].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Plus);
-        assert_eq!(result[4].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Times);
-        assert_eq!(result[5].clone().data.unwrap().number.unwrap(), String::from("7"));
-        assert_eq!(result[6].clone().operator.unwrap().calculation.unwrap(), CalculationOperator::Minus);
+        assert_eq!(
+            result[0].clone().data.unwrap().number.unwrap(),
+            String::from("2")
+        );
+        assert_eq!(
+            result[1].clone().data.unwrap().number.unwrap(),
+            String::from("3")
+        );
+        assert_eq!(
+            result[2].clone().data.unwrap().number.unwrap(),
+            String::from("5")
+        );
+        assert_eq!(
+            result[3].clone().operator.unwrap().calculation.unwrap(),
+            CalculationOperator::Plus
+        );
+        assert_eq!(
+            result[4].clone().operator.unwrap().calculation.unwrap(),
+            CalculationOperator::Times
+        );
+        assert_eq!(
+            result[5].clone().data.unwrap().number.unwrap(),
+            String::from("7")
+        );
+        assert_eq!(
+            result[6].clone().operator.unwrap().calculation.unwrap(),
+            CalculationOperator::Minus
+        );
     }
 
     #[test]

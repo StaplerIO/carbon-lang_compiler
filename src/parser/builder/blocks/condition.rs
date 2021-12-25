@@ -1,18 +1,20 @@
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::ast::action::{IfAction, ActionBlock, Action, ElifBlock};
-use crate::shared::token::{KeywordType, ContainerType};
-use crate::parser::utils::pair_container;
 use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::templates::condition_block_builder;
+use crate::parser::utils::pair_container;
+use crate::shared::ast::action::{Action, ActionBlock, ElifBlock, IfAction};
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
+use crate::shared::token::{ContainerType, KeywordType};
 
-pub fn if_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralError<String>> {
+pub fn if_block_builder(
+    tokens: &Vec<DecoratedToken>,
+) -> Result<(Action, usize), GeneralError<String>> {
     let if_part = condition_block_builder(KeywordType::KwIf, tokens.clone());
     if if_part.is_ok() {
-        let mut result = IfAction{
+        let mut result = IfAction {
             if_block: if_part.clone().ok().unwrap().0,
             elif_collection: vec![],
-            else_action: None
+            else_action: None,
         };
 
         // Then we have an if_block (only), we'll try to find elif and else right after it
@@ -36,7 +38,10 @@ pub fn if_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize),
         return Ok((Action::new_if(result), current_index));
     }
 
-    return Err(GeneralError{ code: "-1".to_string(), description: None });
+    return Err(GeneralError {
+        code: "-1".to_string(),
+        description: None,
+    });
 }
 
 // `elif` block must be a sub-node of `if` block, so this is a private method
@@ -44,7 +49,10 @@ pub fn if_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize),
 fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ElifBlock>, isize) {
     let result = condition_block_builder(KeywordType::KwElseIf, tokens.clone());
     if result.is_ok() {
-        return (Option::from(result.clone().ok().unwrap().0), result.clone().ok().unwrap().1 as isize);
+        return (
+            Option::from(result.clone().ok().unwrap().0),
+            result.clone().ok().unwrap().1 as isize,
+        );
     }
 
     return (None, -1);
@@ -54,15 +62,15 @@ fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ElifBlock
 fn detached_else_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ActionBlock>, isize) {
     if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
         if tokens[0].keyword.unwrap() == KeywordType::KwElse {
-            let mut result = ActionBlock {
-                actions: vec![]
-            };
+            let mut result = ActionBlock { actions: vec![] };
 
             // Build actions inside the statement
             if tokens[1].token_type == DecoratedTokenType::Container {
                 if tokens[1].container.unwrap() == ContainerType::Brace {
                     let action_block_zone = pair_container(tokens[1..].to_vec());
-                    result.actions = action_block_builder(action_block_zone[1..action_block_zone.len()].to_vec());
+                    result.actions = action_block_builder(
+                        action_block_zone[1..action_block_zone.len()].to_vec(),
+                    );
 
                     return (Option::from(result), (action_block_zone.len() + 1) as isize);
                 }

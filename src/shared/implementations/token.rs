@@ -1,4 +1,7 @@
-use crate::shared::token::{CalculationOperator, LogicalOperator, Operator, OperatorType, RelationOperator, Token, TokenType, KeywordType, ContainerType};
+use crate::shared::token::{
+    CalculationOperator, ContainerType, KeywordType, LogicalOperator, Operator, OperatorType,
+    RelationOperator, Token, TokenType,
+};
 
 impl Token {
     pub fn new_number(num: String) -> Token {

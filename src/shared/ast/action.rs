@@ -31,7 +31,6 @@ pub struct Action {
     pub while_action: Option<WhileBlock>,
     pub loop_action: Option<LoopBlock>,
     pub switch_action: Option<SwitchAction>,
-
     // "break" and "continue" actions don't have special blocks
 }
 
@@ -39,7 +38,7 @@ pub type LoopBlock = ActionBlock;
 
 #[derive(Clone)]
 pub struct ActionBlock {
-    pub actions: Vec<Action>
+    pub actions: Vec<Action>,
 }
 
 pub type IfBlock = ConditionBlock;
@@ -77,7 +76,7 @@ pub struct CallAction {
 
 #[derive(Clone)]
 pub struct ReturnAction {
-    pub value: Expression
+    pub value: Expression,
 }
 
 #[derive(Clone)]

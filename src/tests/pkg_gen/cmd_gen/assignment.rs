@@ -11,7 +11,8 @@ mod tests {
         let tokens = tokenize("t = 1 + 2 * 3;".to_string());
         let action = assignment_block_builder(&decorate_token(tokens))
             .ok()
-            .unwrap().0
+            .unwrap()
+            .0
             .assignment_action
             .unwrap();
 
@@ -20,25 +21,23 @@ mod tests {
             data_alignment: 8,
             command_alignment: 0,
             entry_point_offset: 0,
-            domain_layer_count_alignment: 0
+            domain_layer_count_alignment: 0,
         };
 
-        let defined_data = vec![
-            DataDeclaration{
-                name: "t".to_string(),
-                slot: vec![0x00, 0x00],
-                is_global: false
-            }
-        ];
+        let defined_data = vec![DataDeclaration {
+            name: "t".to_string(),
+            slot: vec![0x00, 0x00],
+            is_global: false,
+        }];
 
         let commands = build_assignment_command(&action, &defined_data, &metadata);
-        assert_eq!(commands,
-                   vec![0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01,
-                        0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02,
-                        0xb1, 0, 0, 0, 0, 0, 0, 0, 0x03,
-                        0xf1, 0x03,
-                        0xf1, 0x01,
-                        0xb4, 0, 0, 0]);
+        assert_eq!(
+            commands,
+            vec![
+                0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xb1, 0, 0, 0, 0,
+                0, 0, 0, 0x03, 0xf1, 0x03, 0xf1, 0x01, 0xb4, 0, 0, 0
+            ]
+        );
 
         // println!("{:?}", commands);
     }
