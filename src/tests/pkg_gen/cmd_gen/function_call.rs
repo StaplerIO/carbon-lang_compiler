@@ -1,7 +1,7 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
     pub use crate::package_generator::command_builder::expression_evaluation::convert_number_to_hex;
-    pub use crate::package_generator::command_builder::function_call::function_call_builder;
+    pub use crate::package_generator::command_builder::function_call::build_function_call_command;
     pub use crate::parser::builder::blocks::call::call_action_builder;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::package_generation::data_descriptor::DataDeclaration;
@@ -30,7 +30,7 @@ mod tests {
             is_global: false,
         }];
 
-        let _commands = function_call_builder(&action, &defined_data, &metadata, &vec![]);
+        let _commands = build_function_call_command(&action, &defined_data, &metadata, &vec![]);
 
         // for element in commands {
         //     print!("{},", convert_number_to_hex(element.to_string()));

@@ -1,4 +1,4 @@
-use crate::package_generator::command_builder::expression_evaluation::expression_command_set_builder;
+use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
 use crate::package_generator::utils::combine_command;
 use crate::shared::ast::action::AssignmentAction;
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
@@ -18,7 +18,7 @@ pub fn build_assignment_command(
         .clone();
 
     let expression_command_set =
-        expression_command_set_builder(&action.eval_expression, defined_data, metadata);
+        build_expression_evaluation_command(&action.eval_expression, defined_data, metadata);
     result.extend(expression_command_set);
 
     // Push stack top to target data slot

@@ -1,9 +1,9 @@
 use apa::apa::addition::add;
 
 use crate::package_generator::command_builder::assignment_action::build_assignment_command;
-use crate::package_generator::command_builder::data_commands::data_declaration_builder;
+use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
 use crate::package_generator::command_builder::expression_evaluation::convert_number_to_hex;
-use crate::package_generator::command_builder::function_call::function_call_builder;
+use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
 use crate::shared::ast::action::{ActionBlock, ActionType};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
@@ -18,7 +18,7 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
     for action in &block.actions {
         match action.action_type {
             ActionType::DeclarationStatement => {
-                result.extend(data_declaration_builder(false));
+                result.extend(build_data_declaration_command(false));
                 defined_data.push(DataDeclaration {
                     name: action.clone().declaration_action.unwrap().identifier,
                     slot: align_data_width(
@@ -38,7 +38,7 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
                 ));
             }
             ActionType::CallStatement => {
-                result.extend(function_call_builder(
+                result.extend(build_function_call_command(
                     &action.clone().call_action.unwrap(),
                     &defined_data,
                     metadata,

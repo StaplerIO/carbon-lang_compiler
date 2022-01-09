@@ -12,7 +12,7 @@ use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::token::{CalculationOperator, Operator, OperatorType};
 
-pub fn expression_command_set_builder(
+pub fn build_expression_evaluation_command(
     expr: &Expression,
     defined_data: &Vec<DataDeclaration>,
     metadata: &PackageMetadata,

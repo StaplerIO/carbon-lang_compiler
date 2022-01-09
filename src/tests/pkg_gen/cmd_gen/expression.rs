@@ -1,6 +1,6 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
-    pub use crate::package_generator::command_builder::expression_evaluation::expression_command_set_builder;
+    pub use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::ast::blocks::expression::Expression;
@@ -25,7 +25,7 @@ mod tests {
         };
 
         // This is very abstract, needs to be validated
-        let commands = expression_command_set_builder(&expression, &vec![], &metadata);
+        let commands = build_expression_evaluation_command(&expression, &vec![], &metadata);
         assert_eq!(
             commands,
             vec![
@@ -66,7 +66,7 @@ mod tests {
             },
         ];
 
-        let commands = expression_command_set_builder(&expression, &defined_data, &metadata);
+        let commands = build_expression_evaluation_command(&expression, &defined_data, &metadata);
         assert_eq!(
             commands,
             vec![

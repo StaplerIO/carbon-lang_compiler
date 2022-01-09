@@ -1,6 +1,6 @@
-use crate::package_generator::command_builder::data_commands::data_declaration_builder;
+use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
 use crate::package_generator::command_builder::expression_evaluation::{
-    convert_number_to_hex, expression_command_set_builder,
+    convert_number_to_hex, build_expression_evaluation_command,
 };
 use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array};
 use crate::shared::ast::action::CallAction;
@@ -12,7 +12,7 @@ use crate::shared::package_generation::data_descriptor::{DataAccessDescriptor, D
 use crate::shared::package_generation::function::{FunctionCallDescriptor, FunctionDescriptor};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
-pub fn function_call_builder(
+pub fn build_function_call_command(
     action: &CallAction,
     defined_data: &Vec<DataDeclaration>,
     metadata: &PackageMetadata,
@@ -54,7 +54,7 @@ fn calculate_parameters(
     for (idx, param) in action.arguments.iter().enumerate() {
         // Data of current parameter is on the top of the stack
         // Evaluate the value of the expression
-        let expression_eval_cmd = expression_command_set_builder(
+        let expression_eval_cmd = build_expression_evaluation_command(
             &Expression {
                 postfix_expr: param.postfix_expr.clone(),
                 output_type: "".to_string(),
@@ -65,7 +65,7 @@ fn calculate_parameters(
         result.extend(expression_eval_cmd);
 
         // Declare a temporary slot to save data
-        let data_def = data_declaration_builder(false);
+        let data_def = build_data_declaration_command(false);
         result.extend(data_def);
 
         // Pop stack data to data slot
@@ -104,7 +104,7 @@ fn push_parameters(dac_list: &Vec<DataAccessDescriptor>, metadata: &PackageMetad
         cloned_dac.domain_layer[dac.domain_layer.len() - 1] = 0x01;
 
         // Create a data space in new domain
-        let data_def = data_declaration_builder(false);
+        let data_def = build_data_declaration_command(false);
         result.extend(data_def);
 
         // Move data to new slot

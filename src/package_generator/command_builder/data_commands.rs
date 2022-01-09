@@ -4,7 +4,7 @@ use crate::shared::package_generation::data_descriptor::DataAccessDescriptor;
 
 // 0xA100 for a private data
 // 0xA110 for a global data
-pub fn data_declaration_builder(is_global: bool) -> Vec<u8> {
+pub fn build_data_declaration_command(is_global: bool) -> Vec<u8> {
     return vec![
         combine_command(
             RootCommand::Object.to_opcode(),
