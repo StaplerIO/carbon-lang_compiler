@@ -1,9 +1,0 @@
-Apply a function call
-
-Calculate the value of the parameter
-
-Push all values to new domain and save
-
-Remove data in old domain
-
-Jump to new domain
