@@ -62,6 +62,7 @@ lazy_static! {
         (MathCalcCommand::Times, 0x3),
         (MathCalcCommand::Divide, 0x4),
         (MathCalcCommand::Mod, 0x5),
+        (MathCalcCommand::Inverse, 0x6)
     ]
     .iter()
     .cloned()

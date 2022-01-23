@@ -70,6 +70,7 @@ pub enum MathCalcCommand {
     Times,
     Divide,
     Mod,
+    Inverse
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
