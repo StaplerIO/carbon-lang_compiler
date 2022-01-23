@@ -1,13 +1,14 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+    use crate::parser::builder::expression_builder::expression_term_decorator;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::token::CalculationOperator;
 
     #[test]
     fn simple_expression() {
         let token_list = tokenize(String::from("1+2*3"));
-        let result = expression_infix_to_postfix(decorate_token(token_list.clone()));
+        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(token_list.clone())));
 
         assert_eq!(result.len(), 5);
 
@@ -36,7 +37,7 @@ mod tests {
     #[test]
     fn expression_with_bracket() {
         let token_list = tokenize(String::from("2*(3+5)-7"));
-        let result = expression_infix_to_postfix(decorate_token(token_list.clone()));
+        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(token_list.clone())));
 
         assert_eq!(result.len(), 7);
 
@@ -73,7 +74,7 @@ mod tests {
     #[test]
     fn expression_with_function_call() {
         let token_list = tokenize(String::from("11+22.6*demo1(22.5)"));
-        let result = expression_infix_to_postfix(decorate_token(token_list.clone()));
+        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(token_list.clone())));
 
         assert_eq!(result.len(), 5);
     }

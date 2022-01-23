@@ -1,4 +1,4 @@
-use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
 use crate::shared::ast::action::{Action, CallAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
@@ -50,7 +50,7 @@ pub fn bare_function_call_builder(
                     split_comma_expression(parameter_zone[1..parameter_zone.len()].to_vec())
                 {
                     result.arguments.push(SimpleExpression {
-                        postfix_expr: expression_infix_to_postfix(param.clone()),
+                        postfix_expr: expression_infix_to_postfix(expression_term_decorator(param.clone())),
                         output_type: String::new(),
                     });
                 }

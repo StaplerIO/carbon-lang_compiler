@@ -1,4 +1,4 @@
-use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ReturnAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
@@ -33,7 +33,7 @@ pub fn return_action_builder(
 
                         result = Option::from(ReturnAction {
                             value: SimpleExpression {
-                                postfix_expr: expression_infix_to_postfix(expression_zone.clone()),
+                                postfix_expr: expression_infix_to_postfix(expression_term_decorator(expression_zone.clone())),
                                 output_type: String::new(),
                             },
                         });

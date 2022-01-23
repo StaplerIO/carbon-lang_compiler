@@ -119,14 +119,12 @@ fn is_bracket(token: DecoratedToken) -> bool {
     return false;
 }
 
-// We leave the postfix expression for code generator (solve the expression later)
-pub fn expression_infix_to_postfix(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm> {
-    let decorated_tokens = expression_term_decorator(tokens.clone());
-
+// TODO: We leave the postfix expression for code generator (solve the expression later)
+pub fn expression_infix_to_postfix(terms: Vec<ExprTerm>) -> Vec<ExprTerm> {
     let mut result: Vec<ExprTerm> = vec![];
     let mut operator_stack: Vec<ExprTerm> = vec![];
 
-    for token in decorated_tokens {
+    for token in terms {
         match token.term_type {
             TermType::Data => {
                 // Push all terms into result directly (infix to postfix)

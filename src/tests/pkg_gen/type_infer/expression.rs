@@ -5,6 +5,7 @@ mod tests {
     };
     pub use crate::package_generator::utils::infer_every_expression_data_term_type;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+    use crate::parser::builder::expression_builder::expression_term_decorator;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::ast::action::VariableDefinition;
     pub use crate::shared::ast::blocks::expression::{SimpleExpression, TermType};
@@ -13,7 +14,7 @@ mod tests {
     fn expression_data_type() {
         let tokens = tokenize(String::from("1 + 2 - 3.55"));
         let mut expr = SimpleExpression {
-            postfix_expr: expression_infix_to_postfix(decorate_token(tokens)),
+            postfix_expr: expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone()))),
             output_type: "".to_string(),
         };
 

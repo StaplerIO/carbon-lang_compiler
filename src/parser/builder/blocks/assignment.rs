@@ -1,4 +1,4 @@
-use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, AssignmentAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
@@ -15,7 +15,7 @@ pub fn assignment_block_builder(
             if tokens[1].operator.unwrap().operator_type == OperatorType::Assignment {
                 // Convert expression
                 let postfix_expr = expression_infix_to_postfix(
-                    tokens.clone()[2..next_semicolon_pos.unwrap()].to_vec(),
+                    expression_term_decorator(tokens.clone()[2..next_semicolon_pos.unwrap()].to_vec()),
                 );
 
                 return Ok((

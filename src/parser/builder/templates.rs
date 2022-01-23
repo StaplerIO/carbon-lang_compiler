@@ -1,5 +1,5 @@
 use crate::parser::builder::blocks::action_block::action_block_builder;
-use crate::parser::builder::expression_builder::expression_infix_to_postfix;
+use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
 use crate::shared::ast::blocks::expression::SimpleExpression;
@@ -31,7 +31,7 @@ pub fn condition_block_builder(
                     // Build expression
                     let expression_zone = pair_container(tokens[1..].to_vec());
                     result.condition.postfix_expr =
-                        expression_infix_to_postfix(expression_zone[1..].to_vec());
+                        expression_infix_to_postfix(expression_term_decorator(expression_zone[1..].to_vec()));
 
                     if expression_zone.len() >= 1 {
                         // Build actions inside the while statement
