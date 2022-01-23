@@ -2,7 +2,7 @@ use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
-use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::{ContainerType, KeywordType};
@@ -18,7 +18,7 @@ pub fn condition_block_builder(
     if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
         if tokens.first().unwrap().keyword.unwrap() == leading_keyword {
             let mut result = ConditionBlock {
-                condition: Expression {
+                condition: SimpleExpression {
                     postfix_expr: vec![],
                     output_type: String::new(),
                 },

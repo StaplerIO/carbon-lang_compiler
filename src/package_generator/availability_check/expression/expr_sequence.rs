@@ -1,8 +1,8 @@
 // TODO: Move this step to compiler/parser, check expression sequence right after ExpressionBuilder
 
-use crate::shared::ast::blocks::expression::{ExprTerm, Expression, TermType};
+use crate::shared::ast::blocks::expression::{ExprTerm, SimpleExpression, TermType};
 
-pub fn check_expression_sequence(expression: Expression) -> bool {
+pub fn check_expression_sequence(expression: SimpleExpression) -> bool {
     let mut expr_sequence = expression.postfix_expr.clone();
     while !(expr_sequence.len() == 1 && expr_sequence[0].term_type == TermType::Validated) {
         // Become true if current loop processed something

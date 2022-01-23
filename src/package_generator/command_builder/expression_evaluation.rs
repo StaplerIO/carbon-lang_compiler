@@ -6,15 +6,15 @@ use crate::package_generator::command_builder::math::calculation::{
 use crate::package_generator::utils::{
     align_data_width, combine_command, convert_to_u8_array, string_to_hex_char,
 };
-use crate::shared::ast::blocks::expression::{ExprDataTermType, Expression, TermType};
+use crate::shared::ast::blocks::expression::{ExprDataTermType, SimpleExpression, TermType};
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::token::{CalculationOperator, Operator, OperatorType};
+use crate::shared::token::{CalculationOperator, Operator, OperatorType, RelationOperator};
 
 /// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(
-    expr: &Expression,
+    expr: &SimpleExpression,
     defined_data: &Vec<DataDeclaration>,
     metadata: &PackageMetadata,
 ) -> Vec<u8> {

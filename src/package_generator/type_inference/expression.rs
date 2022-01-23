@@ -1,6 +1,6 @@
 use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::{
-    ExprDataTerm, ExprDataTermType, ExprTerm, Expression, TermType,
+    ExprDataTerm, ExprDataTermType, ExprTerm, SimpleExpression, TermType,
 };
 use crate::shared::ast::blocks::function::Function;
 
@@ -36,7 +36,7 @@ pub fn infer_expression_term_data_type(
 }
 
 pub fn infer_expression_output_type(
-    expression: &Expression,
+    expression: &SimpleExpression,
     defined_types: &Vec<String>,
 ) -> Option<String> {
     let mut possible_types = defined_types.clone();

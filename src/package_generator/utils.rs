@@ -1,6 +1,6 @@
 use crate::package_generator::type_inference::expression::infer_expression_term_data_type;
 use crate::shared::ast::action::VariableDefinition;
-use crate::shared::ast::blocks::expression::{Expression, TermType};
+use crate::shared::ast::blocks::expression::{SimpleExpression, TermType};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
@@ -14,10 +14,10 @@ pub fn find_function(name: &str, available_functions: &Vec<Function>) -> Option<
 }
 
 pub fn infer_every_expression_data_term_type(
-    expression: &Expression,
+    expression: &SimpleExpression,
     defined_functions: &Vec<Function>,
     defined_variables: &Vec<VariableDefinition>,
-) -> Expression {
+) -> SimpleExpression {
     let mut expr = expression.clone();
 
     for (index, term) in expr.postfix_expr.clone().iter().enumerate() {

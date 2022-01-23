@@ -1,6 +1,6 @@
 mod tests {
     #[test]
-    fn it_block_test() {
+    fn bare_if_test() {
 
     }
 }

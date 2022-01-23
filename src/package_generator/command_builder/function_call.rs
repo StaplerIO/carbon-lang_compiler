@@ -4,7 +4,7 @@ use crate::package_generator::command_builder::expression_evaluation::{
 };
 use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array};
 use crate::shared::ast::action::CallAction;
-use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::command_map::{
     DomainCommand, ObjectCommand, RootCommand, StackCommand, PLACE_HOLDER,
 };
@@ -55,7 +55,7 @@ fn calculate_parameters(
         // Data of current parameter is on the top of the stack
         // Evaluate the value of the expression
         let expression_eval_cmd = build_expression_evaluation_command(
-            &Expression {
+            &SimpleExpression {
                 postfix_expr: param.postfix_expr.clone(),
                 output_type: "".to_string(),
             },

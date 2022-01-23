@@ -1,7 +1,7 @@
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
 use crate::shared::ast::action::{Action, CallAction};
-use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::{ContainerType, KeywordType};
@@ -49,7 +49,7 @@ pub fn bare_function_call_builder(
                 for param in
                     split_comma_expression(parameter_zone[1..parameter_zone.len()].to_vec())
                 {
-                    result.arguments.push(Expression {
+                    result.arguments.push(SimpleExpression {
                         postfix_expr: expression_infix_to_postfix(param.clone()),
                         output_type: String::new(),
                     });

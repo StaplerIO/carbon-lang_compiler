@@ -1,4 +1,4 @@
-use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::parameter::Parameter;
 
 pub type VariableDefinition = Parameter;
@@ -48,7 +48,7 @@ pub type WhileBlock = ConditionBlock;
 // Used in while, if, elif
 #[derive(Clone)]
 pub struct ConditionBlock {
-    pub condition: Expression,
+    pub condition: SimpleExpression,
     pub body: ActionBlock,
 }
 
@@ -64,19 +64,19 @@ pub struct DeclarationAction {
 #[derive(Clone)]
 pub struct AssignmentAction {
     pub identifier: String,
-    pub eval_expression: Expression,
+    pub eval_expression: SimpleExpression,
 }
 
 #[derive(Clone)]
 pub struct CallAction {
     pub function_name: String,
     // Arguments are Expressions
-    pub arguments: Vec<Expression>,
+    pub arguments: Vec<SimpleExpression>,
 }
 
 #[derive(Clone)]
 pub struct ReturnAction {
-    pub value: Expression,
+    pub value: SimpleExpression,
 }
 
 #[derive(Clone)]
@@ -89,7 +89,7 @@ pub struct IfAction {
 // TODO: Builder required
 #[derive(Clone)]
 pub struct SwitchAction {
-    pub condition: Expression,
+    pub condition: SimpleExpression,
     pub cases: Vec<SwitchCase>,
 }
 

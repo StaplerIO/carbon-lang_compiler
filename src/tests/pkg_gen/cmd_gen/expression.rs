@@ -3,7 +3,7 @@ mod tests {
     pub use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
     pub use crate::parser::decorator::decorate_token;
-    pub use crate::shared::ast::blocks::expression::Expression;
+    pub use crate::shared::ast::blocks::expression::SimpleExpression;
     pub use crate::shared::package_generation::data_descriptor::DataDeclaration;
     pub use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
@@ -11,7 +11,7 @@ mod tests {
     #[test]
     fn expression_with_number_only() {
         let tokens = tokenize("1 + 2 * 3".to_string());
-        let expression = Expression {
+        let expression = SimpleExpression {
             postfix_expr: expression_infix_to_postfix(decorate_token(tokens)),
             output_type: "number".to_string(),
         };
@@ -41,7 +41,7 @@ mod tests {
     #[test]
     fn expression_with_defined_data() {
         let tokens = tokenize("a + b * 2".to_string());
-        let expression = Expression {
+        let expression = SimpleExpression {
             postfix_expr: expression_infix_to_postfix(decorate_token(tokens)),
             output_type: "number".to_string(),
         };

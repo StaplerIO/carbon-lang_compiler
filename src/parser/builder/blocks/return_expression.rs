@@ -1,7 +1,7 @@
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ReturnAction};
-use crate::shared::ast::blocks::expression::Expression;
+use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::KeywordType;
@@ -22,7 +22,7 @@ pub fn return_action_builder(
                     if next_semicolon_pos.unwrap() == 1 {
                         // No return value
                         result = Option::from(ReturnAction {
-                            value: Expression {
+                            value: SimpleExpression {
                                 postfix_expr: vec![],
                                 output_type: String::new(),
                             },
@@ -32,7 +32,7 @@ pub fn return_action_builder(
                         let expression_zone = tokens[1..next_semicolon_pos.unwrap()].to_vec();
 
                         result = Option::from(ReturnAction {
-                            value: Expression {
+                            value: SimpleExpression {
                                 postfix_expr: expression_infix_to_postfix(expression_zone.clone()),
                                 output_type: String::new(),
                             },
