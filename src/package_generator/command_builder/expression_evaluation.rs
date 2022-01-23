@@ -12,6 +12,7 @@ use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::token::{CalculationOperator, Operator, OperatorType};
 
+/// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(
     expr: &Expression,
     defined_data: &Vec<DataDeclaration>,

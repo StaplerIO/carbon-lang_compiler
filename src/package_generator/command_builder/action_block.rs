@@ -45,14 +45,16 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
                     &vec![],
                 ));
             }
-            ActionType::ReturnStatement => {}
+            ActionType::ReturnStatement => {
+                // Will jump to destroy the domain
+            }
             ActionType::IfStatement => {}
             ActionType::WhileStatement => {}
-            ActionType::LoopStatement => {}
-            ActionType::SwitchStatement => {}
             ActionType::BreakStatement => {}
             ActionType::ContinueStatement => {}
-            ActionType::EmptyAction => {}
+            _ => {
+                panic!("Command not supported!")
+            }
         }
     }
 

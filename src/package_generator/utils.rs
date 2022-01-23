@@ -2,6 +2,7 @@ use crate::package_generator::type_inference::expression::infer_expression_term_
 use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::{Expression, TermType};
 use crate::shared::ast::blocks::function::Function;
+use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 pub fn find_function(name: &str, available_functions: &Vec<Function>) -> Option<Function> {
     let result = available_functions.iter().find(|&e| e.name == name);
@@ -111,4 +112,8 @@ pub fn string_to_hex_char(s: String) -> char {
     } else {
         '-'
     };
+}
+
+pub fn jump_command_address_placeholder(metadata: &PackageMetadata) -> Vec<u8> {
+    return vec![0x00 as u8].repeat(metadata.address_alignment as usize);
 }

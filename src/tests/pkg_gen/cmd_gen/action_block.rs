@@ -26,6 +26,7 @@ mod tests {
             command_alignment: 0,
             entry_point_offset: 0,
             domain_layer_count_alignment: 0,
+            address_alignment: 0
         };
 
         let _commands = action_block_builder(&ActionBlock { actions }, &metadata);
