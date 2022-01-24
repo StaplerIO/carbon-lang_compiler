@@ -1,7 +1,7 @@
 mod tests {
     pub use crate::lexer::tokenize::tokenize;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
-    use crate::parser::builder::expression_builder::expression_term_decorator;
+    pub use crate::parser::builder::expression_builder::expression_term_decorator;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::token::CalculationOperator;
 

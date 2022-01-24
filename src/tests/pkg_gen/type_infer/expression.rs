@@ -5,7 +5,7 @@ mod tests {
     };
     pub use crate::package_generator::utils::infer_every_expression_data_term_type;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
-    use crate::parser::builder::expression_builder::expression_term_decorator;
+    pub use crate::parser::builder::expression_builder::expression_term_decorator;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::ast::action::VariableDefinition;
     pub use crate::shared::ast::blocks::expression::{SimpleExpression, TermType};
