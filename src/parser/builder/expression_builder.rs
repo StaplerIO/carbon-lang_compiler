@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use lazy_static::lazy_static;
 
 use crate::parser::builder::blocks::call::bare_function_call_builder;
-use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, TermType};
+use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, RelationExpression, TermType};
 use crate::shared::ast::decorated_token::{DataType, DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{CalculationOperator, ContainerType, OperatorType};
 
@@ -200,4 +200,32 @@ fn priority_is_higher(a: ExprTerm, b: ExprTerm) -> bool {
     }
 
     panic!("Token is not an operator!");
+}
+
+// Make sure the expression contains a relation operator
+pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
+    // Split expression by the relation operator
+    let mut op_position: usize = usize::MAX;
+    for (index, term) in terms.iter().enumerate() {
+        if term.operator.is_some() {
+            if term.operator.unwrap().operator_type == OperatorType::Relation {
+                op_position = index;
+                break;
+            }
+        }
+    }
+
+    // There must be an operator term
+    assert_ne!(op_position, usize::MAX);
+
+    let split = terms.split_at(op_position);
+    let left_expr = expression_infix_to_postfix(split.0.to_vec());
+
+    let right_expr = expression_infix_to_postfix(split.1.to_vec()[1..].to_vec());
+
+    return RelationExpression {
+        left: left_expr,
+        right: right_expr,
+        expected_relation: terms[op_position].operator.unwrap().relation.unwrap()
+    };
 }

@@ -2,13 +2,14 @@ mod tests {
     pub use crate::lexer::tokenize::tokenize;
     pub use crate::parser::builder::expression_builder::expression_infix_to_postfix;
     pub use crate::parser::builder::expression_builder::expression_term_decorator;
+    pub use crate::parser::builder::expression_builder::relation_expression_builder;
     pub use crate::parser::decorator::decorate_token;
     pub use crate::shared::token::CalculationOperator;
 
     #[test]
     fn simple_expression() {
-        let token_list = tokenize(String::from("1+2*3"));
-        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(token_list.clone())));
+        let tokens = tokenize(String::from("1+2*3"));
+        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens)));
 
         assert_eq!(result.len(), 5);
 
@@ -36,8 +37,8 @@ mod tests {
 
     #[test]
     fn expression_with_bracket() {
-        let token_list = tokenize(String::from("2*(3+5)-7"));
-        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(token_list.clone())));
+        let tokens = tokenize(String::from("2*(3+5)-7"));
+        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens)));
 
         assert_eq!(result.len(), 7);
 
@@ -73,9 +74,18 @@ mod tests {
 
     #[test]
     fn expression_with_function_call() {
-        let token_list = tokenize(String::from("11+22.6*demo1(22.5)"));
-        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(token_list.clone())));
+        let tokens = tokenize(String::from("11+22.6*demo1(22.5)"));
+        let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens)));
 
         assert_eq!(result.len(), 5);
+    }
+
+    #[test]
+    fn relation_expression() {
+        let tokens = tokenize(String::from("1 + a > 3 + foo(144)"));
+        let result = relation_expression_builder(expression_term_decorator(decorate_token(tokens)));
+
+        assert_eq!(result.left.len(), 3);
+        assert_eq!(result.right.len(), 3);
     }
 }

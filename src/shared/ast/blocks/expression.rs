@@ -1,11 +1,19 @@
 use crate::shared::ast::action::CallAction;
-use crate::shared::token::Operator;
+use crate::shared::token::{Operator, RelationOperator};
 
 #[derive(Clone)]
 pub struct SimpleExpression {
     pub postfix_expr: Vec<ExprTerm>,
 
     pub output_type: String,
+}
+
+#[derive(Clone)]
+pub struct RelationExpression {
+    pub left: Vec<ExprTerm>,
+    pub right: Vec<ExprTerm>,
+
+    pub expected_relation: RelationOperator
 }
 
 #[derive(Clone, PartialEq, Debug)]
