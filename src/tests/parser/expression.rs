@@ -85,7 +85,7 @@ mod tests {
         let tokens = tokenize(String::from("1 + a > 3 + foo(144)"));
         let result = relation_expression_builder(expression_term_decorator(decorate_token(tokens)));
 
-        assert_eq!(result.left.len(), 3);
-        assert_eq!(result.right.len(), 3);
+        assert_eq!(result.left.postfix_expr.len(), 3);
+        assert_eq!(result.right.postfix_expr.len(), 3);
     }
 }

@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use lazy_static::lazy_static;
 
 use crate::parser::builder::blocks::call::bare_function_call_builder;
-use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, RelationExpression, TermType};
+use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, RelationExpression, SimpleExpression, TermType};
 use crate::shared::ast::decorated_token::{DataType, DecoratedToken, DecoratedTokenType};
 use crate::shared::token::{CalculationOperator, ContainerType, OperatorType};
 
@@ -224,8 +224,8 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     let right_expr = expression_infix_to_postfix(split.1.to_vec()[1..].to_vec());
 
     return RelationExpression {
-        left: left_expr,
-        right: right_expr,
+        left: SimpleExpression { postfix_expr: left_expr, output_type: "".to_string() },
+        right: SimpleExpression { postfix_expr: right_expr, output_type: "".to_string() },
         expected_relation: terms[op_position].operator.unwrap().relation.unwrap()
     };
 }

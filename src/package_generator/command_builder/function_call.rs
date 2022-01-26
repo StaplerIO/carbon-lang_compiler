@@ -9,7 +9,7 @@ use crate::shared::command_map::{
     DomainCommand, ObjectCommand, RootCommand, StackCommand, PLACE_HOLDER,
 };
 use crate::shared::package_generation::data_descriptor::{DataAccessDescriptor, DataDeclaration};
-use crate::shared::package_generation::function::{FunctionCallDescriptor, FunctionDescriptor};
+use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 pub fn build_function_call_command(

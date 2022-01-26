@@ -1,4 +1,4 @@
-use crate::shared::ast::blocks::expression::SimpleExpression;
+use crate::shared::ast::blocks::expression::{SimpleExpression, RelationExpression};
 use crate::shared::ast::parameter::Parameter;
 
 pub type VariableDefinition = Parameter;
@@ -48,7 +48,7 @@ pub type WhileBlock = ConditionBlock;
 // Used in while, if, elif
 #[derive(Clone)]
 pub struct ConditionBlock {
-    pub condition: SimpleExpression,
+    pub condition: RelationExpression,
     pub body: ActionBlock,
 }
 

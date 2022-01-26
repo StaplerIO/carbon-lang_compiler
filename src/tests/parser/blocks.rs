@@ -154,7 +154,7 @@ mod tests {
                                                                     call func_1(5, 2.66, var1, 3 - 2);\
                                                                     if (foo == 2) { return; }\
                                                                     return 1 + 2 * tb_234;\
-                                                                    while (1) { call func_1(0); }"));
+                                                                    while (1 == 1) { call func_1(0); }"));
 
         let result = action_block_builder(decorate_token(tokens.clone()));
 
@@ -175,19 +175,21 @@ mod tests {
         let result = raw.clone().ok().unwrap().0.while_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-        assert_eq!(result.condition.postfix_expr.len(), 5);
+        assert_eq!(result.condition.left.postfix_expr.len(), 3);
+        assert_eq!(result.condition.right.postfix_expr.len(), 1);
         assert_eq!(result.body.actions.len(), 2);
     }
 
     #[test]
     fn if_block() {
-        let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1) { call setup(); } else { decl var number foo; }"));
+        let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1 == 1) { call setup(); } else { decl var number foo; }"));
         let raw = if_block_builder(&decorate_token(tokens.clone()));
 
         let result = raw.clone().ok().unwrap().0.if_action.unwrap();
         assert_eq!(raw.ok().unwrap().1, tokens.len() - 1);
 
-        assert_eq!(result.if_block.condition.postfix_expr.len(), 5);
+        assert_eq!(result.if_block.condition.left.postfix_expr.len(), 3);
+        assert_eq!(result.if_block.condition.right.postfix_expr.len(), 1);
         assert_eq!(result.elif_collection.len(), 2);
         assert_eq!(result.else_action.unwrap().actions.len(), 1);
     }

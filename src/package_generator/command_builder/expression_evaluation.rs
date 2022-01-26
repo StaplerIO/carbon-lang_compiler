@@ -10,7 +10,7 @@ use crate::shared::ast::blocks::expression::{ExprDataTermType, SimpleExpression,
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::token::{CalculationOperator, Operator, OperatorType, RelationOperator};
+use crate::shared::token::{CalculationOperator, Operator, OperatorType};
 
 /// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(

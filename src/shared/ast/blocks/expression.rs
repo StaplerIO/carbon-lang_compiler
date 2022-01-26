@@ -10,8 +10,8 @@ pub struct SimpleExpression {
 
 #[derive(Clone)]
 pub struct RelationExpression {
-    pub left: Vec<ExprTerm>,
-    pub right: Vec<ExprTerm>,
+    pub left: SimpleExpression,
+    pub right: SimpleExpression,
 
     pub expected_relation: RelationOperator
 }

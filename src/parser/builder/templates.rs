@@ -1,11 +1,11 @@
 use crate::parser::builder::blocks::action_block::action_block_builder;
-use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
+use crate::parser::builder::expression_builder::{expression_term_decorator, relation_expression_builder};
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
-use crate::shared::ast::blocks::expression::SimpleExpression;
+use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::{ContainerType, KeywordType};
+use crate::shared::token::{ContainerType, KeywordType, RelationOperator};
 
 /// A `ConditionBlock` has 2 parts: `Expression` part and `ActionBlock` part, formatted like this:
 /// ` leading_keyword (expression) { action_block }`
@@ -18,9 +18,10 @@ pub fn condition_block_builder(
     if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
         if tokens.first().unwrap().keyword.unwrap() == leading_keyword {
             let mut result = ConditionBlock {
-                condition: SimpleExpression {
-                    postfix_expr: vec![],
-                    output_type: String::new(),
+                condition: RelationExpression {
+                    left: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
+                    right: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
+                    expected_relation: RelationOperator::Unset
                 },
                 body: ActionBlock { actions: vec![] },
             };
@@ -30,8 +31,7 @@ pub fn condition_block_builder(
                 if tokens[1].container.unwrap() == ContainerType::Bracket {
                     // Build expression
                     let expression_zone = pair_container(tokens[1..].to_vec());
-                    result.condition.postfix_expr =
-                        expression_infix_to_postfix(expression_term_decorator(expression_zone[1..].to_vec()));
+                    result.condition = relation_expression_builder(expression_term_decorator(expression_zone[1..].to_vec()));
 
                     if expression_zone.len() >= 1 {
                         // Build actions inside the while statement

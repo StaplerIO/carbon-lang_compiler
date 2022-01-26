@@ -95,7 +95,8 @@ pub enum RelationOperator {
     Less,        // <
     LessEqual,   // <=
     NotEqual,    // <>
-    Equal,       // ==
+    Equal,       // ==,
+    Unset
 }
 
 #[derive(Copy, Clone, PartialEq)]
