@@ -132,3 +132,19 @@ fn plus_one(width: u8) -> Vec<u8> {
 
     return result;
 }
+
+pub fn direct_jump_command_builder(r_type: RelocationType, metadata: &PackageMetadata) -> JumpCommandBuildResult {
+    let mut cmd_arr = vec![];
+
+    cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToOffset.to_opcode()));
+    cmd_arr.extend(jump_command_address_placeholder(metadata));
+
+    return JumpCommandBuildResult {
+        commands: cmd_arr,
+        descriptors: vec![RelocationDescriptor {
+            relocation_type: r_type,
+            command_array_position: 1,
+            relocated_address: vec![]
+        }]
+    };
+}

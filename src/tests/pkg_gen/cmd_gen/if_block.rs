@@ -21,7 +21,7 @@ mod tests {
 
         let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.if_action.unwrap(), &vec![], &metadata);
 
-        assert_eq!(result.descriptors.len(), 3);
+        assert_eq!(result.descriptors.len(), 6);
 
         // println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
     }
@@ -41,7 +41,7 @@ mod tests {
 
         let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.if_action.unwrap(), &vec![], &metadata);
 
-        assert_eq!(result.descriptors.len(), 6);
+        assert_eq!(result.descriptors.len(), 8);
         // println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
     }
 }
