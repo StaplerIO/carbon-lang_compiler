@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 lazy_static = "1.4.0"
 apa = { path = "external_modules/apa" }
+
+[dev-dependencies]
+itertools = "0.10.3"

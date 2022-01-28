@@ -4,5 +4,5 @@ pub mod assignment_action;
 pub mod data_commands;
 pub mod expression_evaluation;
 pub mod function_call;
-pub mod conditional_command;
+pub mod condition_command;
 mod math;

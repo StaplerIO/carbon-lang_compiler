@@ -60,7 +60,8 @@ fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ElifBlock
 
 // `else` block must be a sub-node of `if` block, so this is a private method
 fn detached_else_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ActionBlock>, isize) {
-    if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
+    // Shortest: `else { }`
+    if tokens.len() >= 3 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
         if tokens[0].keyword.unwrap() == KeywordType::KwElse {
             let mut result = ActionBlock { actions: vec![] };
 

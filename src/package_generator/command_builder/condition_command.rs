@@ -1,3 +1,4 @@
+use crate::package_generator::command_builder::action_block::action_block_builder;
 use crate::package_generator::command_builder::templates::jump_command::condition_block_command_builder;
 use crate::shared::ast::action::IfAction;
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
@@ -20,9 +21,9 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclaration>
         result.append(condition_block_command_builder(elif_block, after_domains, defined_data, metadata));
     }
 
-    // if action.else_action.is_some() {
-    //     result.append(condition_block_command_builder(&action.else_action.unwrap(), after_domains, defined_data, metadata));
-    // }
+    if action.else_action.is_some() {
+        result.commands.extend(action_block_builder(&action.else_action.clone().unwrap(), metadata));
+    }
 
     return result;
 }

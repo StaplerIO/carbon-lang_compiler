@@ -1,3 +1,4 @@
+use crate::package_generator::command_builder::action_block::action_block_builder;
 use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
 use crate::package_generator::command_builder::math::calculation::{inverse_command, minus_command};
 use crate::package_generator::utils::{align_data_width, combine_command, jump_command_address_placeholder};
@@ -23,21 +24,24 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
     // Because in command *format manual*, there are 3 locations we need to assign
     jump_command.extend(jump_command_address_placeholder(metadata).repeat(3));
     // Add descriptors
-    result.descriptors.push(RelocationDescriptor {
-        relocation_type: RelocationType::IgnoreDomain(domains_after),
-        command_array_position: 1,
-        relocated_address: vec![]
-    });
-    result.descriptors.push(RelocationDescriptor {
-        relocation_type: RelocationType::IgnoreDomain(domains_after),
-        command_array_position: metadata.address_alignment as usize,
-        relocated_address: vec![]
-    });
-    result.descriptors.push(RelocationDescriptor {
-        relocation_type: RelocationType::IgnoreDomain(domains_after),
-        command_array_position: (metadata.address_alignment as usize) * 2,
-        relocated_address: vec![]
-    });
+
+    result.descriptors.extend(vec![
+        RelocationDescriptor {
+            relocation_type: RelocationType::IgnoreDomain(domains_after),
+            command_array_position: 1,
+            relocated_address: vec![]
+        },
+        RelocationDescriptor {
+            relocation_type: RelocationType::IgnoreDomain(domains_after),
+            command_array_position: metadata.address_alignment as usize,
+            relocated_address: vec![]
+        },
+        RelocationDescriptor {
+            relocation_type: RelocationType::IgnoreDomain(domains_after),
+            command_array_position: (metadata.address_alignment as usize) * 2,
+            relocated_address: vec![]
+        }
+    ]);
 
     // Modify target jump command
     match action.condition.expected_relation {
@@ -56,7 +60,6 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
         RelationOperator::NotEqual => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
             result.descriptors[2].relocation_type = RelocationType::NextCommand;
-
         }
         RelationOperator::Equal => {
             result.descriptors[1].relocation_type = RelocationType::NextCommand;
@@ -66,6 +69,9 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
 
     result.commands.extend(expr_eval_command);
     result.commands.extend(jump_command);
+
+    // Put True commands
+    result.commands.extend(action_block_builder(&action.body, metadata));
 
     return result;
 }
