@@ -11,15 +11,19 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclaration>
         descriptors: vec![]
     };
 
+    // We are going to add a jump command right after each IfBlock, ElifBlock or ElseBlock
+    // So if the condition doesn't match, we need to
+    let offset: isize = 1 + metadata.address_alignment as isize;
+
     // Build IfBlock
     let mut domains_after: usize = &action.elif_collection.len() + action.else_action.is_some() as usize;
-    result.append(condition_block_command_builder(&action.if_block, 1, defined_data, metadata));
+    result.append(condition_block_command_builder(&action.if_block, 1, offset, defined_data, metadata));
     result.append(direct_jump_command_builder(RelocationType::IgnoreDomain(domains_after.clone()), metadata));
 
     // Push ElifBlocks
     for elif_block in &action.elif_collection {
         domains_after -= 1;
-        result.append(condition_block_command_builder(elif_block, 1, defined_data, metadata));
+        result.append(condition_block_command_builder(elif_block, 1, offset, defined_data, metadata));
         result.append(direct_jump_command_builder(RelocationType::IgnoreDomain(domains_after.clone()), metadata));
     }
 

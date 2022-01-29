@@ -19,6 +19,7 @@ pub enum RelocationType {
 
 pub struct RelocationDescriptor {
     pub relocation_type: RelocationType,
+    pub offset: isize,
     pub command_array_position: usize,
     pub relocated_address: Vec<u8>,
 }

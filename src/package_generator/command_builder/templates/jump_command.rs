@@ -10,7 +10,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_descriptor::{JumpCommandBuildResult, RelocationDescriptor, RelocationType};
 use crate::shared::token::RelationOperator;
 
-pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
+pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, cmd_offset: isize, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
     let mut result = JumpCommandBuildResult {
         commands: vec![],
         descriptors: vec![]
@@ -28,16 +28,19 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
     result.descriptors.extend(vec![
         RelocationDescriptor {
             relocation_type: RelocationType::IgnoreDomain(domains_after),
+            offset: cmd_offset,
             command_array_position: 1,
             relocated_address: vec![]
         },
         RelocationDescriptor {
             relocation_type: RelocationType::IgnoreDomain(domains_after),
             command_array_position: metadata.address_alignment as usize,
+            offset: cmd_offset,
             relocated_address: vec![]
         },
         RelocationDescriptor {
             relocation_type: RelocationType::IgnoreDomain(domains_after),
+            offset: cmd_offset,
             command_array_position: (metadata.address_alignment as usize) * 2,
             relocated_address: vec![]
         }
@@ -47,22 +50,30 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
     match action.condition.expected_relation {
         RelationOperator::Bigger => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].offset = 0;
         }
         RelationOperator::BiggerEqual => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].offset = 0;
         }
         RelationOperator::Less => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].offset = 0;
         }
         RelationOperator::LessEqual => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].offset = 0;
         }
         RelationOperator::NotEqual => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].offset = 0;
+
             result.descriptors[2].relocation_type = RelocationType::NextCommand;
+            result.descriptors[2].offset = 0;
         }
         RelationOperator::Equal => {
             result.descriptors[1].relocation_type = RelocationType::NextCommand;
+            result.descriptors[1].offset = 0;
         }
         _ => panic!("Illegal operator")
     };
@@ -143,6 +154,7 @@ pub fn direct_jump_command_builder(r_type: RelocationType, metadata: &PackageMet
         commands: cmd_arr,
         descriptors: vec![RelocationDescriptor {
             relocation_type: r_type,
+            offset: 0,
             command_array_position: 1,
             relocated_address: vec![]
         }]

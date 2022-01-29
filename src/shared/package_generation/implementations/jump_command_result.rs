@@ -6,6 +6,7 @@ impl JumpCommandBuildResult {
         for item in model.descriptors {
             aligned_model.push(RelocationDescriptor {
                 relocation_type: item.relocation_type,
+                offset: item.offset,
                 command_array_position: item.command_array_position + self.commands.len(),
                 relocated_address: item.relocated_address
             });
