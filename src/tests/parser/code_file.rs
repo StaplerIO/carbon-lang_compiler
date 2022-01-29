@@ -1,11 +1,10 @@
-mod tests {
-    pub use lazy_static::lazy_static;
+use lazy_static::lazy_static;
 
-    pub use crate::lexer::tokenize::tokenize;
-    pub use crate::parser::decorator::decorate_token;
-    pub use crate::parser::pipeline::build_whole_file;
+use crate::lexer::tokenize::tokenize;
+use crate::parser::decorator::decorate_token;
+use crate::parser::pipeline::build_whole_file;
 
-    lazy_static! {
+lazy_static! {
         static ref FILE_CONTENT: &'static str = r#"
         link std;
         link os;
@@ -25,12 +24,11 @@ mod tests {
         "#;
     }
 
-    #[test]
-    fn file_example() {
-        let tokens = decorate_token(tokenize(FILE_CONTENT.parse().unwrap()));
-        let structure = build_whole_file(tokens, String::from("main")).ok().unwrap();
+#[test]
+fn file_example() {
+    let tokens = decorate_token(tokenize(FILE_CONTENT.parse().unwrap()));
+    let structure = build_whole_file(tokens, String::from("main")).ok().unwrap();
 
-        assert_eq!(structure.linked_code_files.len(), 2);
-        assert_eq!(structure.functions.len(), 2);
-    }
+    assert_eq!(structure.linked_code_files.len(), 2);
+    assert_eq!(structure.functions.len(), 2);
 }
