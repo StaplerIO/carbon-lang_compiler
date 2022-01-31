@@ -1,11 +1,7 @@
-use apa::apa::modulo::modulo;
-
 use crate::package_generator::command_builder::math::calculation::{
     divide_command, minus_command, mod_command, multiplication_command, plus_command,
 };
-use crate::package_generator::utils::{
-    align_data_width, combine_command, convert_to_u8_array, string_to_hex_char,
-};
+use crate::package_generator::utils::{align_data_width, combine_command, convert_number_to_hex, convert_to_u8_array};
 use crate::shared::ast::blocks::expression::{ExprDataTermType, SimpleExpression, TermType};
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
@@ -79,24 +75,4 @@ pub fn operator_opcode_builder(operator: &Operator) -> Vec<u8> {
             panic!("`Logical` and `Relation` operators are not implemented so far :(");
         }
     };
-}
-
-pub fn convert_number_to_hex(mut number: String) -> String {
-    // Means it is already a hex number
-    if number.starts_with("0x") {
-        return number[2..].to_string();
-    }
-
-    // Otherwise, it is a decimal. Convert it to hex
-    let mut result = String::new();
-    while !number.eq("0") {
-        let modulo_result = modulo(number.clone(), String::from("16"));
-
-        result.push(string_to_hex_char(modulo_result.1));
-        number = modulo_result.0;
-    }
-
-    result = result.chars().rev().collect();
-
-    return result;
 }

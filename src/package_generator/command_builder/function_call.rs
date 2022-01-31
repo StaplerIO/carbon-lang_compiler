@@ -1,8 +1,6 @@
 use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
-use crate::package_generator::command_builder::expression_evaluation::{
-    convert_number_to_hex, build_expression_evaluation_command,
-};
-use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array};
+use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
+use crate::package_generator::utils::{align_data_width, combine_command, convert_number_to_hex, convert_to_u8_array};
 use crate::shared::ast::action::CallAction;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::command_map::{

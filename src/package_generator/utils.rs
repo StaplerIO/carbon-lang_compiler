@@ -1,3 +1,4 @@
+use apa::apa::modulo::modulo;
 use crate::package_generator::type_inference::expression::infer_expression_term_data_type;
 use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::{SimpleExpression, TermType};
@@ -34,6 +35,26 @@ pub fn infer_every_expression_data_term_type(
 
 pub fn combine_command(master: u8, sub: u8) -> u8 {
     return master * 0x10 + sub;
+}
+
+pub fn convert_number_to_hex(mut number: String) -> String {
+    // Means it is already a hex number
+    if number.starts_with("0x") {
+        return number[2..].to_string();
+    }
+
+    // Otherwise, it is a decimal. Convert it to hex
+    let mut result = String::new();
+    while !number.eq("0") {
+        let modulo_result = modulo(number.clone(), String::from("16"));
+
+        result.push(string_to_hex_char(modulo_result.1));
+        number = modulo_result.0;
+    }
+
+    result = result.chars().rev().collect();
+
+    return result;
 }
 
 /// Example:

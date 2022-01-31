@@ -1,8 +1,5 @@
-use apa::apa::addition::add;
-
 use crate::package_generator::command_builder::assignment_action::build_assignment_command;
 use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
-use crate::package_generator::command_builder::expression_evaluation::convert_number_to_hex;
 use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
 use crate::shared::ast::action::{ActionBlock, ActionType};
@@ -13,7 +10,7 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
     let mut result = vec![];
 
     let mut defined_data: Vec<DataDeclaration> = vec![];
-    let mut data_count = String::from("0");
+    let mut data_count: usize = 0;
 
     for action in &block.actions {
         match action.action_type {
@@ -22,13 +19,13 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
                 defined_data.push(DataDeclaration {
                     name: action.clone().declaration_action.unwrap().identifier,
                     slot: align_data_width(
-                        convert_to_u8_array(convert_number_to_hex(data_count.clone())),
+                        convert_to_u8_array(format!("{:X}", data_count)),
                         metadata.data_alignment,
                     ),
                     is_global: false,
                 });
 
-                data_count = add(data_count.clone(), String::from("1"));
+                data_count += 1;
             }
             ActionType::AssignmentStatement => {
                 result.extend(build_assignment_command(
