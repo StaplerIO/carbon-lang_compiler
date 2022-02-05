@@ -10,7 +10,9 @@
 /// Save the identifier of target function in it
 pub enum RelocationType {
     Absolute,
-    DomainHead,
+    // Set to 0 to jump out to nearest loop
+    DomainHead(usize),
+    // Set to 0 to jump out to nearest loop
     BreakDomain(usize),
     NextCommand,
     IgnoreDomain(usize),
