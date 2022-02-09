@@ -82,7 +82,7 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
     result.commands.extend(jump_command);
 
     // Put True commands
-    result.commands.extend(action_block_builder(&action.body, metadata));
+    result.append(action_block_builder(&action.body, metadata));
 
     return result;
 }

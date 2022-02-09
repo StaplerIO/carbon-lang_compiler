@@ -6,6 +6,6 @@ pub fn break_action_command_builder(metadata: &PackageMetadata) -> JumpCommandBu
     return direct_jump_command_builder(RelocationType::BreakDomain(0), metadata);
 }
 
-pub fn continue_action_builder(metadata: &PackageMetadata) -> JumpCommandBuildResult {
+pub fn continue_action_command_builder(metadata: &PackageMetadata) -> JumpCommandBuildResult {
     return direct_jump_command_builder(RelocationType::DomainHead(0), metadata);
 }

@@ -15,4 +15,8 @@ impl JumpCommandBuildResult {
         self.commands.extend(model.commands);
         self.descriptors.extend(aligned_model);
     }
+
+    pub fn append_commands(&mut self, commands: Vec<u8>) {
+        self.commands.extend(commands);
+    }
 }

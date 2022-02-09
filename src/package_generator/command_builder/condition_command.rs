@@ -28,7 +28,7 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclaration>
     }
 
     if action.else_action.is_some() {
-        result.commands.extend(action_block_builder(&action.else_action.clone().unwrap(), metadata));
+        result.append(action_block_builder(&action.else_action.clone().unwrap(), metadata));
     }
 
     return result;
