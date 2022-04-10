@@ -3,7 +3,6 @@ use crate::package_generator::command_builder::condition_command::if_command_bui
 use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
 use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::package_generator::command_builder::loop_interception::{break_action_command_builder, continue_action_command_builder};
-use crate::package_generator::command_builder::templates::jump_command::condition_block_command_builder;
 use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
 use crate::shared::ast::action::{ActionBlock, ActionType};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;

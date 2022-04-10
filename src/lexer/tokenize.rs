@@ -26,7 +26,7 @@ pub fn tokenize(mut source_code: String) -> Vec<Token> {
         if match_semicolon(source_code.as_str()) {
             result.push(Token::new_semicolon());
 
-            source_code.remove(0);
+            source_code.remove(0); 
             continue;
         }
 
