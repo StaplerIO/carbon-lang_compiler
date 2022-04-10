@@ -1,23 +1,15 @@
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    static ref IDENTIFIER_REGEX: Regex = Regex::new(r"^([_a-zA-Z][_a-zA-Z0-9]{0,80})[\\s\\S]*").unwrap();
+}
+
 pub fn match_identifier(content: &str) -> String {
-    let mut result = String::new();
-
-    // First character cannot be a number
-    if content.chars().nth(0).unwrap() == '_'
-        || content.chars().nth(0).unwrap().is_ascii_alphabetic()
-    {
-        result.push(content.chars().nth(0).unwrap());
-
-        let mut clone = content.to_string();
-        clone.remove(0);
-        // Other characters can be a letter or a digit or an underscore
-        for c in clone.chars() {
-            if c.is_ascii_digit() || c.is_ascii_alphabetic() || c == '_' {
-                result.push(c);
-            } else {
-                break;
-            }
-        }
+    let captures = IDENTIFIER_REGEX.captures(content);
+    if captures.is_some() {
+        return captures.unwrap()[1].to_string();
     }
 
-    return result;
+    return String::new();
 }
