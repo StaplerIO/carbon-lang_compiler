@@ -1,28 +1,44 @@
-use crate::shared::token::KeywordType;
+use std::collections::HashMap;
+use lazy_static::lazy_static;
+use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::token::{Token, TokenContent};
+use crate::shared::utils::position::Position;
+
+lazy_static! {
+    static ref KEYWORDS: HashMap<KeywordType, &'static str> = [
+        (KeywordType::KwDeclare, "decl"),
+        (KeywordType::KwNumber, "number"),
+        (KeywordType::KwChar, "char"),
+        (KeywordType::KwStr, "str"),
+        (KeywordType::KwBool, "bool"),
+        (KeywordType::KwVar, "var"),
+        (KeywordType::KwConst, "const"),
+        (KeywordType::KwExport, "export"),
+        (KeywordType::KwFunc, "func"),
+        (KeywordType::KwIf, "if"),
+        (KeywordType::KwElseIf, "elif"),
+        (KeywordType::KwElse, "else"),
+        (KeywordType::KwWhile, "while"),
+        (KeywordType::KwLoop, "loop"),
+        (KeywordType::KwContinue, "continue"),
+        (KeywordType::KwBreak, "break"),
+        (KeywordType::KwReturn, "return"),
+        (KeywordType::KwCall, "call"),
+        (KeywordType::KwLink, "link"),
+        (KeywordType::KwNone, "none"),
+        (KeywordType::KwAny, "any"),
+        (KeywordType::KwTrue, "true"),
+        (KeywordType::KwFalse, "false"),
+    ].iter().cloned().collect();
+}
 
 // Convert keyword string to token
-pub fn match_keyword(identifier: &str) -> KeywordType {
-    return match identifier {
-        "decl" => KeywordType::KwDeclare,
-        "number" => KeywordType::KwNumber,
-        "char" => KeywordType::KwChar,
-        "str" => KeywordType::KwStr,
-        "var" => KeywordType::KwVar,
-        "const" => KeywordType::KwConst,
-        "export" => KeywordType::KwExport,
-        "func" => KeywordType::KwFunc,
-        "if" => KeywordType::KwIf,
-        "elif" => KeywordType::KwElseIf,
-        "else" => KeywordType::KwElse,
-        "while" => KeywordType::KwWhile,
-        "loop" => KeywordType::KwLoop,
-        "switch" => KeywordType::KwSwitch,
-        "continue" => KeywordType::KwContinue,
-        "break" => KeywordType::KwBreak,
-        "return" => KeywordType::KwReturn,
-        "call" => KeywordType::KwCall,
-        "link" => KeywordType::KwLink,
-        "none" => KeywordType::KwNone,
-        _ => KeywordType::Unset,
-    };
+pub fn match_keyword(content: &str, base_pos: usize) -> Token {
+    for (&keyword, &keyword_str) in KEYWORDS.iter() {
+        if content.starts_with(keyword_str) {
+            return Token::new(TokenContent::Keyword(keyword), Position::new(base_pos, keyword_str.len()));
+        }
+    }
+
+    return Token::new_invalid();
 }

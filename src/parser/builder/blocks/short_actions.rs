@@ -3,7 +3,8 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, LoopBlock};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::{ContainerType, KeywordType};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
 
 // Build "continue", "break" and "loop" action
 pub fn short_statements_builder(

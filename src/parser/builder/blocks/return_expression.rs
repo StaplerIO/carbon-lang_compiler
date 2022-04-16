@@ -4,7 +4,7 @@ use crate::shared::ast::action::{Action, ReturnAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::KeywordType;
+use crate::shared::token::keyword::KeywordType;
 
 pub fn return_action_builder(
     tokens: &Vec<DecoratedToken>,

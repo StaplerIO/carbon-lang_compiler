@@ -1,14 +1,15 @@
 use crate::shared::ast::decorated_token::{
     DataToken, DataType, DecoratedToken, DecoratedTokenType,
 };
-use crate::shared::token::{KeywordType, Token, TokenType};
+use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::token::{Token, TokenContent};
 
 pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
     let mut result: Vec<DecoratedToken> = Vec::new();
 
     for token in tokens {
-        match token.token_type {
-            TokenType::Identifier => {
+        match token.content {
+            TokenContent::Identifier(x) => {
                 // TODO: Check if this is a type name
                 result.push(DecoratedToken {
                     token_type: DecoratedTokenType::Data,
@@ -16,7 +17,7 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                         data_type: DataType::Identifier,
                         number: None,
                         string: None,
-                        identifier: token.identifier.clone(),
+                        identifier: Option::from(x),
                         type_name: None,
                     }),
                     keyword: None,
@@ -24,11 +25,11 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                     operator: None,
                 });
             }
-            TokenType::Number => result.push(DecoratedToken {
+            TokenContent::Number(x) => result.push(DecoratedToken {
                 token_type: DecoratedTokenType::Data,
                 data: Option::from(DataToken {
                     data_type: DataType::Number,
-                    number: token.number.clone(),
+                    number: Option::from(x),
                     string: None,
                     identifier: None,
                     type_name: None,
@@ -37,12 +38,12 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                 container: None,
                 operator: None,
             }),
-            TokenType::String => result.push(DecoratedToken {
+            TokenContent::String(x) => result.push(DecoratedToken {
                 token_type: DecoratedTokenType::Data,
                 data: Option::from(DataToken {
                     data_type: DataType::String,
                     number: None,
-                    string: token.string.clone(),
+                    string: Option::from(x),
                     identifier: None,
                     type_name: None,
                 }),
@@ -50,14 +51,14 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                 container: None,
                 operator: None,
             }),
-            TokenType::Container => result.push(DecoratedToken {
+            TokenContent::Container(x) => result.push(DecoratedToken {
                 token_type: DecoratedTokenType::Container,
                 data: None,
                 keyword: None,
-                container: token.container.clone(),
+                container: Option::from(x),
                 operator: None,
             }),
-            TokenType::Keyword => match token.keyword.unwrap() {
+            TokenContent::Keyword(x) => match x {
                 KeywordType::KwNumber => result.push(DecoratedToken {
                     token_type: DecoratedTokenType::Data,
                     data: Option::from(DataToken {
@@ -100,25 +101,26 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                 _ => result.push(DecoratedToken {
                     token_type: DecoratedTokenType::DecoratedKeyword,
                     data: None,
-                    keyword: token.keyword.clone(),
+                    keyword: Option::from(x),
                     container: None,
                     operator: None,
                 }),
             },
-            TokenType::Operator => result.push(DecoratedToken {
+            TokenContent::Operator(x) => result.push(DecoratedToken {
                 token_type: DecoratedTokenType::Operator,
                 data: None,
                 keyword: None,
                 container: None,
-                operator: token.operator.clone(),
+                operator: Option::from(x),
             }),
-            TokenType::Semicolon => result.push(DecoratedToken {
+            TokenContent::Semicolon => result.push(DecoratedToken {
                 token_type: DecoratedTokenType::StatementEndSign,
                 data: None,
                 keyword: None,
                 container: None,
                 operator: None,
             }),
+            _ => {}
         }
     }
 

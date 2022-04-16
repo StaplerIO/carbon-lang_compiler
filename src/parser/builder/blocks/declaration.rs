@@ -2,7 +2,7 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, DeclarationAction};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::KeywordType;
+use crate::shared::token::keyword::KeywordType;
 
 pub fn declaration_action_builder(
     tokens: &Vec<DecoratedToken>,

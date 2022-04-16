@@ -3,7 +3,7 @@ use crate::parser::builder::function_builder::function_builder;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::ast::package::ParserPackageStructure;
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::KeywordType;
+use crate::shared::token::keyword::KeywordType;
 
 pub fn build_whole_file(
     tokens: Vec<DecoratedToken>,

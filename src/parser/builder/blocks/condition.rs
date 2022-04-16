@@ -4,7 +4,8 @@ use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{Action, ActionBlock, ElifBlock, IfAction};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::{ContainerType, KeywordType};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
 
 pub fn if_block_builder(
     tokens: &Vec<DecoratedToken>,

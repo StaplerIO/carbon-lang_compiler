@@ -2,7 +2,7 @@ use crate::parser::builder::templates::condition_block_builder;
 use crate::shared::ast::action::Action;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::KeywordType;
+use crate::shared::token::keyword::KeywordType;
 
 // result.1 : The end of the while statement (the last anti-brace)
 pub fn while_action_builder(

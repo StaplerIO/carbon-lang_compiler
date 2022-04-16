@@ -1,4 +1,8 @@
-pub fn match_spaces(content: &str) -> String {
+use crate::shared::token::token::Token;
+use crate::shared::token::token::TokenContent::Whitespace;
+use crate::shared::utils::position::Position;
+
+pub fn match_spaces(content: &str, base_pos: usize) -> Token {
     let mut result = String::new();
 
     for c in content.chars() {
@@ -10,5 +14,9 @@ pub fn match_spaces(content: &str) -> String {
         }
     }
 
-    return result;
+    return if result.is_empty() {
+        Token::new_invalid()
+    } else {
+        Token::new(Whitespace(result.clone()), Position::new(base_pos, result.len()))
+    }
 }

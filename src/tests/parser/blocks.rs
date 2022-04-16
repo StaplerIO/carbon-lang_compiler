@@ -12,7 +12,7 @@ use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::ActionType;
 use crate::shared::ast::blocks::expression::ExprDataTermType;
 use crate::shared::ast::blocks::expression::TermType;
-use crate::shared::token::CalculationOperator;
+use crate::shared::token::operator::CalculationOperator;
 
 #[test]
 fn assignment() {
@@ -35,8 +35,8 @@ fn assignment() {
         String::from("2")
     );
     assert_eq!(
-        expr[2].clone().operator.unwrap().calculation.unwrap(),
-        CalculationOperator::Plus
+        expr[2].clone().operator.unwrap().get_calc_op().unwrap(),
+        CalculationOperator::Addition
     );
 }
 

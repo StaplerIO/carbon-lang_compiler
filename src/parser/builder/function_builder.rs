@@ -4,7 +4,8 @@ use crate::shared::ast::blocks::function::Function;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::ast::parameter::Parameter;
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::{ContainerType, KeywordType};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
 
 // Minimum: decl func <name> () [<typename>] {} : 11 tokens
 // Set <typename> as "none" to return nothing

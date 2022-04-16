@@ -8,7 +8,7 @@ use crate::shared::command_map::{JumpCommand, RootCommand, StackCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_descriptor::{JumpCommandBuildResult, RelocationDescriptor, RelocationType};
-use crate::shared::token::RelationOperator;
+use crate::shared::token::operator::RelationOperator;
 
 pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, cmd_offset: isize, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
     let mut result = JumpCommandBuildResult {
@@ -48,11 +48,11 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
 
     // Modify target jump command
     match action.condition.expected_relation {
-        RelationOperator::Bigger => {
+        RelationOperator::Greater => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
             result.descriptors[0].offset = 0;
         }
-        RelationOperator::BiggerEqual => {
+        RelationOperator::GreaterOrEqual => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
             result.descriptors[0].offset = 0;
         }
@@ -60,7 +60,7 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
             result.descriptors[0].offset = 0;
         }
-        RelationOperator::LessEqual => {
+        RelationOperator::LessOrEqual => {
             result.descriptors[0].relocation_type = RelocationType::NextCommand;
             result.descriptors[0].offset = 0;
         }
@@ -100,11 +100,11 @@ fn relation_expression_eval_command_builder(expr: &RelationExpression, defined_d
 
     // How to express the relation?
     match expr.expected_relation {
-        RelationOperator::Bigger => {
+        RelationOperator::Greater => {
             result.extend(minus_command());
             return result;
         }
-        RelationOperator::BiggerEqual => {
+        RelationOperator::GreaterOrEqual => {
             result.extend(minus_command());
             result.extend(plus_one(metadata.data_alignment));
 
@@ -116,7 +116,7 @@ fn relation_expression_eval_command_builder(expr: &RelationExpression, defined_d
 
             return result;
         }
-        RelationOperator::LessEqual => {
+        RelationOperator::LessOrEqual => {
             result.extend(minus_command());
             result.extend(inverse_command());
             result.extend(plus_one(metadata.data_alignment));

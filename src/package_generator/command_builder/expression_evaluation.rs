@@ -6,7 +6,7 @@ use crate::shared::ast::blocks::expression::{ExprDataTermType, SimpleExpression,
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::token::{CalculationOperator, Operator, OperatorType};
+use crate::shared::token::operator::{CalculationOperator, Operator};
 
 /// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(
@@ -63,13 +63,14 @@ pub fn build_expression_evaluation_command(
 }
 
 pub fn operator_opcode_builder(operator: &Operator) -> Vec<u8> {
-    return match operator.operator_type {
-        OperatorType::Calculation => match operator.calculation.unwrap() {
-            CalculationOperator::Plus => plus_command(),
-            CalculationOperator::Minus => minus_command(),
-            CalculationOperator::Times => multiplication_command(),
-            CalculationOperator::Divide => divide_command(),
-            CalculationOperator::Mod => mod_command(),
+    return match operator {
+        Operator::Calculation(x) => match x {
+            CalculationOperator::Addition => plus_command(),
+            CalculationOperator::Subtraction => minus_command(),
+            CalculationOperator::Multiply => multiplication_command(),
+            CalculationOperator::Division => divide_command(),
+            CalculationOperator::Modulo => mod_command(),
+            _ => panic!("Invalid calculation operator"),
         },
         _ => {
             panic!("`Logical` and `Relation` operators are not implemented so far :(");

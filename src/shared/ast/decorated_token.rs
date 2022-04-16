@@ -1,4 +1,6 @@
-use crate::shared::token::{ContainerType, KeywordType, Operator};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::operator::Operator;
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum DecoratedTokenType {

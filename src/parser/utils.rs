@@ -1,5 +1,6 @@
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
-use crate::shared::token::{ContainerType, Operator, OperatorType};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::operator::Operator;
 
 // Return the distance to next semicolon token, None to find nothing
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> Option<usize> {
@@ -12,15 +13,7 @@ pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> Option<usize> {
 pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> Option<usize> {
     return tokens.iter().position(|t| {
         t.token_type == DecoratedTokenType::Operator
-            && t.operator
-                .unwrap_or(Operator {
-                    operator_type: OperatorType::Unset,
-                    calculation: None,
-                    relation: None,
-                    logical: None,
-                })
-                .operator_type
-                == OperatorType::Comma
+            && t.operator.unwrap_or(Operator::Invalid) == Operator::Comma
     });
 }
 
@@ -31,7 +24,7 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
     result.push(vec![]);
     for token in tokens {
         if token.token_type == DecoratedTokenType::Operator {
-            if token.operator.unwrap().operator_type == OperatorType::Comma {
+            if token.operator.unwrap() == Operator::Comma {
                 // Start an new expression
                 result.push(vec![]);
                 continue;
@@ -52,8 +45,8 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
 pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
     let mut container_level = 0;
 
-    let mut container_type = ContainerType::Unset;
-    let mut anti_type = ContainerType::Unset;
+    let mut container_type = ContainerType::Invalid;
+    let mut anti_type = ContainerType::Invalid;
     for (index, token) in tokens.iter().enumerate() {
         if token.token_type == DecoratedTokenType::Container {
             if index == 0 {
@@ -62,7 +55,7 @@ pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
                     ContainerType::Brace => ContainerType::AntiBrace,
                     ContainerType::Bracket => ContainerType::AntiBracket,
                     ContainerType::Index => ContainerType::AntiIndex,
-                    _ => ContainerType::Unset,
+                    _ => ContainerType::Invalid,
                 };
             }
 

@@ -1,11 +1,13 @@
 use std::collections::HashMap;
+use std::iter::Enumerate;
 
 use lazy_static::lazy_static;
 
+use crate::shared::token::operator::{CalculationOperator, Operator, RelationOperator};
 use crate::parser::builder::blocks::call::bare_function_call_builder;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, RelationExpression, SimpleExpression, TermType};
 use crate::shared::ast::decorated_token::{DataType, DecoratedToken, DecoratedTokenType};
-use crate::shared::token::{CalculationOperator, ContainerType, OperatorType};
+use crate::shared::token::container::ContainerType;
 
 lazy_static! {
     /**
@@ -13,17 +15,11 @@ lazy_static! {
      * calculation > relation > logical
      */
     static ref CALC_OPERATOR_PRIORITY: HashMap<CalculationOperator, u8> = [
-        (CalculationOperator::Plus, 1),
-        (CalculationOperator::Minus, 1),
-        (CalculationOperator::Times, 2),
-        (CalculationOperator::Divide, 2),
-        (CalculationOperator::Mod, 2)
-    ].iter().cloned().collect();
-
-    static ref OPERATOR_PRIORITY: HashMap<OperatorType, u8> = [
-        (OperatorType::Logical, 1),
-        (OperatorType::Relation, 2),
-        (OperatorType::Calculation, 3)
+        (CalculationOperator::Addition, 1),
+        (CalculationOperator::Subtraction, 1),
+        (CalculationOperator::Multiply, 2),
+        (CalculationOperator::Division, 2),
+        (CalculationOperator::Modulo, 2)
     ].iter().cloned().collect();
 }
 
@@ -101,9 +97,12 @@ pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTer
 fn is_operator_dt(token: DecoratedToken) -> bool {
     if token.token_type == DecoratedTokenType::Operator {
         let operator = token.operator.unwrap();
-        return operator.operator_type == OperatorType::Calculation
-            || operator.operator_type == OperatorType::Relation
-            || operator.operator_type == OperatorType::Logical;
+        return match operator {
+            Operator::Calculation(_) => true,
+            Operator::Relation(_) => true,
+            Operator::Logical(_) => true,
+            _ => false,
+        }
     }
 
     return false;
@@ -174,9 +173,12 @@ pub fn expression_infix_to_postfix(terms: Vec<ExprTerm>) -> Vec<ExprTerm> {
 fn is_operator_et(token: ExprTerm) -> bool {
     if token.term_type == TermType::Operator {
         let operator = token.operator.unwrap();
-        return operator.operator_type == OperatorType::Calculation
-            || operator.operator_type == OperatorType::Relation
-            || operator.operator_type == OperatorType::Logical;
+        return match operator {
+            Operator::Calculation(_) => true,
+            Operator::Relation(_) => true,
+            Operator::Logical(_) => true,
+            _ => false,
+        }
     }
 
     return false;
@@ -185,15 +187,25 @@ fn is_operator_et(token: ExprTerm) -> bool {
 // Return true if the priority of "a" is higher than or equal to "b"
 fn priority_is_higher(a: ExprTerm, b: ExprTerm) -> bool {
     if is_operator_et(a.clone()) && is_operator_et(b.clone()) {
-        return if a.operator.unwrap().operator_type != b.operator.unwrap().operator_type {
-            OPERATOR_PRIORITY[&a.operator.unwrap().operator_type]
-                >= OPERATOR_PRIORITY[&b.operator.unwrap().operator_type]
-        } else if a.operator.unwrap().operator_type == OperatorType::Calculation {
+        return if a.operator.unwrap() != b.operator.unwrap() {
+            get_operator_priority(&a.operator.unwrap())
+                >= get_operator_priority(&b.operator.unwrap())
+        } else if a.operator.unwrap().eq_entry(&Operator::Calculation(CalculationOperator::Invalid)) {
             // Then they are equal on operator type (ElseIf ~ End If)
             // So we just need to compare with 1 token
 
-            CALC_OPERATOR_PRIORITY[&a.operator.unwrap().calculation.unwrap()]
-                >= CALC_OPERATOR_PRIORITY[&b.operator.unwrap().calculation.unwrap()]
+            // Get value inside the enum
+            let ta = match a.operator.unwrap() {
+                Operator::Calculation(x) => x,
+                _ => panic!("Invalid operator"),
+            };
+
+            let tb = match b.operator.unwrap() {
+                Operator::Calculation(x) => x,
+                _ => panic!("Invalid operator"),
+            };
+
+            CALC_OPERATOR_PRIORITY[&ta] >= CALC_OPERATOR_PRIORITY[&tb]
         } else {
             true
         };
@@ -208,7 +220,7 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     let mut op_position: usize = usize::MAX;
     for (index, term) in terms.iter().enumerate() {
         if term.operator.is_some() {
-            if term.operator.unwrap().operator_type == OperatorType::Relation {
+            if matches!(term.operator.unwrap(), Operator::Relation(_)) {
                 op_position = index;
                 break;
             }
@@ -223,9 +235,25 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
 
     let right_expr = expression_infix_to_postfix(split.1.to_vec()[1..].to_vec());
 
+    let rel_op = match terms[op_position].operator.unwrap() {
+        Operator::Relation(x) => x,
+        _ => panic!("Invalid operator"),
+    };
+
     return RelationExpression {
         left: SimpleExpression { postfix_expr: left_expr, output_type: "".to_string() },
         right: SimpleExpression { postfix_expr: right_expr, output_type: "".to_string() },
-        expected_relation: terms[op_position].operator.unwrap().relation.unwrap()
+        expected_relation: rel_op
     };
+}
+
+
+
+fn get_operator_priority(op: &Operator) -> u8 {
+    return match op {
+        Operator::Logical(_) => 1,
+        Operator::Relation(_) => 2,
+        Operator::Calculation(_) => 3,
+        _ => panic!("Invalid operator type!"),
+    }
 }

@@ -3,7 +3,7 @@ use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::builder::expression_builder::expression_term_decorator;
 use crate::parser::builder::expression_builder::relation_expression_builder;
 use crate::parser::decorator::decorate_token;
-use crate::shared::token::CalculationOperator;
+use crate::shared::token::operator::CalculationOperator;
 
 #[test]
 fn simple_expression() {
@@ -25,12 +25,12 @@ fn simple_expression() {
         String::from("3")
     );
     assert_eq!(
-        result[3].clone().operator.unwrap().calculation.unwrap(),
-        CalculationOperator::Times
+        result[3].clone().operator.unwrap().get_calc_op().unwrap(),
+        CalculationOperator::Multiply
     );
     assert_eq!(
-        result[4].clone().operator.unwrap().calculation.unwrap(),
-        CalculationOperator::Plus
+        result[4].clone().operator.unwrap().get_calc_op().unwrap(),
+        CalculationOperator::Addition
     );
 }
 
@@ -54,20 +54,20 @@ fn expression_with_bracket() {
         String::from("5")
     );
     assert_eq!(
-        result[3].clone().operator.unwrap().calculation.unwrap(),
-        CalculationOperator::Plus
+        result[3].clone().operator.unwrap().get_calc_op().unwrap(),
+        CalculationOperator::Addition
     );
     assert_eq!(
-        result[4].clone().operator.unwrap().calculation.unwrap(),
-        CalculationOperator::Times
+        result[4].clone().operator.unwrap().get_calc_op().unwrap(),
+        CalculationOperator::Multiply
     );
     assert_eq!(
         result[5].clone().data.unwrap().number.unwrap(),
         String::from("7")
     );
     assert_eq!(
-        result[6].clone().operator.unwrap().calculation.unwrap(),
-        CalculationOperator::Minus
+        result[6].clone().operator.unwrap().get_calc_op().unwrap(),
+        CalculationOperator::Subtraction
     );
 }
 

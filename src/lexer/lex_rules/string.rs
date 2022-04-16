@@ -1,4 +1,7 @@
-pub fn match_string(content: &str) -> String {
+use crate::shared::token::token::{Token, TokenContent};
+use crate::shared::utils::position::Position;
+
+pub fn match_string(content: &str, base_pos: usize) -> Token {
     let mut result = String::new();
 
     if content.starts_with('\"') {
@@ -11,5 +14,16 @@ pub fn match_string(content: &str) -> String {
         }
     }
 
-    return result;
+    return if result.is_empty() {
+        Token::new_invalid()
+    } else {
+        // Remove quotes
+        let bare_string = result
+            .trim_start_matches("\"")
+            .trim_end_matches("\"")
+            .to_string();
+        Token::new(TokenContent::String(bare_string), Position::new(base_pos, result.len()))
+    }
 }
+
+// TODO: Convert escape sequences

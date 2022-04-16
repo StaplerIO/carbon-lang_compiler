@@ -1,31 +1,31 @@
 use crate::lexer::tokenize::tokenize;
-use crate::shared::token::{ContainerType, KeywordType, OperatorType};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::operator::Operator;
 
 #[test]
 fn simple() {
-    let result = tokenize(String::from("number 132211{ 32.85dd } >! = >= ,"));
+    let result = tokenize(String::from("number 132211{ 32.85 dd } >! = >= ,"));
 
     assert_eq!(
-        result.get(0).unwrap().clone().keyword.unwrap(),
+        result.get(0).unwrap().get_keyword().unwrap(),
         KeywordType::KwNumber
     );
     assert_eq!(
-        result.get(1).unwrap().clone().number.unwrap(),
+        result.get(1).unwrap().get_number().unwrap(),
         String::from("132211")
     );
     assert_eq!(
-        result.get(3).unwrap().clone().number.unwrap(),
+        result.get(3).unwrap().get_number().unwrap(),
         String::from("32.85")
     );
     assert_eq!(
         result
             .last()
             .unwrap()
-            .clone()
-            .operator
-            .unwrap()
-            .operator_type,
-        OperatorType::Comma
+            .get_operator()
+            .unwrap(),
+        Operator::Comma
     );
 }
 
@@ -36,53 +36,51 @@ fn code_sample() {
     ));
 
     assert_eq!(
-        result.get(0).unwrap().clone().keyword.unwrap(),
+        result.get(0).unwrap().get_keyword().unwrap(),
         KeywordType::KwExport
     );
     assert_eq!(
-        result.get(1).unwrap().clone().keyword.unwrap(),
+        result.get(1).unwrap().get_keyword().unwrap(),
         KeywordType::KwFunc
     );
     assert_eq!(
-        result.get(2).unwrap().clone().identifier.unwrap(),
+        result.get(2).unwrap().get_identifier().unwrap(),
         String::from("main")
     );
     assert_eq!(
-        result.get(3).unwrap().clone().container.unwrap(),
+        result.get(3).unwrap().get_container().unwrap(),
         ContainerType::Bracket
     );
     assert_eq!(
-        result.get(4).unwrap().clone().container.unwrap(),
+        result.get(4).unwrap().get_container().unwrap(),
         ContainerType::AntiBracket
     );
     assert_eq!(
-        result.get(5).unwrap().clone().container.unwrap(),
+        result.get(5).unwrap().get_container().unwrap(),
         ContainerType::Brace
     );
     assert_eq!(
-        result.get(6).unwrap().clone().identifier.unwrap(),
+        result.get(6).unwrap().get_identifier().unwrap(),
         String::from("std")
     );
     assert_eq!(
         result
             .get(7)
             .unwrap()
-            .clone()
-            .operator
-            .unwrap()
-            .operator_type,
-        OperatorType::Scope
+            .get_operator()
+            .unwrap(),
+        Operator::Scope
     );
     assert_eq!(
-        result.get(8).unwrap().clone().identifier.unwrap(),
+        result.get(8).unwrap().get_identifier().unwrap(),
         String::from("io")
     );
     assert_eq!(
-        result.get(12).unwrap().clone().string.unwrap(),
+        result.get(12).unwrap().get_string().unwrap(),
         String::from("123456")
     );
     assert_eq!(
-        result.last().unwrap().clone().container.unwrap(),
+        result.last().unwrap().get_container().unwrap(),
         ContainerType::AntiBrace
     );
 }

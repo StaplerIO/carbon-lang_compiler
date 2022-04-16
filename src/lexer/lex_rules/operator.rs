@@ -1,103 +1,80 @@
-use crate::shared::token::{
-    CalculationOperator, LogicalOperator, Operator, OperatorType, RelationOperator,
-};
+use std::collections::HashMap;
+use lazy_static::lazy_static;
+use crate::shared::token::operator::{CalculationOperator, LogicalOperator, Operator, RelationOperator};
+use crate::shared::token::token::{Token, TokenContent};
+use crate::shared::utils::position::Position;
 
-/**
- * Return:
- * A tuple (Operator, number) : The number is the length of the operator
- */
-pub fn match_operator(content: &str) -> (Operator, usize) {
-    return match content.chars().nth(0).unwrap() {
-        '+' => (Operator::new_calculation(CalculationOperator::Plus), 1),
-        '-' => (Operator::new_calculation(CalculationOperator::Minus), 1),
-        '*' => (Operator::new_calculation(CalculationOperator::Times), 1),
-        '/' => (Operator::new_calculation(CalculationOperator::Divide), 1),
-        '%' => (Operator::new_calculation(CalculationOperator::Mod), 1),
-        '<' => {
-            match content.chars().nth(1).unwrap() {
-                '=' => {
-                    // Matches a "<=" sequence
-                    (Operator::new_relation(RelationOperator::LessEqual), 2)
-                }
-                '>' => {
-                    // Matches a "<>" sequence
-                    (Operator::new_relation(RelationOperator::NotEqual), 2)
-                }
-                _ => {
-                    // Matches a "<" sequence
-                    (Operator::new_relation(RelationOperator::Less), 1)
-                }
-            }
+lazy_static! {
+    static ref CALCULATION_OPERATOR: HashMap<CalculationOperator, &'static str> = [
+        (CalculationOperator::Addition, "+"),
+        (CalculationOperator::Subtraction, "-"),
+        (CalculationOperator::Multiply, "*"),
+        (CalculationOperator::Division, "/"),
+        (CalculationOperator::Modulo, "%"),
+    ].iter().cloned().collect();
+
+    static ref LOGICAL_OPERATOR: HashMap<LogicalOperator, &'static str> = [
+        (LogicalOperator::And, "&&"),
+        (LogicalOperator::Or, "||"),
+        (LogicalOperator::Not, "!"),
+    ].iter().cloned().collect();
+
+    static ref RELATION_OPERATOR: HashMap<RelationOperator, &'static str> = [
+        (RelationOperator::Equal, "="),
+        (RelationOperator::Greater, ">"),
+        (RelationOperator::Less, "<"),
+        (RelationOperator::NotEqual, "<>"),
+        (RelationOperator::GreaterOrEqual, ">="),
+        (RelationOperator::LessOrEqual, "<="),
+    ].iter().cloned().collect();
+}
+
+// TODO: Document this function
+pub fn match_operator(content: &str, base_pos: usize) -> Token {
+    let calc = match_calculation_operator(content, base_pos);
+    if !calc.is_invalid() {
+        return calc;
+    }
+
+    let logical = match_logical_operator(content, base_pos);
+    if !logical.is_invalid() {
+        return logical;
+    }
+
+    let relation = match_relation_operator(content, base_pos);
+    if !relation.is_invalid() {
+        return relation;
+    }
+
+    return Token::new_invalid();
+}
+
+pub fn match_calculation_operator(content: &str, base_pos: usize) -> Token {
+    for (&operator, &operator_char) in CALCULATION_OPERATOR.iter() {
+        if content.starts_with(operator_char) {
+            return Token::new(TokenContent::Operator(Operator::Calculation(operator)), Position::new(base_pos, operator_char.len()));
         }
-        '>' => {
-            match content.chars().nth(1).unwrap() {
-                '=' => {
-                    // Matches a ">=" sequence
-                    (Operator::new_relation(RelationOperator::BiggerEqual), 2)
-                }
-                _ => {
-                    // Matches a ">" sequence
-                    (Operator::new_relation(RelationOperator::Bigger), 1)
-                }
-            }
+    }
+
+    return Token::new_invalid();
+}
+
+pub fn match_logical_operator(content: &str, base_pos: usize) -> Token {
+    for (&operator, operator_str) in LOGICAL_OPERATOR.iter() {
+        if content.starts_with(operator_str) {
+            return Token::new(TokenContent::Operator(Operator::Logical(operator)), Position::new(base_pos, operator_str.len()));
         }
-        '=' => {
-            match content.chars().nth(1).unwrap() {
-                '=' => {
-                    // Matches a "==" sequence
-                    (Operator::new_relation(RelationOperator::Equal), 2)
-                }
-                _ => {
-                    // Matches a "=" sequence
-                    (
-                        Operator {
-                            operator_type: OperatorType::Assignment,
-                            calculation: None,
-                            relation: None,
-                            logical: None,
-                        },
-                        1,
-                    )
-                }
-            }
+    }
+
+    return Token::new_invalid();
+}
+
+pub fn match_relation_operator(content: &str, base_pos: usize) -> Token {
+    for (&operator, operator_str) in RELATION_OPERATOR.iter() {
+        if content.starts_with(operator_str) {
+            return Token::new(TokenContent::Operator(Operator::Relation(operator)), Position::new(base_pos, operator_str.len()));
         }
-        '!' => (Operator::new_logical(LogicalOperator::Not), 1),
-        ',' => (
-            Operator {
-                operator_type: OperatorType::Comma,
-                calculation: None,
-                relation: None,
-                logical: None,
-            },
-            1,
-        ),
-        _ => {
-            let capture = String::from(&content[0..2]);
-            if capture.eq("&&") {
-                (Operator::new_logical(LogicalOperator::And), 2)
-            } else if capture.eq("||") {
-                (Operator::new_logical(LogicalOperator::Or), 2)
-            } else if capture.eq("::") {
-                (
-                    Operator {
-                        operator_type: OperatorType::Scope,
-                        calculation: None,
-                        relation: None,
-                        logical: Option::from(LogicalOperator::Unset),
-                    },
-                    2,
-                )
-            } else {
-                (
-                    Operator {
-                        operator_type: OperatorType::Unset,
-                        calculation: None,
-                        relation: None,
-                        logical: None,
-                    },
-                    0,
-                )
-            }
-        }
-    };
+    }
+
+    return Token::new_invalid();
 }

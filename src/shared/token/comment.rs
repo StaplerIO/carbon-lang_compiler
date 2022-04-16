@@ -1,0 +1,1 @@
+pub type Comment = String;

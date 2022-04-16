@@ -1,5 +1,5 @@
 use crate::shared::ast::action::CallAction;
-use crate::shared::token::{Operator, RelationOperator};
+use crate::shared::token::operator::{Operator, RelationOperator};
 
 #[derive(Clone)]
 pub struct SimpleExpression {

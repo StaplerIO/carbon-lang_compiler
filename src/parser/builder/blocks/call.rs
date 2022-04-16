@@ -4,7 +4,8 @@ use crate::shared::ast::action::{Action, CallAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::{ContainerType, KeywordType};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
 
 // Scheme: call <identifier>(<param list>);
 pub fn call_action_builder(

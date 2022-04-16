@@ -5,7 +5,9 @@ use crate::shared::ast::action::{ActionBlock, ConditionBlock};
 use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
-use crate::shared::token::{ContainerType, KeywordType, RelationOperator};
+use crate::shared::token::container::ContainerType;
+use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::operator::RelationOperator;
 
 /// A `ConditionBlock` has 2 parts: `Expression` part and `ActionBlock` part, formatted like this:
 /// ` leading_keyword (expression) { action_block }`
@@ -21,7 +23,7 @@ pub fn condition_block_builder(
                 condition: RelationExpression {
                     left: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
                     right: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
-                    expected_relation: RelationOperator::Unset
+                    expected_relation: RelationOperator::Invalid
                 },
                 body: ActionBlock { actions: vec![] },
             };
