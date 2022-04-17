@@ -1,3 +1,4 @@
+use crate::lexer::lex_rules::comment::match_comment;
 use crate::lexer::lex_rules::container::match_container;
 use crate::lexer::lex_rules::identifier::match_identifier;
 use crate::lexer::lex_rules::keyword::match_keyword;
@@ -21,7 +22,15 @@ pub fn tokenize(source_code: String) -> Vec<Token> {
 
     let mut index: usize = 0;
     while index < source_code.len() {
+        #[allow(unused_assignments)]
         let mut token: Token = Token::new_invalid();
+
+        token = match_comment(&source_code[index..], index);
+        if !token.is_invalid() {
+            index += token.position.length;
+            result.push(token);
+            continue;
+        }
 
         token = match_semicolon(&source_code[index..], index);
         if !token.is_invalid() {
@@ -75,6 +84,7 @@ pub fn tokenize(source_code: String) -> Vec<Token> {
         token = match_spaces(&source_code[index..], index);
         if !token.is_invalid() {
             index += token.position.length;
+            result.push(token);
             continue;
         }
     }

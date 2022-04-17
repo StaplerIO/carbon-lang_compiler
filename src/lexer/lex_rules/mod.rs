@@ -6,3 +6,4 @@ pub mod operator;
 pub mod semicolon;
 pub mod space;
 pub mod string;
+pub mod comment;

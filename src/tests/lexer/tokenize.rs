@@ -84,3 +84,10 @@ fn code_sample() {
         ContainerType::AntiBrace
     );
 }
+
+#[test]
+fn comment_test() {
+    let result = tokenize(String::from("// comments here"));
+
+    assert_eq!(result.len(), 1);
+}
