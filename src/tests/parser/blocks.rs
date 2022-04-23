@@ -16,7 +16,7 @@ use crate::shared::token::operator::CalculationOperator;
 
 #[test]
 fn assignment() {
-    let tokens = tokenize(String::from("a = 1 + 2;"));
+    let tokens = tokenize("a = 1 + 2;");
     let raw = assignment_block_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.assignment_action.unwrap();
@@ -42,7 +42,7 @@ fn assignment() {
 
 #[test]
 fn variable_declaration() {
-    let tokens = tokenize(String::from("decl var number foo;"));
+    let tokens = tokenize("decl var number foo;");
     let raw = declaration_action_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.declaration_action.unwrap();
@@ -55,7 +55,7 @@ fn variable_declaration() {
 
 #[test]
 fn function_call() {
-    let tokens = tokenize(String::from("call func_1(5, 2.66, var1, 3 - 2);"));
+    let tokens = tokenize("call func_1(5, 2.66, var1, 3 - 2);");
     let raw = call_action_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.call_action.unwrap();
@@ -92,7 +92,7 @@ fn function_call() {
 
 #[test]
 fn return_from_function_no_value() {
-    let tokens = tokenize(String::from("return;"));
+    let tokens = tokenize("return;");
     let raw = return_action_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.return_action.unwrap();
@@ -103,7 +103,7 @@ fn return_from_function_no_value() {
 
 #[test]
 fn return_from_function_with_value() {
-    let tokens = tokenize(String::from("return 1 + 2 * tb_234;"));
+    let tokens = tokenize("return 1 + 2 * tb_234;");
     let raw = return_action_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.return_action.unwrap();
@@ -124,7 +124,7 @@ fn return_from_function_with_value() {
 
 #[test]
 fn single_token_statement_break() {
-    let tokens = tokenize(String::from("break;"));
+    let tokens = tokenize("break;");
     let raw = short_statements_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0;
@@ -135,7 +135,7 @@ fn single_token_statement_break() {
 
 #[test]
 fn single_token_statement_continue() {
-    let tokens = tokenize(String::from("continue;"));
+    let tokens = tokenize("continue;");
     let raw = short_statements_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0;
@@ -146,13 +146,13 @@ fn single_token_statement_continue() {
 
 #[test]
 fn action_block() {
-    let tokens = tokenize(String::from("decl var number foo;\
-                                                                    foo = 1;
-                                                                    foo = foo + 1;
-                                                                    call func_1(5, 2.66, var1, 3 - 2);\
-                                                                    if (foo == 2) { return; }\
-                                                                    return 1 + 2 * tb_234;\
-                                                                    while (1 == 1) { call func_1(0); }"));
+    let tokens = tokenize("decl var number foo;\
+                                                foo = 1;
+                                                foo = foo + 1;
+                                                call func_1(5, 2.66, var1, 3 - 2);\
+                                                if (foo == 2) { return; }\
+                                                return 1 + 2 * tb_234;\
+                                                while (1 == 1) { call func_1(0); }");
 
     let result = action_block_builder(decorate_token(tokens.clone()));
 
@@ -167,7 +167,7 @@ fn action_block() {
 
 #[test]
 fn while_block() {
-    let tokens = tokenize(String::from("while (1 + 1 == 2) { a = a + 1; return; }"));
+    let tokens = tokenize("while (1 + 1 == 2) { a = a + 1; return; }");
     let raw = while_action_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.while_action.unwrap();
@@ -180,7 +180,7 @@ fn while_block() {
 
 #[test]
 fn if_block() {
-    let tokens = tokenize(String::from("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1 == 1) { call setup(); } else { decl var number foo; }"));
+    let tokens = tokenize("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1 == 1) { call setup(); } else { decl var number foo; }");
     let raw = if_block_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.if_action.unwrap();
@@ -194,9 +194,7 @@ fn if_block() {
 
 #[test]
 fn function_block() {
-    let tokens = tokenize(String::from(
-        "decl func main(number a, number b)[number] { return a + b; }",
-    ));
+    let tokens = tokenize("decl func main(number a, number b)[number] { return a + b; }", );
     let raw = function_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0;

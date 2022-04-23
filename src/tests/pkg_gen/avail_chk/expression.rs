@@ -8,7 +8,7 @@ use crate::shared::ast::blocks::expression::SimpleExpression;
 #[test]
 fn sequence() {
     // A legal expression
-    let mut tokens = tokenize(String::from("1 * (2 + 3)"));
+    let mut tokens = tokenize("1 * (2 + 3)");
     let mut expr = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone())));
 
     assert!(check_expression_sequence(SimpleExpression {
@@ -17,7 +17,7 @@ fn sequence() {
     }));
 
     // An illegal expression
-    tokens = tokenize(String::from("8 * (2 + 3) -"));
+    tokens = tokenize("8 * (2 + 3) -");
     expr = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone())));
     assert!(!check_expression_sequence(SimpleExpression {
         postfix_expr: expr.clone(),

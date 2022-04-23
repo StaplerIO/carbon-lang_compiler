@@ -17,7 +17,7 @@ use crate::shared::token::token::Token;
  */
 
 // Support code without comments only
-pub fn tokenize(source_code: String) -> Vec<Token> {
+pub fn tokenize(source_code: &str) -> Vec<Token> {
     let mut result: Vec<Token> = Vec::new();
 
     let mut index: usize = 0;

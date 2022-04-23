@@ -5,6 +5,12 @@ use crate::shared::token::token::{Token, TokenContent};
 use crate::shared::utils::position::Position;
 
 lazy_static! {
+    static ref ROOT_OPERATOR: HashMap<Operator, &'static str> = [
+        (Operator::Assignment, "="),
+        (Operator::Scope, "::"),
+        (Operator::Comma, ","),
+    ].iter().cloned().collect();
+
     static ref CALCULATION_OPERATOR: HashMap<CalculationOperator, &'static str> = [
         (CalculationOperator::Addition, "+"),
         (CalculationOperator::Subtraction, "-"),
@@ -20,7 +26,7 @@ lazy_static! {
     ].iter().cloned().collect();
 
     static ref RELATION_OPERATOR: HashMap<RelationOperator, &'static str> = [
-        (RelationOperator::Equal, "="),
+        (RelationOperator::Equal, "=="),
         (RelationOperator::Greater, ">"),
         (RelationOperator::Less, "<"),
         (RelationOperator::NotEqual, "<>"),
@@ -44,6 +50,11 @@ pub fn match_operator(content: &str, base_pos: usize) -> Token {
     let relation = match_relation_operator(content, base_pos);
     if !relation.is_invalid() {
         return relation;
+    }
+
+    let root = match_root_operator(content, base_pos);
+    if !root.is_invalid() {
+        return root;
     }
 
     return Token::new_invalid();
@@ -73,6 +84,16 @@ pub fn match_relation_operator(content: &str, base_pos: usize) -> Token {
     for (&operator, operator_str) in RELATION_OPERATOR.iter() {
         if content.starts_with(operator_str) {
             return Token::new(TokenContent::Operator(Operator::Relation(operator)), Position::new(base_pos, operator_str.len()));
+        }
+    }
+
+    return Token::new_invalid();
+}
+
+pub fn match_root_operator(content: &str, base_pos: usize) -> Token {
+    for (&operator, operator_str) in ROOT_OPERATOR.iter() {
+        if content.starts_with(operator_str) {
+            return Token::new(TokenContent::Operator(operator), Position::new(base_pos, operator_str.len()));
         }
     }
 

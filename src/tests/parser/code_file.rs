@@ -26,7 +26,7 @@ lazy_static! {
 
 #[test]
 fn file_example() {
-    let tokens = decorate_token(tokenize(FILE_CONTENT.parse().unwrap()));
+    let tokens = decorate_token(tokenize(&FILE_CONTENT));
     let structure = build_whole_file(tokens, String::from("main")).ok().unwrap();
 
     assert_eq!(structure.linked_code_files.len(), 2);

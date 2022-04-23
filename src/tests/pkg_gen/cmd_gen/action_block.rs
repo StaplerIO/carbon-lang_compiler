@@ -6,14 +6,13 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
 fn action_block() {
-    let tokens = tokenize(String::from(
+    let tokens = tokenize(
         "decl var number foo;\
-                                                                    decl var number bar;\
-                                                                    decl var number res;\
-                                                                    foo = 1;\
-                                                                    bar = 2;\
-                                                                    res = foo + bar;",
-    ));
+                   decl var number bar;\
+                   decl var number res;\
+                   foo = 1;\
+                   bar = 2;\
+                   res = foo + bar;");
     let actions = crate::parser::builder::blocks::action_block::action_block_builder(
         decorate_token(tokens),
     );
