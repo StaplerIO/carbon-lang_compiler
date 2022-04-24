@@ -7,7 +7,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
 fn function_call() {
-    let tokens = tokenize("call foo(23, bar);");
+    let tokens = tokenize("call foo(23, bar);", true);
     let action = call_action_builder(&decorate_token(tokens))
         .unwrap()
         .0

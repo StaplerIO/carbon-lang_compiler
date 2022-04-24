@@ -9,7 +9,7 @@ use crate::shared::ast::action::VariableDefinition;
 
 #[test]
 fn check_def() {
-    let tokens = tokenize("decl var number a;");
+    let tokens = tokenize("decl var number a;", true);
     let stmt = declaration_action_builder(&decorate_token(tokens));
 
     let defined_types: Vec<String> = [
@@ -28,7 +28,7 @@ fn check_def() {
 
 #[test]
 fn check_assignment() {
-    let tokens = tokenize("bcd = bcd + 2;");
+    let tokens = tokenize("bcd = bcd + 2;", true);
     let stmt = assignment_block_builder(&decorate_token(tokens));
 
     let defined_vars: Vec<VariableDefinition> = [VariableDefinition {

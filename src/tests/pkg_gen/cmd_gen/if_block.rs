@@ -6,7 +6,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
 fn bare_if_test() {
-    let tokens = tokenize("if (234 > 123) { decl var number foo; foo = 3; }");
+    let tokens = tokenize("if (234 > 123) { decl var number foo; foo = 3; }", true);
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,
@@ -26,7 +26,7 @@ fn bare_if_test() {
 
 #[test]
 fn complex_if_test() {
-    let tokens = tokenize("if (234 > 123) { decl var number foo; foo = 3; } elif (456 < 234) { decl var number bar; } else { }");
+    let tokens = tokenize("if (234 > 123) { decl var number foo; foo = 3; } elif (456 < 234) { decl var number bar; } else { }", true);
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,

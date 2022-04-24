@@ -5,7 +5,7 @@ use crate::shared::token::token::{Token, TokenContent};
 use crate::shared::utils::position::Position;
 
 lazy_static! {
-    static ref KEYWORDS: HashMap<KeywordType, &'static str> = [
+    pub static ref KEYWORDS: HashMap<KeywordType, &'static str> = [
         (KeywordType::KwDeclare, "decl"),
         (KeywordType::KwNumber, "number"),
         (KeywordType::KwChar, "char"),

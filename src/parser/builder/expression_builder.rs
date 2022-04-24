@@ -187,7 +187,7 @@ fn is_operator_et(token: ExprTerm) -> bool {
 // Return true if the priority of "a" is higher than or equal to "b"
 fn priority_is_higher(a: ExprTerm, b: ExprTerm) -> bool {
     if is_operator_et(a.clone()) && is_operator_et(b.clone()) {
-        return if a.operator.unwrap() != b.operator.unwrap() {
+        return if !a.operator.unwrap().eq_entry(&b.operator.unwrap())  {
             get_operator_priority(&a.operator.unwrap())
                 >= get_operator_priority(&b.operator.unwrap())
         } else if a.operator.unwrap().eq_entry(&Operator::Calculation(CalculationOperator::Invalid)) {

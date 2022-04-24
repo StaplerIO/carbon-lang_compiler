@@ -9,7 +9,7 @@ use crate::shared::ast::blocks::expression::SimpleExpression;
 
 #[test]
 fn expression_data_type() {
-    let tokens = tokenize("1 + 2 - 3.55");
+    let tokens = tokenize("1 + 2 - 3.55", true);
     let mut expr = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone()))),
         output_type: "".to_string(),

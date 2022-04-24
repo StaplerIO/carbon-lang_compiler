@@ -7,7 +7,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
 fn simple_test() {
-    let tokens = tokenize("t = 1 + 2 * 3;");
+    let tokens = tokenize("t = 1 + 2 * 3;", true);
     let action = assignment_block_builder(&decorate_token(tokens))
         .ok()
         .unwrap()

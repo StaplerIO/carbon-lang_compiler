@@ -7,7 +7,7 @@ use crate::shared::token::operator::CalculationOperator;
 
 #[test]
 fn simple_expression() {
-    let tokens = tokenize("1+2*3");
+    let tokens = tokenize("1+2*3", true);
     let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens)));
 
     assert_eq!(result.len(), 5);
@@ -36,7 +36,7 @@ fn simple_expression() {
 
 #[test]
 fn expression_with_bracket() {
-    let tokens = tokenize("2*(3+5)-7");
+    let tokens = tokenize("2*(3+5)-7", true);
     let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens)));
 
     assert_eq!(result.len(), 7);
@@ -73,7 +73,7 @@ fn expression_with_bracket() {
 
 #[test]
 fn expression_with_function_call() {
-    let tokens = tokenize("11+22.6*demo1(22.5)");
+    let tokens = tokenize("11+22.6*demo1(22.5)", true);
     let result = expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens)));
 
     assert_eq!(result.len(), 5);
@@ -81,7 +81,7 @@ fn expression_with_function_call() {
 
 #[test]
 fn relation_expression() {
-    let tokens = tokenize("1 + a > 3 + foo(144)");
+    let tokens = tokenize("1 + a > 3 + foo(144)", true);
     let result = relation_expression_builder(expression_term_decorator(decorate_token(tokens)));
 
     assert_eq!(result.left.postfix_expr.len(), 3);

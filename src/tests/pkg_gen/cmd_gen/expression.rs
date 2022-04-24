@@ -10,7 +10,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 // TODO: Validate the possibility of the test
 #[test]
 fn expression_with_number_only() {
-    let tokens = tokenize("1 + 2 * 3");
+    let tokens = tokenize("1 + 2 * 3", true);
     let expression = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone()))),
         output_type: "number".to_string(),
@@ -40,7 +40,7 @@ fn expression_with_number_only() {
 
 #[test]
 fn expression_with_defined_data() {
-    let tokens = tokenize("a + b * 2");
+    let tokens = tokenize("a + b * 2", true);
     let expression = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone()))),
         output_type: "number".to_string(),

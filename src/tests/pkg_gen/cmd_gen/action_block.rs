@@ -12,7 +12,7 @@ fn action_block() {
                    decl var number res;\
                    foo = 1;\
                    bar = 2;\
-                   res = foo + bar;");
+                   res = foo + bar;", true);
     let actions = crate::parser::builder::blocks::action_block::action_block_builder(
         decorate_token(tokens),
     );

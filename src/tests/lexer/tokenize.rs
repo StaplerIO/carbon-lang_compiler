@@ -5,18 +5,18 @@ use crate::shared::token::operator::Operator;
 
 #[test]
 fn simple() {
-    let result = tokenize("number 132211{ 32.85 dd } >! = >= ,");
+    let result = tokenize("number 132211{ 32.85 dd } >! = >= ,", false);
 
     assert_eq!(
         result.get(0).unwrap().get_keyword().unwrap(),
         KeywordType::KwNumber
     );
     assert_eq!(
-        result.get(1).unwrap().get_number().unwrap(),
+        result.get(2).unwrap().get_number().unwrap(),
         String::from("132211")
     );
     assert_eq!(
-        result.get(3).unwrap().get_number().unwrap(),
+        result.get(5).unwrap().get_number().unwrap(),
         String::from("32.85")
     );
     assert_eq!(
@@ -31,7 +31,7 @@ fn simple() {
 
 #[test]
 fn code_sample() {
-    let result = tokenize("export func main() { std::io::println(\"123456\"); return 0; }");
+    let result = tokenize("export func main() { std::io::println(\"123456\"); return 0; }", false);
 
     assert_eq!(
         result.get(0).unwrap().get_keyword().unwrap(),
@@ -85,7 +85,7 @@ fn code_sample() {
 
 #[test]
 fn comment_test() {
-    let result = tokenize("// comments here");
+    let result = tokenize("// comments here", false);
 
     assert_eq!(result.len(), 1);
 }
