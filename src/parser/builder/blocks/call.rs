@@ -1,11 +1,12 @@
 use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
-use crate::shared::ast::action::{Action, CallAction};
+use crate::shared::ast::action::{Action, ActionContent, CallAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::token::Token;
 
 // Scheme: call <identifier>(<param list>);
 pub fn call_action_builder(
@@ -20,7 +21,7 @@ pub fn call_action_builder(
                 let result = bare_function_call_builder(tokens[1..].to_vec());
                 if result.is_ok() {
                     return Ok((
-                        Action::new_call(result.unwrap().0),
+                        Action::new(ActionContent::CallStatement(result.unwrap().0), vec![]),
                         next_semicolon_pos.unwrap() + 1,
                     ));
                 }

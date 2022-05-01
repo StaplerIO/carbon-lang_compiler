@@ -1,5 +1,5 @@
 use crate::parser::builder::templates::condition_block_builder;
-use crate::shared::ast::action::Action;
+use crate::shared::ast::action::{Action, ActionContent};
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::keyword::KeywordType;
@@ -11,7 +11,7 @@ pub fn while_action_builder(
     let result = condition_block_builder(KeywordType::KwWhile, tokens.clone());
     if result.is_ok() {
         return Ok((
-            Action::new_while(result.clone().ok().unwrap().0),
+            Action::new(ActionContent::WhileStatement(result.clone().ok().unwrap().0), vec![]),
             result.ok().unwrap().1,
         ));
     }

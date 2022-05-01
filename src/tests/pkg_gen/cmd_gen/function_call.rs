@@ -11,8 +11,9 @@ fn function_call() {
     let action = call_action_builder(&decorate_token(tokens))
         .unwrap()
         .0
-        .call_action
-        .unwrap();
+        .get_call_action()
+        .unwrap()
+        .clone();
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,

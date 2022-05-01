@@ -1,7 +1,7 @@
 use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::templates::condition_block_builder;
 use crate::parser::utils::pair_container;
-use crate::shared::ast::action::{Action, ActionBlock, ElifBlock, IfAction};
+use crate::shared::ast::action::{Action, ActionBlock, ActionContent, ElifBlock, IfAction};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::container::ContainerType;
@@ -36,7 +36,7 @@ pub fn if_block_builder(
             current_index += else_part.1 as usize;
         }
 
-        return Ok((Action::new_if(result), current_index));
+        return Ok((Action::new(ActionContent::IfBlock(result), vec![]), current_index));
     }
 
     return Err(GeneralError {

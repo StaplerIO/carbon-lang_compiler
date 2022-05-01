@@ -1,6 +1,6 @@
 use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::find_next_semicolon;
-use crate::shared::ast::action::{Action, ReturnAction};
+use crate::shared::ast::action::{Action, ActionContent, ReturnAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
@@ -40,7 +40,7 @@ pub fn return_action_builder(
                     }
 
                     return Ok((
-                        Action::new_return(result.unwrap()),
+                        Action::new(ActionContent::ReturnStatement(result.unwrap()), vec![]),
                         next_semicolon_pos.unwrap() + 1,
                     ));
                 }

@@ -1,42 +1,36 @@
 use crate::shared::ast::blocks::expression::{SimpleExpression, RelationExpression};
 use crate::shared::ast::parameter::Parameter;
+use crate::shared::token::token::Token;
 
 pub type VariableDefinition = Parameter;
 
-#[derive(Copy, Clone, PartialEq, Debug)]
-pub enum ActionType {
-    DeclarationStatement,
-    AssignmentStatement,
-    CallStatement,
-    ReturnStatement,
-    IfStatement,
-    WhileStatement,
-    LoopStatement,
-    SwitchStatement,
+#[derive(Clone, PartialEq, Debug)]
+pub enum ActionContent {
+    DeclarationStatement(DeclarationAction),
+    AssignmentStatement(AssignmentAction),
+    CallStatement(CallAction),
+    ReturnStatement(ReturnAction),
+    IfBlock(IfAction),
+    WhileStatement(WhileBlock),
+    LoopBlock(LoopBlock),
+    SwitchBlock(SwitchAction),
+    // "break" and "continue" actions don't have special blocks
     BreakStatement,
     ContinueStatement,
     EmptyAction,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Action {
-    pub action_type: ActionType,
+    pub content: ActionContent,
 
-    pub declaration_action: Option<DeclarationAction>,
-    pub assignment_action: Option<AssignmentAction>,
-
-    pub call_action: Option<CallAction>,
-    pub return_action: Option<ReturnAction>,
-    pub if_action: Option<IfAction>,
-    pub while_action: Option<WhileBlock>,
-    pub loop_action: Option<LoopBlock>,
-    pub switch_action: Option<SwitchAction>,
-    // "break" and "continue" actions don't have special blocks
+    // Original token that can be used for error reporting
+    pub tokens: Vec<Token>
 }
 
 pub type LoopBlock = ActionBlock;
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct ActionBlock {
     pub actions: Vec<Action>,
 }
@@ -46,13 +40,13 @@ pub type ElifBlock = ConditionBlock;
 pub type WhileBlock = ConditionBlock;
 
 // Used in while, if, elif
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct ConditionBlock {
     pub condition: RelationExpression,
     pub body: ActionBlock,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct DeclarationAction {
     // A variable or a constant
     pub is_variable: bool,
@@ -61,25 +55,25 @@ pub struct DeclarationAction {
     pub data_type: String,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct AssignmentAction {
     pub identifier: String,
     pub eval_expression: SimpleExpression,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct CallAction {
     pub function_name: String,
     // Arguments are Expressions
     pub arguments: Vec<SimpleExpression>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct ReturnAction {
     pub value: SimpleExpression,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct IfAction {
     pub if_block: ConditionBlock,
     pub elif_collection: Vec<ElifBlock>,
@@ -87,14 +81,14 @@ pub struct IfAction {
 }
 
 // TODO: Builder required
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct SwitchAction {
     pub condition: SimpleExpression,
     pub cases: Vec<SwitchCase>,
 }
 
 // Builder with SwitchAction
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct SwitchCase {
     pub is_default: bool,
     pub value: String,

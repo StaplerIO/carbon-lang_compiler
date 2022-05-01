@@ -12,8 +12,9 @@ fn simple_test() {
         .ok()
         .unwrap()
         .0
-        .assignment_action
-        .unwrap();
+        .get_assignment_action()
+        .unwrap()
+        .clone();
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 0,

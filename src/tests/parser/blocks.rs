@@ -9,7 +9,7 @@ use crate::parser::builder::blocks::return_expression::return_action_builder;
 use crate::parser::builder::blocks::short_actions::short_statements_builder;
 use crate::parser::builder::function_builder::function_builder;
 use crate::parser::decorator::decorate_token;
-use crate::shared::ast::action::ActionType;
+use crate::shared::ast::action::ActionContent;
 use crate::shared::ast::blocks::expression::ExprDataTermType;
 use crate::shared::ast::blocks::expression::TermType;
 use crate::shared::token::operator::CalculationOperator;
@@ -19,12 +19,12 @@ fn assignment() {
     let tokens = tokenize("a = 1 + 2;", true);
     let raw = assignment_block_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.assignment_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_assignment_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.identifier, String::from("a"));
 
-    let expr = result.eval_expression.postfix_expr;
+    let expr = &result.eval_expression.postfix_expr;
     assert_eq!(expr.len(), 3);
     assert_eq!(
         expr[0].clone().data.unwrap().number.unwrap(),
@@ -45,7 +45,7 @@ fn variable_declaration() {
     let tokens = tokenize("decl var number foo;", true);
     let raw = declaration_action_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.declaration_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_declaration_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.identifier, String::from("foo"));
@@ -58,7 +58,7 @@ fn function_call() {
     let tokens = tokenize("call func_1(5, 2.66, var1, 3 - 2);", true);
     let raw = call_action_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.call_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_call_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.function_name, String::from("func_1"));
@@ -95,7 +95,7 @@ fn return_from_function_no_value() {
     let tokens = tokenize("return;", true);
     let raw = return_action_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.return_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_return_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.value.postfix_expr.len(), 0);
@@ -106,7 +106,7 @@ fn return_from_function_with_value() {
     let tokens = tokenize("return 1 + 2 * tb_234;", true);
     let raw = return_action_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.return_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_return_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.value.postfix_expr.len(), 5);
@@ -130,7 +130,7 @@ fn single_token_statement_break() {
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.action_type, ActionType::BreakStatement);
+    assert_eq!(result.content, ActionContent::BreakStatement);
 }
 
 #[test]
@@ -141,7 +141,7 @@ fn single_token_statement_continue() {
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.action_type, ActionType::ContinueStatement);
+    assert_eq!(result.content, ActionContent::ContinueStatement);
 }
 
 #[test]
@@ -159,11 +159,11 @@ fn action_block() {
 
     assert_eq!(result.len(), 7);
 
-    assert_eq!(result[0].action_type, ActionType::DeclarationStatement);
-    assert_eq!(result[1].action_type, ActionType::AssignmentStatement);
-    assert_eq!(result[3].action_type, ActionType::CallStatement);
-    assert_eq!(result[4].action_type, ActionType::IfStatement);
-    assert_eq!(result[5].action_type, ActionType::ReturnStatement);
+    assert!(result[0].get_declaration_action().is_some());
+    assert!(result[1].get_assignment_action().is_some());
+    assert!(result[3].get_call_action().is_some());
+    assert!(result[4].get_if_action().is_some());
+    assert!(result[5].get_return_action().is_some());
 }
 
 #[test]
@@ -171,7 +171,7 @@ fn while_block() {
     let tokens = tokenize("while (1 + 1 == 2) { a = a + 1; return; }", true);
     let raw = while_action_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.while_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_while_block().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.condition.left.postfix_expr.len(), 3);
@@ -184,7 +184,7 @@ fn if_block() {
     let tokens = tokenize("if (1 + 2 == 3) { a = a + 1; } elif (t2 == 5) { return; } elif (1 == 1) { call setup(); } else { decl var number foo; }", true);
     let raw = if_block_builder(&decorate_token(tokens.clone()));
 
-    let result = raw.clone().ok().unwrap().0.if_action.unwrap();
+    let result = raw.clone().ok().unwrap().0.get_if_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len() - 1);
 
     assert_eq!(result.if_block.condition.left.postfix_expr.len(), 3);

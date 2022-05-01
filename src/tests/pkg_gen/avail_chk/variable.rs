@@ -20,7 +20,7 @@ fn check_def() {
         .to_vec();
 
     assert!(check_variable_definition(
-        &stmt.ok().unwrap().0.declaration_action.unwrap(),
+        &stmt.ok().unwrap().0.get_declaration_action().unwrap(),
         &vec![],
         &defined_types
     ));
@@ -44,9 +44,8 @@ fn check_assignment() {
     ]
         .to_vec();
 
-    let mut action = stmt.unwrap().0.assignment_action.unwrap();
-    action.eval_expression =
-        infer_every_expression_data_term_type(&action.eval_expression, &vec![], &defined_vars);
+    let mut action = stmt.unwrap().0.get_assignment_action().unwrap().clone();
+    action.eval_expression = infer_every_expression_data_term_type(&action.eval_expression, &vec![], &defined_vars);
 
     assert!(check_variable_assignment(
         &action,

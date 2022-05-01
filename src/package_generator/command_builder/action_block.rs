@@ -4,7 +4,7 @@ use crate::package_generator::command_builder::data_commands::build_data_declara
 use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::package_generator::command_builder::loop_interception::{break_action_command_builder, continue_action_command_builder};
 use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
-use crate::shared::ast::action::{ActionBlock, ActionType};
+use crate::shared::ast::action::{ActionBlock, ActionContent};
 use crate::shared::package_generation::data_descriptor::DataDeclaration;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_descriptor::JumpCommandBuildResult;
@@ -18,11 +18,11 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
     let mut data_count: usize = 0;
 
     for action in &block.actions {
-        match action.action_type {
-            ActionType::DeclarationStatement => {
+        match &action.content {
+            ActionContent::DeclarationStatement(x) => {
                 result.append_commands(build_data_declaration_command(false));
                 defined_data.push(DataDeclaration {
-                    name: action.clone().declaration_action.unwrap().identifier,
+                    name: x.identifier.clone(),
                     slot: align_data_width(
                         convert_to_u8_array(format!("{:X}", data_count)),
                         metadata.data_alignment,
@@ -32,32 +32,32 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
 
                 data_count += 1;
             }
-            ActionType::AssignmentStatement => {
+            ActionContent::AssignmentStatement(x) => {
                 result.append_commands(build_assignment_command(
-                    &action.clone().assignment_action.unwrap(),
+                    &x,
                     &defined_data,
                     metadata,
                 ));
             }
-            ActionType::CallStatement => {
+            ActionContent::CallStatement(x) => {
                 result.append_commands(build_function_call_command(
-                    &action.clone().call_action.unwrap(),
+                    &x,
                     &defined_data,
                     metadata,
                     &vec![],
                 ));
             }
-            ActionType::ReturnStatement => {
+            ActionContent::ReturnStatement(x) => {
                 // Will jump to destroy the domain
             }
-            ActionType::IfStatement => {
-                result.append(if_command_builder(&action.if_action.clone().unwrap(), &defined_data, &metadata));
+            ActionContent::IfBlock(x) => {
+                result.append(if_command_builder(&x, &defined_data, &metadata));
             }
-            ActionType::WhileStatement => {}
-            ActionType::BreakStatement => {
+            ActionContent::WhileStatement(_) => {}
+            ActionContent::BreakStatement => {
                 result.append(break_action_command_builder(&metadata));
             }
-            ActionType::ContinueStatement => {
+            ActionContent::ContinueStatement => {
                 result.append(continue_action_command_builder(&metadata));
             }
             _ => {

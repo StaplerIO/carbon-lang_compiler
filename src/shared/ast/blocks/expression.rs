@@ -1,14 +1,14 @@
 use crate::shared::ast::action::CallAction;
 use crate::shared::token::operator::{Operator, RelationOperator};
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct SimpleExpression {
     pub postfix_expr: Vec<ExprTerm>,
 
     pub output_type: String,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct RelationExpression {
     pub left: SimpleExpression,
     pub right: SimpleExpression,
@@ -26,7 +26,7 @@ pub enum TermType {
     Validated,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct ExprTerm {
     pub term_type: TermType,
 
@@ -36,7 +36,7 @@ pub struct ExprTerm {
     pub priority: Option<bool>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct ExprDataTerm {
     pub data_type: ExprDataTermType,
     pub number: Option<String>,

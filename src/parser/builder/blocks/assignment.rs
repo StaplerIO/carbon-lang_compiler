@@ -1,6 +1,6 @@
 use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::find_next_semicolon;
-use crate::shared::ast::action::{Action, AssignmentAction};
+use crate::shared::ast::action::{Action, ActionContent, AssignmentAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
@@ -19,20 +19,13 @@ pub fn assignment_block_builder(
                 );
 
                 return Ok((
-                    Action::new_assignment(AssignmentAction {
-                        identifier: tokens[0]
-                            .data
-                            .clone()
-                            .unwrap()
-                            .clone()
-                            .identifier
-                            .unwrap()
-                            .clone(),
+                    Action::new(ActionContent::AssignmentStatement(AssignmentAction {
+                        identifier: tokens[0].data.clone().unwrap().identifier.unwrap(),
                         eval_expression: SimpleExpression {
                             postfix_expr,
-                            output_type: String::new(),
-                        },
-                    }),
+                            output_type: "".to_string()
+                        }
+                    }), vec![]),
                     next_semicolon_pos.unwrap() + 1,
                 ));
             }

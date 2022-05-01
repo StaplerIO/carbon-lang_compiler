@@ -6,13 +6,13 @@ use crate::shared::token::data::Number;
 use crate::shared::utils::identifier::Identifier;
 use crate::shared::utils::position::Position;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub struct Token {
     pub content: TokenContent,
     pub position: Position,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum TokenContent {
     Identifier(Identifier),
     Number(Number),

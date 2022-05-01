@@ -1,5 +1,5 @@
 use crate::parser::utils::find_next_semicolon;
-use crate::shared::ast::action::{Action, DeclarationAction};
+use crate::shared::ast::action::{Action, ActionContent, DeclarationAction};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::keyword::KeywordType;
@@ -38,7 +38,7 @@ pub fn declaration_action_builder(
                     });
                 }
 
-                return Ok((Action::new_decl(result), next_semicolon_pos.unwrap() + 1));
+                return Ok((Action::new(ActionContent::DeclarationStatement(result), vec![]), next_semicolon_pos.unwrap() + 1));
             }
         }
     }

@@ -1,6 +1,6 @@
 use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::utils::find_next_semicolon;
-use crate::shared::ast::action::{Action, LoopBlock};
+use crate::shared::ast::action::{Action, ActionContent, LoopBlock};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::container::ContainerType;
@@ -19,10 +19,10 @@ pub fn short_statements_builder(
             // "break" or "continue"
             match keyword {
                 KeywordType::KwContinue => {
-                    return Ok((Action::new_continue(), next_semicolon_pos.unwrap() + 1));
+                    return Ok((Action::new(ActionContent::ContinueStatement, vec![]), next_semicolon_pos.unwrap() + 1));
                 }
                 KeywordType::KwBreak => {
-                    return Ok((Action::new_break(), next_semicolon_pos.unwrap() + 1));
+                    return Ok((Action::new(ActionContent::BreakStatement, vec![]), next_semicolon_pos.unwrap() + 1));
                 }
                 _ => {}
             }
@@ -42,9 +42,9 @@ pub fn short_statements_builder(
                     let container_content = tokens[2..(next_semicolon_pos.unwrap() - 2)].to_vec();
 
                     return Ok((
-                        Action::new_loop(LoopBlock {
+                        Action::new(ActionContent::LoopBlock(LoopBlock {
                             actions: action_block_builder(container_content.clone()),
-                        }),
+                        }), vec![]),
                         0,
                     ));
                 }
