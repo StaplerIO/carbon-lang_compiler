@@ -1,6 +1,10 @@
 **The Carbon Programming Language**
 # carbon-lang_compiler
 
+## Current status
+
+Refractoring lexer and parser base models... Slow progress
+
 ## Components
 
 The compiler has 4 parts
