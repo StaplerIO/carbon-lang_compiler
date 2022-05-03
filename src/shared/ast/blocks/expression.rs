@@ -54,5 +54,5 @@ pub enum ExprDataTermType {
     String,
     Identifier,
     FunctionCall,
-    TypeName,
+    Typename,
 }

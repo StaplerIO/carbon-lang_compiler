@@ -1,4 +1,4 @@
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::operator::Operator;
 
@@ -6,14 +6,14 @@ use crate::shared::token::operator::Operator;
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> Option<usize> {
     return tokens
         .iter()
-        .position(|t| t.token_type == DecoratedTokenType::StatementEndSign);
+        .position(|t| t.content == DecoratedTokenContent::StatementEndSign);
 }
 
 // Return the distance to next comma token, None to find nothing
 pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> Option<usize> {
     return tokens.iter().position(|t| {
-        t.token_type == DecoratedTokenType::Operator
-            && t.operator.unwrap_or(Operator::Invalid) == Operator::Comma
+        t.content.get_operator().is_some()
+            && *t.content.get_operator().unwrap_or(&Operator::Invalid) == Operator::Comma
     });
 }
 
@@ -23,8 +23,8 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
     // Initialize result by an empty Vec
     result.push(vec![]);
     for token in tokens {
-        if token.token_type == DecoratedTokenType::Operator {
-            if token.operator.unwrap() == Operator::Comma {
+        if token.content.get_operator().is_some() {
+            if *token.content.get_operator().unwrap() == Operator::Comma {
                 // Start an new expression
                 result.push(vec![]);
                 continue;
@@ -48,9 +48,9 @@ pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
     let mut container_type = ContainerType::Invalid;
     let mut anti_type = ContainerType::Invalid;
     for (index, token) in tokens.iter().enumerate() {
-        if token.token_type == DecoratedTokenType::Container {
+        if token.content.get_container().is_some() {
             if index == 0 {
-                container_type = token.container.unwrap();
+                container_type = *token.content.get_container().unwrap();
                 anti_type = match container_type {
                     ContainerType::Brace => ContainerType::AntiBrace,
                     ContainerType::Bracket => ContainerType::AntiBracket,
@@ -59,9 +59,9 @@ pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
                 };
             }
 
-            if token.container.unwrap() == container_type {
+            if *token.content.get_container().unwrap() == container_type {
                 container_level += 1;
-            } else if token.container.unwrap() == anti_type {
+            } else if *token.content.get_container().unwrap() == anti_type {
                 container_level -= 1;
             }
         }

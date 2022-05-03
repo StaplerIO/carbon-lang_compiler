@@ -2,11 +2,10 @@ use crate::parser::builder::expression_builder::{expression_infix_to_postfix, ex
 use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
 use crate::shared::ast::action::{Action, ActionContent, CallAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
-use crate::shared::token::token::Token;
 
 // Scheme: call <identifier>(<param list>);
 pub fn call_action_builder(
@@ -16,8 +15,8 @@ pub fn call_action_builder(
 
     // Check format
     if next_semicolon_pos.unwrap_or(0) >= 4 {
-        if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-            if tokens[0].keyword.unwrap() == KeywordType::KwCall {
+        if tokens[0].content.get_decorated_keyword().is_some() {
+            if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwCall {
                 let result = bare_function_call_builder(tokens[1..].to_vec());
                 if result.is_ok() {
                     return Ok((
@@ -39,11 +38,11 @@ pub fn bare_function_call_builder(
     tokens: Vec<DecoratedToken>,
 ) -> Result<(CallAction, usize), GeneralError<String>> {
     if tokens.len() >= 3 {
-        if tokens[0].is_valid_identifier() && tokens[1].token_type == DecoratedTokenType::Container
+        if tokens[0].content.is_valid_identifier() && tokens[1].content.get_container().is_some()
         {
-            if tokens[1].container.unwrap() == ContainerType::Bracket {
+            if *tokens[1].content.get_container().unwrap() == ContainerType::Bracket {
                 let mut result = CallAction {
-                    function_name: tokens[0].clone().data.unwrap().identifier.unwrap().clone(),
+                    function_name: tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
                     arguments: vec![],
                 };
 

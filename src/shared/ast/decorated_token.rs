@@ -1,57 +1,27 @@
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
+use crate::shared::token::token::Token;
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum DecoratedTokenType {
-    DecoratedKeyword,
-    Container,
-    Data,
+pub enum DecoratedTokenContent {
+    DecoratedKeyword(KeywordType),
+    Container(ContainerType),
+    Data(DataToken),
+    Operator(Operator),
     StatementEndSign,
-    Operator,
 }
 
 #[derive(Clone, PartialEq)]
 pub struct DecoratedToken {
-    pub token_type: DecoratedTokenType,
-
-    pub data: Option<DataToken>,
-    pub keyword: Option<KeywordType>,
-    pub container: Option<ContainerType>,
-    pub operator: Option<Operator>,
+    pub content: DecoratedTokenContent,
+    pub original_token: Token
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum DataType {
-    Number,
-    String,
-    Identifier,
-    Type,
-}
-
-#[derive(Clone, PartialEq)]
-pub struct DataToken {
-    pub data_type: DataType,
-    pub number: Option<String>,
-    pub string: Option<String>,
-    pub identifier: Option<String>,
-    pub type_name: Option<String>,
-}
-
-impl DecoratedToken {
-    pub fn is_valid_type(&self) -> bool {
-        if self.token_type == DecoratedTokenType::Data {
-            return self.clone().data.unwrap().data_type == DataType::Type;
-        }
-
-        return false;
-    }
-
-    pub fn is_valid_identifier(&self) -> bool {
-        if self.token_type == DecoratedTokenType::Data {
-            return self.clone().data.unwrap().data_type == DataType::Identifier;
-        }
-
-        return false;
-    }
+pub enum DataToken {
+    Number(String),
+    String(String),
+    Identifier(String),
+    Typename(String),
 }

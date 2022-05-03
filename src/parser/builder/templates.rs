@@ -3,7 +3,7 @@ use crate::parser::builder::expression_builder::{expression_term_decorator, rela
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
 use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
@@ -17,8 +17,8 @@ pub fn condition_block_builder(
     leading_keyword: KeywordType,
     tokens: Vec<DecoratedToken>,
 ) -> Result<(ConditionBlock, usize), GeneralError<String>> {
-    if tokens.len() > 6 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-        if tokens.first().unwrap().keyword.unwrap() == leading_keyword {
+    if tokens.len() > 6 && tokens[0].content.get_decorated_keyword().is_some() {
+        if *tokens[0].content.get_decorated_keyword().unwrap() == leading_keyword {
             let mut result = ConditionBlock {
                 condition: RelationExpression {
                     left: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
@@ -29,8 +29,8 @@ pub fn condition_block_builder(
             };
 
             // An expression is required next, bracketed
-            if tokens[1].token_type == DecoratedTokenType::Container {
-                if tokens[1].container.unwrap() == ContainerType::Bracket {
+            if tokens[1].content.get_container().is_some() {
+                if *tokens[1].content.get_container().unwrap() == ContainerType::Bracket {
                     // Build expression
                     let expression_zone = pair_container(tokens[1..].to_vec());
                     result.condition = relation_expression_builder(expression_term_decorator(expression_zone[1..].to_vec()));
@@ -38,11 +38,9 @@ pub fn condition_block_builder(
                     if expression_zone.len() >= 1 {
                         // Build actions inside the while statement
                         // expression_zone.len() + 2 --> Add brackets before and after
-                        if tokens[expression_zone.len() + 2].token_type
-                            == DecoratedTokenType::Container
+                        if tokens[expression_zone.len() + 2].content.get_container().is_some()
                         {
-                            if tokens[expression_zone.len() + 2].container.unwrap()
-                                == ContainerType::Brace
+                            if *tokens[expression_zone.len() + 2].content.get_container().unwrap() == ContainerType::Brace
                             {
                                 let mut action_block_zone =
                                     pair_container(tokens[(expression_zone.len() + 2)..].to_vec());

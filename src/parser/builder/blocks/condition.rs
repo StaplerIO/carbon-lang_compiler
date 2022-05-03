@@ -2,7 +2,7 @@ use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::templates::condition_block_builder;
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{Action, ActionBlock, ActionContent, ElifBlock, IfAction};
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
@@ -62,20 +62,23 @@ fn detached_elif_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ElifBlock
 // `else` block must be a sub-node of `if` block, so this is a private method
 fn detached_else_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ActionBlock>, isize) {
     // Shortest: `else { }`
-    if tokens.len() >= 3 && tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-        if tokens[0].keyword.unwrap() == KeywordType::KwElse {
+    if tokens.len() >= 3 && tokens[0].content.get_decorated_keyword().is_some() {
+        if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwElse {
             let mut result = ActionBlock { actions: vec![] };
 
             // Build actions inside the statement
-            if tokens[1].token_type == DecoratedTokenType::Container {
-                if tokens[1].container.unwrap() == ContainerType::Brace {
-                    let action_block_zone = pair_container(tokens[1..].to_vec());
-                    result.actions = action_block_builder(
-                        action_block_zone[1..action_block_zone.len()].to_vec(),
-                    );
+            match tokens[1].content {
+                DecoratedTokenContent::Container(x) => {
+                    if x == ContainerType::Brace {
+                        let action_block_zone = pair_container(tokens[1..].to_vec());
+                        result.actions = action_block_builder(
+                            action_block_zone[1..action_block_zone.len()].to_vec(),
+                        );
 
-                    return (Option::from(result), (action_block_zone.len() + 1) as isize);
+                        return (Option::from(result), (action_block_zone.len() + 1) as isize);
+                    }
                 }
+                _ => {}
             }
         }
     }

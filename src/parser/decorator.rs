@@ -1,5 +1,5 @@
 use crate::shared::ast::decorated_token::{
-    DataToken, DataType, DecoratedToken, DecoratedTokenType,
+    DataToken, DecoratedToken, DecoratedTokenContent,
 };
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::token::{Token, TokenContent};
@@ -8,117 +8,51 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
     let mut result: Vec<DecoratedToken> = Vec::new();
 
     for token in tokens {
-        match token.content {
+        match token.clone().content {
             TokenContent::Identifier(x) => {
                 // TODO: Check if this is a type name
                 result.push(DecoratedToken {
-                    token_type: DecoratedTokenType::Data,
-                    data: Option::from(DataToken {
-                        data_type: DataType::Identifier,
-                        number: None,
-                        string: None,
-                        identifier: Option::from(x),
-                        type_name: None,
-                    }),
-                    keyword: None,
-                    container: None,
-                    operator: None,
+                    content: DecoratedTokenContent::Data(DataToken::Identifier(x)),
+                    original_token: token.clone()
                 });
             }
             TokenContent::Number(x) => result.push(DecoratedToken {
-                token_type: DecoratedTokenType::Data,
-                data: Option::from(DataToken {
-                    data_type: DataType::Number,
-                    number: Option::from(x),
-                    string: None,
-                    identifier: None,
-                    type_name: None,
-                }),
-                keyword: None,
-                container: None,
-                operator: None,
+                content: DecoratedTokenContent::Data(DataToken::Number(x)),
+                original_token: token.clone()
             }),
             TokenContent::String(x) => result.push(DecoratedToken {
-                token_type: DecoratedTokenType::Data,
-                data: Option::from(DataToken {
-                    data_type: DataType::String,
-                    number: None,
-                    string: Option::from(x),
-                    identifier: None,
-                    type_name: None,
-                }),
-                keyword: None,
-                container: None,
-                operator: None,
+                content: DecoratedTokenContent::Data(DataToken::String(x)),
+                original_token: token.clone()
             }),
             TokenContent::Container(x) => result.push(DecoratedToken {
-                token_type: DecoratedTokenType::Container,
-                data: None,
-                keyword: None,
-                container: Option::from(x),
-                operator: None,
+                content: DecoratedTokenContent::Container(x),
+                original_token: token.clone()
             }),
             TokenContent::Keyword(x) => match x {
                 KeywordType::KwNumber => result.push(DecoratedToken {
-                    token_type: DecoratedTokenType::Data,
-                    data: Option::from(DataToken {
-                        data_type: DataType::Type,
-                        number: None,
-                        string: None,
-                        identifier: None,
-                        type_name: Option::from(String::from("number")),
-                    }),
-                    keyword: None,
-                    container: None,
-                    operator: None,
+                    content: DecoratedTokenContent::Data(DataToken::Typename("number".to_string())),
+                    original_token: token.clone()
                 }),
                 KeywordType::KwChar => result.push(DecoratedToken {
-                    token_type: DecoratedTokenType::Data,
-                    data: Option::from(DataToken {
-                        data_type: DataType::Type,
-                        number: None,
-                        string: None,
-                        identifier: None,
-                        type_name: Option::from(String::from("char")),
-                    }),
-                    keyword: None,
-                    container: None,
-                    operator: None,
+                    content: DecoratedTokenContent::Data(DataToken::Typename("char".to_string())),
+                    original_token: token.clone()
                 }),
                 KeywordType::KwStr => result.push(DecoratedToken {
-                    token_type: DecoratedTokenType::Data,
-                    data: Option::from(DataToken {
-                        data_type: DataType::Type,
-                        number: None,
-                        string: None,
-                        identifier: None,
-                        type_name: Option::from(String::from("str")),
-                    }),
-                    keyword: None,
-                    container: None,
-                    operator: None,
+                    content: DecoratedTokenContent::Data(DataToken::Typename("str".to_string())),
+                    original_token: token.clone()
                 }),
                 _ => result.push(DecoratedToken {
-                    token_type: DecoratedTokenType::DecoratedKeyword,
-                    data: None,
-                    keyword: Option::from(x),
-                    container: None,
-                    operator: None,
+                    content: DecoratedTokenContent::DecoratedKeyword(x),
+                    original_token: token.clone()
                 }),
             },
             TokenContent::Operator(x) => result.push(DecoratedToken {
-                token_type: DecoratedTokenType::Operator,
-                data: None,
-                keyword: None,
-                container: None,
-                operator: Option::from(x),
+                content: DecoratedTokenContent::Operator(x),
+                original_token: token.clone()
             }),
             TokenContent::Semicolon => result.push(DecoratedToken {
-                token_type: DecoratedTokenType::StatementEndSign,
-                data: None,
-                keyword: None,
-                container: None,
-                operator: None,
+                content: DecoratedTokenContent::StatementEndSign,
+                original_token: token.clone()
             }),
             _ => {}
         }

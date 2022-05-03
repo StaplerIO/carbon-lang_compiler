@@ -1,6 +1,6 @@
 use crate::parser::builder::blocks::link::link_statement_builder;
 use crate::parser::builder::function_builder::function_builder;
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::ast::package::ParserPackageStructure;
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::keyword::KeywordType;
@@ -29,13 +29,13 @@ pub fn build_whole_file(
         current_index += current_link.ok().unwrap().1 + 1;
     }
 
-    if tokens[current_index].token_type != DecoratedTokenType::DecoratedKeyword {
+    if tokens[current_index].content.get_decorated_keyword().is_none() {
         return Err(GeneralError {
             code: "-1".to_string(),
             description: Option::from("Invalid token stream encountered!".to_string()),
         });
     } else {
-        if tokens[current_index].keyword.unwrap() != KeywordType::KwDeclare {
+        if *tokens[current_index].content.get_decorated_keyword().unwrap() != KeywordType::KwDeclare {
             return Err(GeneralError {
                 code: "-1".to_string(),
                 description: Option::from("Invalid token stream encountered!".to_string()),

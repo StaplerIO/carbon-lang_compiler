@@ -2,7 +2,7 @@ use crate::parser::builder::expression_builder::{expression_infix_to_postfix, ex
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, ReturnAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
-use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenType};
+use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_error::GeneralError;
 use crate::shared::token::keyword::KeywordType;
 
@@ -11,8 +11,8 @@ pub fn return_action_builder(
 ) -> Result<(Action, usize), GeneralError<String>> {
     // Minimum: return ; (2 tokens in total)
     if tokens.len() >= 2 {
-        if tokens[0].token_type == DecoratedTokenType::DecoratedKeyword {
-            if tokens[0].keyword.unwrap() == KeywordType::KwReturn {
+        if tokens[0].content.get_decorated_keyword().is_some() {
+            if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwReturn {
                 let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
                 if next_semicolon_pos.unwrap_or(0) > 0 {
