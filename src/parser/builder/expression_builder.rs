@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use crate::shared::token::operator::{CalculationOperator, Operator};
 use crate::parser::builder::blocks::call::bare_function_call_builder;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, RelationExpression, SimpleExpression, TermType};
-use crate::shared::ast::decorated_token::{DataToken, DecoratedToken, DecoratedTokenContent};
+use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::token::container::ContainerType;
 
 lazy_static! {
@@ -22,83 +22,73 @@ lazy_static! {
     ].iter().cloned().collect();
 }
 
-pub fn expression_term_decorator(mut tokens: Vec<DecoratedToken>) -> Vec<ExprTerm> {
+pub fn expression_term_decorator(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm> {
     let mut result: Vec<ExprTerm> = vec![];
 
-    while !tokens.is_empty() {
-        let token = tokens.first().unwrap();
+    let mut index : usize = 0;
+    while index < tokens.len() {
+        let token = tokens[index].clone();
         match &token.content {
             DecoratedTokenContent::Data(d) => {
                 // In this situation, there are 2 different branches: normal data or function call
 
                 // 1) function call
-                let function_call = bare_function_call_builder(tokens.clone());
-                if function_call.is_ok() {
-                    result.push(ExprTerm {
-                        term_type: TermType::Data,
-                        data: Option::from(ExprDataTerm {
-                            data_type: ExprDataTermType::FunctionCall,
-                            number: None,
-                            string: None,
-                            identifier: None,
-                            function_call: Option::from(function_call.clone().ok().unwrap().0),
-                            type_name: None,
-                        }),
-                        operator: None,
-                        priority: None,
-                    });
-
-                    tokens = tokens[function_call.ok().unwrap().1..].to_vec();
-                    continue;
-                }
-
-                // 2) normal data
-                match &d {
-                    DataToken::Typename(s) => {
+                {
+                    let function_call = bare_function_call_builder(tokens[index..].to_vec());
+                    if function_call.is_ok() {
                         result.push(ExprTerm {
                             term_type: TermType::Data,
-                            data: Option::from(ExprDataTerm::from_data_token(d.clone())),
+                            data: Option::from(ExprDataTerm {
+                                data_type: ExprDataTermType::FunctionCall,
+                                number: None,
+                                string: None,
+                                identifier: None,
+                                function_call: Option::from(function_call.clone().ok().unwrap().0),
+                                type_name: None,
+                            }),
                             operator: None,
                             priority: None,
                         });
 
-                        tokens = tokens[1..].to_vec();
+                        index += function_call.ok().unwrap().1;
                         continue;
-                    },
-                    _ => {
-                        match token.content {
-                            DecoratedTokenContent::Container(x) => {
-                                if x.is_bracket() {
-                                    result.push(ExprTerm {
-                                        term_type: TermType::Priority,
-                                        data: None,
-                                        operator: None,
-                                        priority: Option::from(*token.content.get_container().unwrap() == ContainerType::Bracket),
-                                    });
-
-                                    tokens = tokens[1..].to_vec();
-                                    continue;
-                                }
-                            },
-                            _ => {
-                                if is_operator_dt(token.clone()) {
-                                    result.push(ExprTerm {
-                                        term_type: TermType::Operator,
-                                        data: None,
-                                        operator: Option::from(*token.content.get_operator().unwrap()),
-                                        priority: None,
-                                    });
-
-                                    tokens = tokens[1..].to_vec();
-                                    continue;
-                                }
-                            }
-                        }
                     }
                 }
+
+                // 2) normal data
+                if d.get_typename().is_none() {
+                    result.push(ExprTerm {
+                        term_type: TermType::Data,
+                        data: Option::from(ExprDataTerm::from_data_token(d.clone())),
+                        operator: None,
+                        priority: None,
+                    });
+                }
             },
-            _ => { panic!("Illegal token stream for expression builder encountered!"); }
+            DecoratedTokenContent::Container(x) => {
+                if x.is_bracket() {
+                    result.push(ExprTerm {
+                        term_type: TermType::Priority,
+                        data: None,
+                        operator: None,
+                        priority: Option::from(*token.content.get_container().unwrap() == ContainerType::Bracket),
+                    });
+                }
+            },
+            DecoratedTokenContent::Operator(x) => {
+                if is_operator_dt(token.clone()) {
+                    result.push(ExprTerm {
+                        term_type: TermType::Operator,
+                        data: None,
+                        operator: Option::from(*x),
+                        priority: None,
+                    });
+                }
+            },
+            _ => panic!("Illegal token stream for expression builder encountered!")
         }
+
+        index += 1;
     }
 
     return result;
@@ -117,8 +107,6 @@ fn is_operator_dt(token: DecoratedToken) -> bool {
         },
         _ => false
     }
-
-
 }
 
 // TODO: We leave the postfix expression for code generator (solve the expression later)
