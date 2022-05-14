@@ -44,7 +44,7 @@ fn calculate_parameters(
     action: &CallAction,
     defined_data: &Vec<DataDeclaration>,
     metadata: &PackageMetadata,
-    defined_functions: &Vec<FunctionDescriptor>,
+    _defined_functions: &Vec<FunctionDescriptor>,
     mut dac_list: Vec<DataAccessDescriptor>,
 ) -> (Vec<u8>, Vec<DataAccessDescriptor>) {
     let mut result = vec![];

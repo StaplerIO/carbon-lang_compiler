@@ -10,8 +10,6 @@ use crate::parser::builder::blocks::short_actions::short_statements_builder;
 use crate::parser::builder::function_builder::function_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::ActionContent;
-use crate::shared::ast::blocks::expression::ExprDataTermType;
-use crate::shared::ast::blocks::expression::TermType;
 use crate::shared::token::operator::CalculationOperator;
 
 #[test]
@@ -27,15 +25,15 @@ fn assignment() {
     let expr = &result.eval_expression.postfix_expr;
     assert_eq!(expr.len(), 3);
     assert_eq!(
-        expr[0].clone().data.unwrap().number.unwrap(),
+        *expr[0].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("1")
     );
     assert_eq!(
-        expr[1].clone().data.unwrap().number.unwrap(),
+        *expr[1].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("2")
     );
     assert_eq!(
-        expr[2].clone().operator.unwrap().get_calc_op().unwrap(),
+        expr[2].content.get_operator().unwrap().get_calc_op().unwrap(),
         CalculationOperator::Addition
     );
 }
@@ -67,27 +65,16 @@ fn function_call() {
     assert_eq!(result.arguments[1].postfix_expr.len(), 1);
     assert_eq!(result.arguments[2].postfix_expr.len(), 1);
     assert_eq!(
-        result.arguments[2].postfix_expr[0]
-            .clone()
-            .data
+        *result.arguments[2].postfix_expr[0]
+            .content
+            .get_data_term()
             .unwrap()
-            .clone()
-            .identifier
+            .get_identifier()
             .unwrap(),
         String::from("var1")
     );
     // Postfix expression: 3 2 -
-    assert_eq!(
-        result
-            .arguments
-            .last()
-            .unwrap()
-            .postfix_expr
-            .last()
-            .unwrap()
-            .term_type,
-        TermType::Operator
-    );
+    assert!(result.arguments.last().unwrap().postfix_expr.last().unwrap().content.get_operator().is_some());
 }
 
 #[test]
@@ -111,14 +98,14 @@ fn return_from_function_with_value() {
 
     assert_eq!(result.value.postfix_expr.len(), 5);
     // Value expression: 1 2 tb_234 * +
-    assert_eq!(
+    assert!(
         result.value.postfix_expr[0]
-            .clone()
-            .data
+            .content
+            .get_data_term()
             .unwrap()
             .clone()
-            .data_type,
-        ExprDataTermType::Number
+            .get_number()
+            .is_some(),
     );
 }
 

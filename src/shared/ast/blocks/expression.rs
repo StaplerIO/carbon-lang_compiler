@@ -1,5 +1,6 @@
 use crate::shared::ast::action::CallAction;
 use crate::shared::token::operator::{Operator, RelationOperator};
+use crate::shared::token::token::Token;
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct SimpleExpression {
@@ -17,10 +18,10 @@ pub struct RelationExpression {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub enum TermType {
-    Data,
-    Operator,
-    Priority,
+pub enum TermContent {
+    Data(ExprDataTerm),
+    Operator(Operator),
+    Priority(bool),
 
     // Only available in compile time
     Validated,
@@ -28,31 +29,15 @@ pub enum TermType {
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct ExprTerm {
-    pub term_type: TermType,
-
-    pub data: Option<ExprDataTerm>,
-    pub operator: Option<Operator>,
-    // true -> increase priority | false -> decrease priority
-    pub priority: Option<bool>,
-}
-
-#[derive(Clone, PartialEq, Debug)]
-pub struct ExprDataTerm {
-    pub data_type: ExprDataTermType,
-    pub number: Option<String>,
-    pub string: Option<String>,
-    pub identifier: Option<String>,
-    pub function_call: Option<CallAction>,
-
-    // The data type of current term
-    pub type_name: Option<String>,
+    pub content: TermContent,
+    pub original_token: Vec<Token>
 }
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum ExprDataTermType {
-    Number,
-    String,
-    Identifier,
-    FunctionCall,
-    Typename,
+pub enum ExprDataTerm {
+    Number(String),
+    String(String),
+    Identifier(String),
+    FunctionCall(CallAction),
+    Typename(String),
 }

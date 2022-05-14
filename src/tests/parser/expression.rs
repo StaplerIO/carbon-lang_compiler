@@ -13,23 +13,23 @@ fn simple_expression() {
     assert_eq!(result.len(), 5);
 
     assert_eq!(
-        result[0].clone().data.unwrap().number.unwrap(),
+        *result[0].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("1")
     );
     assert_eq!(
-        result[1].clone().data.unwrap().number.unwrap(),
+        *result[1].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("2")
     );
     assert_eq!(
-        result[2].clone().data.unwrap().number.unwrap(),
+        *result[2].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("3")
     );
     assert_eq!(
-        result[3].clone().operator.unwrap().get_calc_op().unwrap(),
+        result[3].content.get_operator().unwrap().get_calc_op().unwrap(),
         CalculationOperator::Multiply
     );
     assert_eq!(
-        result[4].clone().operator.unwrap().get_calc_op().unwrap(),
+        result[4].content.get_operator().unwrap().get_calc_op().unwrap(),
         CalculationOperator::Addition
     );
 }
@@ -42,31 +42,31 @@ fn expression_with_bracket() {
     assert_eq!(result.len(), 7);
 
     assert_eq!(
-        result[0].clone().data.unwrap().number.unwrap(),
+        *result[0].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("2")
     );
     assert_eq!(
-        result[1].clone().data.unwrap().number.unwrap(),
+        *result[1].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("3")
     );
     assert_eq!(
-        result[2].clone().data.unwrap().number.unwrap(),
+        *result[2].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("5")
     );
     assert_eq!(
-        result[3].clone().operator.unwrap().get_calc_op().unwrap(),
+        result[3].content.get_operator().unwrap().get_calc_op().unwrap(),
         CalculationOperator::Addition
     );
     assert_eq!(
-        result[4].clone().operator.unwrap().get_calc_op().unwrap(),
+        result[4].content.get_operator().unwrap().get_calc_op().unwrap(),
         CalculationOperator::Multiply
     );
     assert_eq!(
-        result[5].clone().data.unwrap().number.unwrap(),
+        *result[5].content.get_data_term().unwrap().get_number().unwrap(),
         String::from("7")
     );
     assert_eq!(
-        result[6].clone().operator.unwrap().get_calc_op().unwrap(),
+        result[6].content.get_operator().unwrap().get_calc_op().unwrap(),
         CalculationOperator::Subtraction
     );
 }

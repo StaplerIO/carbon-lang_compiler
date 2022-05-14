@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 
 use crate::shared::token::operator::{CalculationOperator, Operator};
 use crate::parser::builder::blocks::call::bare_function_call_builder;
-use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprDataTermType, ExprTerm, RelationExpression, SimpleExpression, TermType};
+use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprTerm, RelationExpression, SimpleExpression, TermContent};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::token::container::ContainerType;
 
@@ -25,10 +25,10 @@ lazy_static! {
 pub fn expression_term_decorator(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm> {
     let mut result: Vec<ExprTerm> = vec![];
 
-    let mut index : usize = 0;
+    let mut index: usize = 0;
     while index < tokens.len() {
         let token = tokens[index].clone();
-        match &token.content {
+        match token.content {
             DecoratedTokenContent::Data(d) => {
                 // In this situation, there are 2 different branches: normal data or function call
 
@@ -37,51 +37,36 @@ pub fn expression_term_decorator(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm> {
                     let function_call = bare_function_call_builder(tokens[index..].to_vec());
                     if function_call.is_ok() {
                         result.push(ExprTerm {
-                            term_type: TermType::Data,
-                            data: Option::from(ExprDataTerm {
-                                data_type: ExprDataTermType::FunctionCall,
-                                number: None,
-                                string: None,
-                                identifier: None,
-                                function_call: Option::from(function_call.clone().ok().unwrap().0),
-                                type_name: None,
-                            }),
-                            operator: None,
-                            priority: None,
+                            content: TermContent::Data(ExprDataTerm::FunctionCall(function_call.clone().ok().unwrap().0)),
+                            original_token: vec![]
                         });
 
                         index += function_call.ok().unwrap().1;
                         continue;
                     }
-                }
 
-                // 2) normal data
-                if d.get_typename().is_none() {
-                    result.push(ExprTerm {
-                        term_type: TermType::Data,
-                        data: Option::from(ExprDataTerm::from_data_token(d.clone())),
-                        operator: None,
-                        priority: None,
-                    });
+                    // 2) normal data
+                    if d.get_typename().is_none() {
+                        result.push(ExprTerm {
+                            content: TermContent::Data(ExprDataTerm::from_data_token(&d.clone())),
+                            original_token: vec![]
+                        });
+                    }
                 }
             },
             DecoratedTokenContent::Container(x) => {
                 if x.is_bracket() {
                     result.push(ExprTerm {
-                        term_type: TermType::Priority,
-                        data: None,
-                        operator: None,
-                        priority: Option::from(*token.content.get_container().unwrap() == ContainerType::Bracket),
+                        content: TermContent::Priority(x == ContainerType::Bracket),
+                        original_token: vec![]
                     });
                 }
             },
             DecoratedTokenContent::Operator(x) => {
                 if is_operator_dt(token.clone()) {
                     result.push(ExprTerm {
-                        term_type: TermType::Operator,
-                        data: None,
-                        operator: Option::from(*x),
-                        priority: None,
+                        content: TermContent::Operator(x),
+                        original_token: vec![]
                     });
                 }
             },
@@ -115,15 +100,15 @@ pub fn expression_infix_to_postfix(terms: Vec<ExprTerm>) -> Vec<ExprTerm> {
     let mut operator_stack: Vec<ExprTerm> = vec![];
 
     for token in terms {
-        match token.term_type {
-            TermType::Data => {
+        match token.content {
+            TermContent::Data(_) => {
                 // Push all terms into result directly (infix to postfix)
                 result.push(token.clone());
             }
-            TermType::Operator => {
+            TermContent::Operator(_) => {
                 // The previous TermType::Priority must increased the priority level
                 while !operator_stack.is_empty()
-                    && operator_stack.last().unwrap().term_type != TermType::Priority
+                    && operator_stack.last().unwrap().content.get_priority().is_none()
                 {
                     // Pop if operator priority is higher than current operator
                     if priority_is_higher(operator_stack.last().unwrap().clone(), token.clone()) {
@@ -135,12 +120,12 @@ pub fn expression_infix_to_postfix(terms: Vec<ExprTerm>) -> Vec<ExprTerm> {
 
                 operator_stack.push(token.clone());
             }
-            TermType::Priority => {
-                if token.priority.unwrap() {
+            TermContent::Priority(x) => {
+                if x {
                     operator_stack.push(token.clone());
                 } else {
                     // Pop to result until the operator is a bracket (not anti-bracket)
-                    while operator_stack.last().unwrap().term_type != TermType::Priority {
+                    while operator_stack.last().unwrap().content.get_priority().is_none() {
                         result.push(operator_stack.pop().unwrap());
                     }
 
@@ -162,8 +147,8 @@ pub fn expression_infix_to_postfix(terms: Vec<ExprTerm>) -> Vec<ExprTerm> {
 
 // et means ExprTerm
 fn is_operator_et(token: ExprTerm) -> bool {
-    if token.term_type == TermType::Operator {
-        let operator = token.operator.unwrap();
+    if token.content.get_operator().is_some() {
+        let operator = token.content.get_operator().unwrap();
         return match operator {
             Operator::Calculation(_) => true,
             Operator::Relation(_) => true,
@@ -178,20 +163,20 @@ fn is_operator_et(token: ExprTerm) -> bool {
 // Return true if the priority of "a" is higher than or equal to "b"
 fn priority_is_higher(a: ExprTerm, b: ExprTerm) -> bool {
     if is_operator_et(a.clone()) && is_operator_et(b.clone()) {
-        return if !a.operator.unwrap().eq_entry(&b.operator.unwrap()) {
-            get_operator_priority(&a.operator.unwrap())
-                >= get_operator_priority(&b.operator.unwrap())
-        } else if a.operator.unwrap().eq_entry(&Operator::Calculation(CalculationOperator::Invalid)) {
+        return if !a.content.get_operator().unwrap().eq_entry(&b.content.get_operator().unwrap()) {
+            get_operator_priority(&a.content.get_operator().unwrap())
+                >= get_operator_priority(&b.content.get_operator().unwrap())
+        } else if a.content.get_operator().unwrap().eq_entry(&Operator::Calculation(CalculationOperator::Invalid)) {
             // Then they are equal on operator type (ElseIf ~ End If)
             // So we just need to compare with 1 token
 
             // Get value inside the enum
-            let ta = match a.operator.unwrap() {
+            let ta = match a.content.get_operator().unwrap() {
                 Operator::Calculation(x) => x,
                 _ => panic!("Invalid operator"),
             };
 
-            let tb = match b.operator.unwrap() {
+            let tb = match b.content.get_operator().unwrap() {
                 Operator::Calculation(x) => x,
                 _ => panic!("Invalid operator"),
             };
@@ -210,8 +195,8 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     // Split expression by the relation operator
     let mut op_position: usize = usize::MAX;
     for (index, term) in terms.iter().enumerate() {
-        if term.operator.is_some() {
-            if matches!(term.operator.unwrap(), Operator::Relation(_)) {
+        if term.content.get_operator().is_some() {
+            if term.content.get_operator().unwrap().get_relation_op().is_some() {
                 op_position = index;
                 break;
             }
@@ -226,7 +211,7 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
 
     let right_expr = expression_infix_to_postfix(split.1.to_vec()[1..].to_vec());
 
-    let rel_op = match terms[op_position].operator.unwrap() {
+    let rel_op = match terms[op_position].content.get_operator().unwrap() {
         Operator::Relation(x) => x,
         _ => panic!("Invalid operator"),
     };
@@ -234,7 +219,7 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     return RelationExpression {
         left: SimpleExpression { postfix_expr: left_expr, output_type: "".to_string() },
         right: SimpleExpression { postfix_expr: right_expr, output_type: "".to_string() },
-        expected_relation: rel_op
+        expected_relation: *rel_op
     };
 }
 

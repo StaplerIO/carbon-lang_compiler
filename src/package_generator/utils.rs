@@ -1,7 +1,7 @@
 use apa::apa::modulo::modulo;
 use crate::package_generator::type_inference::expression::infer_expression_term_data_type;
 use crate::shared::ast::action::VariableDefinition;
-use crate::shared::ast::blocks::expression::{SimpleExpression, TermType};
+use crate::shared::ast::blocks::expression::{ExprDataTerm, SimpleExpression, TermContent};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
@@ -22,11 +22,10 @@ pub fn infer_every_expression_data_term_type(
     let mut expr = expression.clone();
 
     for (index, term) in expr.postfix_expr.clone().iter().enumerate() {
-        if term.term_type == TermType::Data {
-            let mut data = term.data.clone().unwrap();
-            data.type_name =
-                infer_expression_term_data_type(&data, &defined_functions, &defined_variables);
-            expr.postfix_expr[index].data = Option::from(data);
+        if term.content.get_data_term().is_some() {
+            let mut data = term.content.get_data_term().unwrap().clone();
+            data = ExprDataTerm::Typename(infer_expression_term_data_type(&data, &defined_functions, &defined_variables).unwrap());
+            expr.postfix_expr[index].content = TermContent::Data(data);
         }
     }
 

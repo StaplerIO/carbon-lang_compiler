@@ -47,7 +47,7 @@ pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> 
                     &vec![],
                 ));
             }
-            ActionContent::ReturnStatement(x) => {
+            ActionContent::ReturnStatement(_x) => {
                 // Will jump to destroy the domain
             }
             ActionContent::IfBlock(x) => {
