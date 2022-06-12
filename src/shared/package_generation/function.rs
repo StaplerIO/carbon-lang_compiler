@@ -1,5 +1,7 @@
+use crate::shared::utils::identifier::Identifier;
+
 pub struct FunctionDescriptor {
-    pub identifier: String,
+    pub identifier: Identifier,
     pub entry_point: Vec<u8>,
 }
 

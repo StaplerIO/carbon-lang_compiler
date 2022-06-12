@@ -23,8 +23,8 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
     // Repeat placeholder for 3 times
     // Because in command *format manual*, there are 3 locations we need to assign
     jump_command.extend(jump_command_address_placeholder(metadata).repeat(3));
-    // Add descriptors
 
+    // Add descriptors
     result.descriptors.extend(vec![
         RelocationDescriptor {
             relocation_type: RelocationType::IgnoreDomain(domains_after),
@@ -41,9 +41,11 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
         RelocationDescriptor {
             relocation_type: RelocationType::IgnoreDomain(domains_after),
             offset: cmd_offset,
+
             command_array_position: (metadata.address_alignment as usize) * 2,
             relocated_address: vec![]
         }
+
     ]);
 
     // Modify target jump command

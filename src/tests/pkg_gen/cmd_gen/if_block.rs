@@ -21,7 +21,7 @@ fn bare_if_test() {
 
     assert_eq!(result.descriptors.len(), 4);
 
-    // println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
+    println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
 }
 
 #[test]
@@ -41,5 +41,5 @@ fn complex_if_test() {
 
     assert_eq!(result.descriptors.len(), 8);
 
-    // println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
+    println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
 }

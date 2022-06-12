@@ -6,4 +6,5 @@ pub mod expression_evaluation;
 pub mod function_call;
 pub mod condition_command;
 pub mod loop_interception;
+pub mod linear_action_tree_adapter;
 mod math;
