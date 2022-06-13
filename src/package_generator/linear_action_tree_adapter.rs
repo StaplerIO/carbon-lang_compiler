@@ -77,15 +77,14 @@ fn if_action_adapter(action: &Action) -> Vec<LinearAction> {
 
     result.extend(action_block_adapter(&if_action.if_block.body));
 
-    for elif_block in if_action.elif_collection {
-        result.push(LinearAction { lat_type: LinearActionType::ElseIfEntrance(elif_block), original_action: action.clone() });
+    for elif_block in &if_action.elif_collection {
+        result.push(LinearAction { lat_type: LinearActionType::ElseIfEntrance(elif_block.clone()), original_action: action.clone() });
         result.extend(action_block_adapter(&elif_block.body));
     }
 
     if if_action.else_action.is_some() {
-        let else_action = if_action.else_action.unwrap();
         result.push(LinearAction { lat_type: LinearActionType::ElseEntrance, original_action: action.clone() });
-        result.extend(action_block_adapter(&ActionBlock { actions: else_action.actions }));
+        result.extend(action_block_adapter(&ActionBlock { actions: if_action.clone().else_action.unwrap().actions }));
     }
 
     result.push(LinearAction {
