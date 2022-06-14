@@ -1,11 +1,11 @@
 use crate::package_generator::command_builder::action_block::action_block_builder;
 use crate::package_generator::command_builder::templates::jump_command::{condition_block_command_builder, direct_jump_command_builder};
 use crate::shared::ast::action::IfAction;
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_descriptor::{JumpCommandBuildResult, RelocationType};
 
-pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
+pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
     let mut result = JumpCommandBuildResult {
         commands: vec![],
         descriptors: vec![]

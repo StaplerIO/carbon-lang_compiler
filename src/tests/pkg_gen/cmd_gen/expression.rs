@@ -4,7 +4,7 @@ use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::builder::expression_builder::expression_term_decorator;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::blocks::expression::SimpleExpression;
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 // TODO: Validate the possibility of the test
@@ -56,12 +56,12 @@ fn expression_with_defined_data() {
     };
 
     let defined_data = vec![
-        DataDeclaration {
+        DataDeclarator {
             name: "a".to_string(),
             slot: vec![0x00, 0x00],
             is_global: false,
         },
-        DataDeclaration {
+        DataDeclarator {
             name: "b".to_string(),
             slot: vec![0x00, 0x01],
             is_global: false,

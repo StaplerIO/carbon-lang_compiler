@@ -21,7 +21,7 @@ pub enum LinearActionType {
 }
 
 pub struct LinearAction {
-    pub lat_type: LinearActionType,
+    pub lat_content: LinearActionType,
 
     pub original_action: Action
 }

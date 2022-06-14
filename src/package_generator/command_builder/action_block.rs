@@ -5,7 +5,7 @@ use crate::package_generator::command_builder::function_call::build_function_cal
 use crate::package_generator::command_builder::loop_interception::{break_action_command_builder, continue_action_command_builder};
 use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
 use crate::shared::ast::action::{ActionBlock, ActionContent};
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_descriptor::JumpCommandBuildResult;
 
@@ -14,14 +14,14 @@ type UnrelocatedCommand = JumpCommandBuildResult;
 pub fn action_block_builder(block: &ActionBlock, metadata: &PackageMetadata) -> UnrelocatedCommand {
     let mut result = UnrelocatedCommand{ commands: vec![], descriptors: vec![] };
 
-    let mut defined_data: Vec<DataDeclaration> = vec![];
+    let mut defined_data: Vec<DataDeclarator> = vec![];
     let mut data_count: usize = 0;
 
     for action in &block.actions {
         match &action.content {
             ActionContent::DeclarationStatement(x) => {
                 result.append_commands(build_data_declaration_command(false));
-                defined_data.push(DataDeclaration {
+                defined_data.push(DataDeclarator {
                     name: x.identifier.clone(),
                     slot: align_data_width(
                         convert_to_u8_array(format!("{:X}", data_count)),

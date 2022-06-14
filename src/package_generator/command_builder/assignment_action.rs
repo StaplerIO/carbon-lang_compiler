@@ -2,12 +2,12 @@ use crate::package_generator::command_builder::expression_evaluation::build_expr
 use crate::package_generator::utils::combine_command;
 use crate::shared::ast::action::AssignmentAction;
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 pub fn build_assignment_command(
     action: &AssignmentAction,
-    defined_data: &Vec<DataDeclaration>,
+    defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> Vec<u8> {
     let mut result = vec![];

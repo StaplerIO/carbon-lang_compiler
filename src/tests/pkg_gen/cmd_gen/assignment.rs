@@ -2,7 +2,7 @@ use crate::lexer::tokenize::tokenize;
 use crate::package_generator::command_builder::assignment_action::build_assignment_command;
 use crate::parser::builder::blocks::assignment::assignment_block_builder;
 use crate::parser::decorator::decorate_token;
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
@@ -25,7 +25,7 @@ fn simple_test() {
         address_alignment: 0
     };
 
-    let defined_data = vec![DataDeclaration {
+    let defined_data = vec![DataDeclarator {
         name: "t".to_string(),
         slot: vec![0x00, 0x00],
         is_global: false,

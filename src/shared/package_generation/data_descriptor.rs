@@ -1,5 +1,5 @@
 #[derive(Clone)]
-pub struct DataDeclaration {
+pub struct DataDeclarator {
     pub name: String,
     // Slot is start from 0
     pub slot: Vec<u8>,

@@ -30,3 +30,5 @@ pub struct JumpCommandBuildResult {
     pub commands: Vec<u8>,
     pub descriptors: Vec<RelocationDescriptor>
 }
+
+pub type RelocatableCommandList = JumpCommandBuildResult;

@@ -4,14 +4,14 @@ use crate::package_generator::command_builder::math::calculation::{
 use crate::package_generator::utils::{align_data_width, combine_command, convert_number_to_hex, convert_to_u8_array};
 use crate::shared::ast::blocks::expression::{ExprDataTerm, SimpleExpression};
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::token::operator::{CalculationOperator, Operator};
 
 /// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(
     expr: &SimpleExpression,
-    defined_data: &Vec<DataDeclaration>,
+    defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> Vec<u8> {
     let mut result: Vec<u8> = vec![];

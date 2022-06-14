@@ -6,13 +6,13 @@ use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::command_map::{
     DomainCommand, ObjectCommand, RootCommand, StackCommand, PLACE_HOLDER,
 };
-use crate::shared::package_generation::data_descriptor::{DataAccessDescriptor, DataDeclaration};
+use crate::shared::package_generation::data_descriptor::{DataAccessDescriptor, DataDeclarator};
 use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 pub fn build_function_call_command(
     action: &CallAction,
-    defined_data: &Vec<DataDeclaration>,
+    defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
     defined_functions: &Vec<FunctionDescriptor>,
 ) -> Vec<u8> {
@@ -42,7 +42,7 @@ pub fn build_function_call_command(
 
 fn calculate_parameters(
     action: &CallAction,
-    defined_data: &Vec<DataDeclaration>,
+    defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
     _defined_functions: &Vec<FunctionDescriptor>,
     mut dac_list: Vec<DataAccessDescriptor>,
@@ -145,7 +145,7 @@ fn push_parameters(dac_list: &Vec<DataAccessDescriptor>, metadata: &PackageMetad
 
 fn remove_old_data(
     action: &CallAction,
-    defined_data: &Vec<DataDeclaration>,
+    defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> Vec<u8> {
     let mut result = vec![];

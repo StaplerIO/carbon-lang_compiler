@@ -5,12 +5,12 @@ use crate::package_generator::utils::{align_data_width, combine_command, jump_co
 use crate::shared::ast::action::ConditionBlock;
 use crate::shared::ast::blocks::expression::RelationExpression;
 use crate::shared::command_map::{JumpCommand, RootCommand, StackCommand};
-use crate::shared::package_generation::data_descriptor::DataDeclaration;
+use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_descriptor::{JumpCommandBuildResult, RelocationDescriptor, RelocationType};
 use crate::shared::token::operator::RelationOperator;
 
-pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, cmd_offset: isize, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
+pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, cmd_offset: isize, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
     let mut result = JumpCommandBuildResult {
         commands: vec![],
         descriptors: vec![]
@@ -91,7 +91,7 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
 
 // Return value
 // First value is the command array
-fn relation_expression_eval_command_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclaration>, metadata: &PackageMetadata) -> Vec<u8> {
+fn relation_expression_eval_command_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> Vec<u8> {
     let mut result = vec![];
 
     // Evaluate expressions

@@ -7,3 +7,4 @@ pub mod function_call;
 pub mod condition_command;
 pub mod loop_interception;
 mod math;
+pub mod lat_command_builder;
