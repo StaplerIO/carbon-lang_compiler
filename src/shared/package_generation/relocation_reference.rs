@@ -1,3 +1,8 @@
+pub struct RelocationCredential {
+    pub targets: Vec<RelocationTarget>,
+    pub references: Vec<RelocationReference>
+}
+
 /// ## RelocationType with value
 ///
 /// ### `BreakDomain`
@@ -8,7 +13,7 @@
 ///
 /// ### `EnterFunction`
 /// Save the identifier of target function in it
-pub enum RelocationType {
+pub enum RelocationTargetType {
     Absolute,
     // Set to 0 to jump out to nearest loop
     DomainHead(usize),
@@ -19,8 +24,8 @@ pub enum RelocationType {
     EnterFunction(String)
 }
 
-pub struct RelocationDescriptor {
-    pub relocation_type: RelocationType,
+pub struct RelocationTarget {
+    pub relocation_type: RelocationTargetType,
     pub offset: isize,
     pub command_array_position: usize,
     pub relocated_address: Vec<u8>,
@@ -28,7 +33,25 @@ pub struct RelocationDescriptor {
 
 pub struct JumpCommandBuildResult {
     pub commands: Vec<u8>,
-    pub descriptors: Vec<RelocationDescriptor>
+    pub descriptors: Vec<RelocationTarget>
 }
 
 pub type RelocatableCommandList = JumpCommandBuildResult;
+
+pub enum RelocationReferenceType {
+    FunctionEntrance,
+    EndFunction,
+    IfEntrance,
+    ElseIfEntrance,
+    ElseEntrance,
+    EndIf,
+    WhileEntrance,
+    EndWhile,
+    LoopEntrance,
+    EndLoop,
+}
+
+pub struct RelocationReference {
+    pub ref_type: RelocationReferenceType,
+    pub command_array_position: usize,
+}

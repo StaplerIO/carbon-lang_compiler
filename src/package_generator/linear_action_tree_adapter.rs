@@ -1,4 +1,4 @@
-use crate::shared::ast::action::{Action, ActionBlock, ActionContent, DeclarationAction};
+use crate::shared::ast::action::{Action, ActionBlock, ActionContent};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::package_generation::linear_action_tree::{LinearAction, LinearActionTree, LinearActionType};
 

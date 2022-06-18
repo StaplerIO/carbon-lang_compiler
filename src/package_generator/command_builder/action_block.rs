@@ -7,7 +7,7 @@ use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
 use crate::shared::ast::action::{ActionBlock, ActionContent};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_descriptor::JumpCommandBuildResult;
+use crate::shared::package_generation::relocation_reference::JumpCommandBuildResult;
 
 type UnrelocatedCommand = JumpCommandBuildResult;
 

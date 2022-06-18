@@ -1,4 +1,10 @@
-use crate::shared::ast::action::{Action, AssignmentAction, CallAction, ConditionBlock, DeclarationAction, LoopBlock, ReturnAction, WhileBlock};
+use crate::shared::ast::action::{Action,
+                                 AssignmentAction,
+                                 CallAction,
+                                 ConditionBlock,
+                                 DeclarationAction,
+                                 ReturnAction,
+                                 WhileBlock};
 use crate::shared::ast::blocks::function::Function;
 
 pub enum LinearActionType {
@@ -23,10 +29,10 @@ pub enum LinearActionType {
 pub struct LinearAction {
     pub lat_content: LinearActionType,
 
-    pub original_action: Action
+    pub original_action: Action,
 }
 
 pub struct LinearActionTree {
-    pub action_array: Vec<LinearAction>
+    pub action_array: Vec<LinearAction>,
 }
 

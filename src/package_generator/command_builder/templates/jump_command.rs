@@ -7,7 +7,7 @@ use crate::shared::ast::blocks::expression::RelationExpression;
 use crate::shared::command_map::{JumpCommand, RootCommand, StackCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_descriptor::{JumpCommandBuildResult, RelocationDescriptor, RelocationType};
+use crate::shared::package_generation::relocation_reference::{JumpCommandBuildResult, RelocationTarget, RelocationTargetType};
 use crate::shared::token::operator::RelationOperator;
 
 pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, cmd_offset: isize, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
@@ -26,20 +26,20 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
 
     // Add descriptors
     result.descriptors.extend(vec![
-        RelocationDescriptor {
-            relocation_type: RelocationType::IgnoreDomain(domains_after),
+        RelocationTarget {
+            relocation_type: RelocationTargetType::IgnoreDomain(domains_after),
             offset: cmd_offset,
             command_array_position: 1,
             relocated_address: vec![]
         },
-        RelocationDescriptor {
-            relocation_type: RelocationType::IgnoreDomain(domains_after),
+        RelocationTarget {
+            relocation_type: RelocationTargetType::IgnoreDomain(domains_after),
             command_array_position: metadata.address_alignment as usize,
             offset: cmd_offset,
             relocated_address: vec![]
         },
-        RelocationDescriptor {
-            relocation_type: RelocationType::IgnoreDomain(domains_after),
+        RelocationTarget {
+            relocation_type: RelocationTargetType::IgnoreDomain(domains_after),
             offset: cmd_offset,
 
             command_array_position: (metadata.address_alignment as usize) * 2,
@@ -51,30 +51,30 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
     // Modify target jump command
     match action.condition.expected_relation {
         RelationOperator::Greater => {
-            result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[0].offset = 0;
         }
         RelationOperator::GreaterOrEqual => {
-            result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[0].offset = 0;
         }
         RelationOperator::Less => {
-            result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[0].offset = 0;
         }
         RelationOperator::LessOrEqual => {
-            result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[0].offset = 0;
         }
         RelationOperator::NotEqual => {
-            result.descriptors[0].relocation_type = RelocationType::NextCommand;
+            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[0].offset = 0;
 
-            result.descriptors[2].relocation_type = RelocationType::NextCommand;
+            result.descriptors[2].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[2].offset = 0;
         }
         RelationOperator::Equal => {
-            result.descriptors[1].relocation_type = RelocationType::NextCommand;
+            result.descriptors[1].relocation_type = RelocationTargetType::NextCommand;
             result.descriptors[1].offset = 0;
         }
         _ => panic!("Illegal operator")
@@ -146,7 +146,7 @@ fn plus_one(width: u8) -> Vec<u8> {
     return result;
 }
 
-pub fn direct_jump_command_builder(r_type: RelocationType, metadata: &PackageMetadata) -> JumpCommandBuildResult {
+pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &PackageMetadata) -> JumpCommandBuildResult {
     let mut cmd_arr = vec![];
 
     cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToOffset.to_opcode()));
@@ -154,7 +154,7 @@ pub fn direct_jump_command_builder(r_type: RelocationType, metadata: &PackageMet
 
     return JumpCommandBuildResult {
         commands: cmd_arr,
-        descriptors: vec![RelocationDescriptor {
+        descriptors: vec![RelocationTarget {
             relocation_type: r_type,
             offset: 0,
             command_array_position: 1,
