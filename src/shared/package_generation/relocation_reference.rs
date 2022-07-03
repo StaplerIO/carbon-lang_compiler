@@ -21,22 +21,20 @@ pub enum RelocationTargetType {
     BreakDomain(usize),
     NextCommand,
     IgnoreDomain(usize),
-    EnterFunction(String)
+    EnterFunction(String),
+    Undefined
 }
 
 pub struct RelocationTarget {
     pub relocation_type: RelocationTargetType,
-    pub offset: isize,
     pub command_array_position: usize,
     pub relocated_address: Vec<u8>,
 }
 
-pub struct JumpCommandBuildResult {
+pub struct RelocatableCommandList {
     pub commands: Vec<u8>,
-    pub descriptors: Vec<RelocationTarget>
+    pub descriptors: RelocationCredential
 }
-
-pub type RelocatableCommandList = JumpCommandBuildResult;
 
 pub enum RelocationReferenceType {
     FunctionEntrance,

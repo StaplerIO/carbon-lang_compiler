@@ -1,46 +1,40 @@
-use crate::package_generator::command_builder::action_block::action_block_builder;
 use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
 use crate::package_generator::command_builder::math::calculation::{inverse_command, minus_command};
-use crate::package_generator::utils::{align_data_width, combine_command, jump_command_address_placeholder};
-use crate::shared::ast::action::ConditionBlock;
+use crate::package_generator::utils::{combine_command, jump_command_address_placeholder};
 use crate::shared::ast::blocks::expression::RelationExpression;
-use crate::shared::command_map::{JumpCommand, RootCommand, StackCommand};
+use crate::shared::command_map::{JumpCommand, RootCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_reference::{JumpCommandBuildResult, RelocationTarget, RelocationTargetType};
+use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationTarget, RelocationTargetType};
 use crate::shared::token::operator::RelationOperator;
 
-pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: usize, cmd_offset: isize, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> JumpCommandBuildResult {
-    let mut result = JumpCommandBuildResult {
-        commands: vec![],
-        descriptors: vec![]
-    };
+/// ### Return value
+/// - Index `0`:
+/// - Index `1`: The relocation target to be jumped when expression result could be True (2 parameters max, -1 for empty)
+pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (i8, i8)) {
+    let mut result = RelocatableCommandList::new();
 
-    let expr_eval_command = relation_expression_eval_command_builder(&action.condition, defined_data, metadata);
-    // Build JumpCommand
-    let mut jump_command: Vec<u8> = vec![];
-    jump_command.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ByStackTop.to_opcode()));
-    // Repeat placeholder for 3 times
-    // Because in command *format manual*, there are 3 locations we need to assign
-    jump_command.extend(jump_command_address_placeholder(metadata).repeat(3));
+    // Evaluate expressions
+    // The evaluation result of the left-side expression is on the 2nd top position
+    // The right-side result is on the first position
+    result.commands.extend(build_expression_evaluation_command(&expr.left, defined_data, metadata));
+    result.commands.extend(build_expression_evaluation_command(&expr.right, defined_data, metadata));
 
+    // Pre-save relocation target
     // Add descriptors
-    result.descriptors.extend(vec![
+    result.descriptors.targets.extend(vec![
         RelocationTarget {
-            relocation_type: RelocationTargetType::IgnoreDomain(domains_after),
-            offset: cmd_offset,
+            relocation_type: RelocationTargetType::Undefined,
             command_array_position: 1,
             relocated_address: vec![]
         },
         RelocationTarget {
-            relocation_type: RelocationTargetType::IgnoreDomain(domains_after),
+            relocation_type: RelocationTargetType::Undefined,
             command_array_position: metadata.address_alignment as usize,
-            offset: cmd_offset,
             relocated_address: vec![]
         },
         RelocationTarget {
-            relocation_type: RelocationTargetType::IgnoreDomain(domains_after),
-            offset: cmd_offset,
+            relocation_type: RelocationTargetType::Undefined,
 
             command_array_position: (metadata.address_alignment as usize) * 2,
             relocated_address: vec![]
@@ -48,117 +42,68 @@ pub fn condition_block_command_builder(action: &ConditionBlock, domains_after: u
 
     ]);
 
-    // Modify target jump command
-    match action.condition.expected_relation {
-        RelationOperator::Greater => {
-            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[0].offset = 0;
-        }
-        RelationOperator::GreaterOrEqual => {
-            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[0].offset = 0;
-        }
-        RelationOperator::Less => {
-            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[0].offset = 0;
-        }
-        RelationOperator::LessOrEqual => {
-            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[0].offset = 0;
-        }
-        RelationOperator::NotEqual => {
-            result.descriptors[0].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[0].offset = 0;
+    // Current stack layout
+    // |      left        |
+    // |      right       |
+    // |      other       |
 
-            result.descriptors[2].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[2].offset = 0;
-        }
-        RelationOperator::Equal => {
-            result.descriptors[1].relocation_type = RelocationTargetType::NextCommand;
-            result.descriptors[1].offset = 0;
-        }
-        _ => panic!("Illegal operator")
-    };
+    result.commands.extend(minus_command());
 
-    result.commands.extend(expr_eval_command);
-    result.commands.extend(jump_command);
+    // Current stack layout
+    // |   right - left   |
+    // |      other       |
 
-    // Put True commands
-    result.append(action_block_builder(&action.body, metadata));
-
-    return result;
-}
-
-// Return value
-// First value is the command array
-fn relation_expression_eval_command_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> Vec<u8> {
-    let mut result = vec![];
-
-    // Evaluate expressions
-    // The evaluation result of the left-side expression is on the 2nd top position
-    // The right-side result is on the first position
-    result.extend(build_expression_evaluation_command(&expr.left, defined_data, metadata));
-    result.extend(build_expression_evaluation_command(&expr.right, defined_data, metadata));
-
-    // How to express the relation?
+    // Command scheme: `0xD2 <PositiveLocation(0)> <NegativePosition(1)> <ZeroPosition(2)>`
+    let mut true_pos = (-1, -1);
     match expr.expected_relation {
         RelationOperator::Greater => {
-            result.extend(minus_command());
-            return result;
+            // left - right < 0
+            true_pos.0 = 1;
         }
         RelationOperator::GreaterOrEqual => {
-            result.extend(minus_command());
-            result.extend(plus_one(metadata.data_alignment));
-
-            return result;
+            // left - right <= 0
+            true_pos.0 = 1;
+            true_pos.1 = 2;
         }
         RelationOperator::Less => {
-            result.extend(minus_command());
-            result.extend(inverse_command());
-
-            return result;
+            // left - right > 0
+            true_pos.0 = 0;
         }
         RelationOperator::LessOrEqual => {
-            result.extend(minus_command());
-            result.extend(inverse_command());
-            result.extend(plus_one(metadata.data_alignment));
-
-            return result;
+            // left - right >= 0
+            true_pos.0 = 0;
+            true_pos.1 = 2;
         }
         RelationOperator::NotEqual => {
-            result.extend(minus_command());
-            return result;
+            // left - right != 0
+            true_pos.0 = 0;
+            true_pos.1 = 1;
         }
         RelationOperator::Equal => {
-            result.extend(minus_command());
-            return result;
+            // left - right == 0
+            true_pos.0 = 2;
         }
         _ => panic!("Illegal operator")
     };
+
+    return (result, true_pos);
 }
 
-fn plus_one(width: u8) -> Vec<u8> {
-    let mut result = vec![];
-
-    result.push(combine_command(RootCommand::Stack.to_opcode(), StackCommand::Push.to_opcode()));
-    result.extend(align_data_width(vec![0x01], width));
-
-    return result;
-}
-
-pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &PackageMetadata) -> JumpCommandBuildResult {
+pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &PackageMetadata) -> RelocatableCommandList {
     let mut cmd_arr = vec![];
 
     cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToOffset.to_opcode()));
     cmd_arr.extend(jump_command_address_placeholder(metadata));
 
-    return JumpCommandBuildResult {
+    return RelocatableCommandList {
         commands: cmd_arr,
-        descriptors: vec![RelocationTarget {
-            relocation_type: r_type,
-            offset: 0,
-            command_array_position: 1,
-            relocated_address: vec![]
-        }]
+        descriptors: RelocationCredential {
+            targets: vec![RelocationTarget{
+                relocation_type: r_type,
+                command_array_position: 1,
+                relocated_address: vec![],
+            }],
+            references: vec![]
+        }
     };
 }
