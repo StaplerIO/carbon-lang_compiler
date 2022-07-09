@@ -1,5 +1,5 @@
 use crate::package_generator::command_builder::expression_evaluation::build_expression_evaluation_command;
-use crate::package_generator::command_builder::math::calculation::{inverse_command, minus_command};
+use crate::package_generator::command_builder::math::calculation::minus_command;
 use crate::package_generator::utils::{combine_command, jump_command_address_placeholder};
 use crate::shared::ast::blocks::expression::RelationExpression;
 use crate::shared::command_map::{JumpCommand, RootCommand};

@@ -5,10 +5,10 @@ use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::linear_action_tree::{LinearActionTree, LinearActionType};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_reference::{JumpCommandBuildResult, RelocatableCommandList};
+use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 
 pub fn linear_action_tree_command(tree: LinearActionTree, metadata: &PackageMetadata, _defined_functions: &Vec<FunctionDescriptor>) -> RelocatableCommandList {
-    let mut result = RelocatableCommandList{ commands: vec![], descriptors: vec![] };
+    let mut result = RelocatableCommandList::new();
     let mut defined_data: Vec<DataDeclarator> = vec![];
 
     for action in tree.action_array {
@@ -27,11 +27,11 @@ pub fn linear_action_tree_command(tree: LinearActionTree, metadata: &PackageMeta
             LinearActionType::ContinueStatement => {}
             LinearActionType::AssignmentAction(x) => {
                 let assignment_cmd = build_assignment_command(&x, &defined_data, metadata);
-                result.combine(JumpCommandBuildResult::new_no_relocation(assignment_cmd));
+                result.combine(RelocatableCommandList::new_no_relocation(assignment_cmd));
             }
             LinearActionType::DeclarationAction(x) => {
                 let decl_cmd = build_data_declaration_command(false);
-                result.combine(JumpCommandBuildResult::new_no_relocation(decl_cmd));
+                result.combine(RelocatableCommandList::new_no_relocation(decl_cmd));
 
                 defined_data.push(DataDeclarator {
                     name: x.identifier,

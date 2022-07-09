@@ -26,7 +26,7 @@ fn action_block() {
         address_alignment: 0
     };
 
-    let _commands = action_block_builder(&ActionBlock { actions }, &metadata);
+    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // for element in commands {
     //     print!("{},", format!("{:X}", element));

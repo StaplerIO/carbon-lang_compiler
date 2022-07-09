@@ -14,14 +14,14 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclarator>,
     remaining_domain_count -= 1;
 
     // Build ElifBlock
-    for elif_block in action.elif_collection {
-        result.combine(condition_block_builder(&elif_block, remaining_domain_count, defined_data, metadata));
+    for elif_block in &action.elif_collection {
+        result.combine(condition_block_builder(elif_block, remaining_domain_count, defined_data, metadata));
         remaining_domain_count -= 1;
     }
 
     if action.else_action.is_some() {
         // Pack ElseAction into a domain
-        result.combine(action_block_builder(&action.else_action.unwrap(), true, defined_data, metadata));
+        result.combine(action_block_builder(&action.else_action.as_ref().unwrap(), true, defined_data, metadata));
     }
 
     return result;

@@ -7,7 +7,6 @@ impl RelocatableCommandList {
         for item in cred.targets {
             self.descriptors.targets.push(RelocationTarget {
                 relocation_type: item.relocation_type,
-                offset: item.offset,
                 command_array_position: item.command_array_position + self.commands.len(),
                 relocated_address: item.relocated_address,
             });

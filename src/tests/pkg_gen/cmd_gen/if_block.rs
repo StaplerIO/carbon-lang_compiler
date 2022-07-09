@@ -19,7 +19,7 @@ fn bare_if_test() {
 
     let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.get_if_action().unwrap(), &vec![], &metadata);
 
-    assert_eq!(result.descriptors.len(), 4);
+    assert_eq!(result.descriptors.targets.len(), 3);
 
     println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
 }
@@ -39,7 +39,7 @@ fn complex_if_test() {
 
     let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.get_if_action().unwrap(), &vec![], &metadata);
 
-    assert_eq!(result.descriptors.len(), 8);
+    assert_eq!(result.descriptors.targets.len(), 7);
 
     println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
 }
