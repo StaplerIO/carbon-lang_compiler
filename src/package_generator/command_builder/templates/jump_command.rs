@@ -9,9 +9,10 @@ use crate::shared::package_generation::relocation_reference::{RelocatableCommand
 use crate::shared::token::operator::RelationOperator;
 
 /// ### Return value
-/// - Index `0`:
-/// - Index `1`: The relocation target to be jumped when expression result could be True (2 parameters max, -1 for empty)
-pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (i8, i8)) {
+/// - Index `0`: An uncompleted relocation descriptor
+/// - Index `1`: The relocation target to be jumped when expression result could be True
+///
+pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (bool, bool, bool)) {
     let mut result = RelocatableCommandList::new();
 
     // Evaluate expressions
@@ -54,34 +55,34 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     // |      other       |
 
     // Command scheme: `0xD2 <PositiveLocation(0)> <NegativePosition(1)> <ZeroPosition(2)>`
-    let mut true_pos = (-1, -1);
+    let mut true_pos = (false, false, false);
     match expr.expected_relation {
         RelationOperator::Greater => {
             // left - right < 0
-            true_pos.0 = 1;
+            true_pos.1 = true;
         }
         RelationOperator::GreaterOrEqual => {
             // left - right <= 0
-            true_pos.0 = 1;
-            true_pos.1 = 2;
+            true_pos.1 = true;
+            true_pos.2 = true;
         }
         RelationOperator::Less => {
             // left - right > 0
-            true_pos.0 = 0;
+            true_pos.0 = true;
         }
         RelationOperator::LessOrEqual => {
             // left - right >= 0
-            true_pos.0 = 0;
-            true_pos.1 = 2;
+            true_pos.0 = true;
+            true_pos.2 = true;
         }
         RelationOperator::NotEqual => {
             // left - right != 0
-            true_pos.0 = 0;
-            true_pos.1 = 1;
+            true_pos.0 = true;
+            true_pos.1 = true;
         }
         RelationOperator::Equal => {
             // left - right == 0
-            true_pos.0 = 2;
+            true_pos.2 = true;
         }
         _ => panic!("Illegal operator")
     };
