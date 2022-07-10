@@ -1,5 +1,5 @@
 use crate::package_generator::command_builder::assignment_action::build_assignment_command;
-use crate::package_generator::command_builder::condition_command::if_command_builder;
+use crate::package_generator::command_builder::condition_command::{if_command_builder, while_command_builder};
 use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
 use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::package_generator::command_builder::loop_interception::{break_action_command_builder, continue_action_command_builder};
@@ -55,9 +55,11 @@ pub fn action_block_builder(block: &ActionBlock, surround_domain: bool, defined_
                 // Will jump to destroy the domain
             }
             ActionContent::IfBlock(x) => {
-                result.combine(if_command_builder(&x, &defined_data_current_domain, &metadata));
+                result.combine(if_command_builder(x, &defined_data_current_domain, &metadata));
             }
-            ActionContent::WhileStatement(_) => {}
+            ActionContent::WhileStatement(x) => {
+                result.combine(while_command_builder(x, &defined_data_current_domain, &metadata));
+            }
             ActionContent::BreakStatement => {
                 result.combine(break_action_command_builder(&metadata));
             }

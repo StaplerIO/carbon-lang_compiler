@@ -1,7 +1,7 @@
 use crate::package_generator::command_builder::action_block::action_block_builder;
 use crate::package_generator::command_builder::templates::condition_block::{condition_block_builder, ConditionBlockType};
 use crate::package_generator::command_builder::templates::jump_command::direct_jump_command_builder;
-use crate::shared::ast::action::IfAction;
+use crate::shared::ast::action::{IfAction, WhileBlock};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetType};
@@ -35,4 +35,8 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclarator>,
     }
 
     return result;
+}
+
+pub fn while_command_builder(action: &WhileBlock, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> RelocatableCommandList {
+    return condition_block_builder(action, ConditionBlockType::WhileBlock, 1, defined_data, metadata);
 }
