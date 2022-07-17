@@ -1,6 +1,10 @@
 [package]
 name = "carbon-lang_compiler"
+description = "The compiler of The Carbon Programming Language"
 version = "0.0.1-alpha"
+repository = "https://github.com/StaplerIO/carbon-lang_compiler"
+readme = "README.md"
+license = "Apache-2.0"
 authors = ["Jeb Feng <ranzeplay@outlook.com>"]
 edition = "2018"
 
