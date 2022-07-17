@@ -19,6 +19,10 @@ lazy_static! {
             call println("Hello, world!");
             call demo();
 
+            if( 1 > 2 ) {
+                call println("1 > 2!!");
+            }
+
             return 0;
         }
         "#;

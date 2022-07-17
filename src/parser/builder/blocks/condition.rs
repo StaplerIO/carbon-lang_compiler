@@ -33,7 +33,7 @@ pub fn if_block_builder(
         let else_part = detached_else_block_builder(tokens[current_index..].to_vec());
         if else_part.1 != -1 {
             result.else_action = else_part.0;
-            current_index += else_part.1 as usize;
+            current_index += else_part.1 as usize + 1;
         }
 
         return Ok((Action::new(ActionContent::IfBlock(result), vec![]), current_index));

@@ -70,7 +70,7 @@ pub fn action_block_builder(mut tokens: Vec<DecoratedToken>) -> Vec<Action> {
             continue;
         }
 
-        panic!("Invalid token stream encountered");
+        panic!("Invalid token stream encountered, position: {}, actions built: {}", tokens[0].original_token.position.start, result.len());
     }
 
     return result;

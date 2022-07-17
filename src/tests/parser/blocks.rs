@@ -172,7 +172,7 @@ fn if_block() {
     let raw = if_block_builder(&decorate_token(tokens.clone()));
 
     let result = raw.clone().ok().unwrap().0.get_if_action().unwrap().clone();
-    assert_eq!(raw.ok().unwrap().1, tokens.len() - 1);
+    assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.if_block.condition.left.postfix_expr.len(), 3);
     assert_eq!(result.if_block.condition.right.postfix_expr.len(), 1);
