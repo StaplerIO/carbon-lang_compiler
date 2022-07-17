@@ -29,7 +29,7 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
     let mut index: usize = 0;
     while index < source_code.len() {
         #[allow(unused_assignments)]
-            let mut token: Token = Token::new_invalid();
+        let mut token: Token = Token::new_invalid();
 
         token = match_comment(&source_code[index..], index);
         if !token.is_invalid() {
@@ -101,10 +101,10 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
             match result[index].content {
                 TokenContent::Comment(_) => {
                     result.remove(index);
-                },
+                }
                 TokenContent::Whitespace(_) => {
                     result.remove(index);
-                },
+                }
                 _ => {
                     index += 1;
                 }

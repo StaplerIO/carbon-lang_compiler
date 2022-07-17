@@ -1,6 +1,6 @@
-use lazy_static::lazy_static;
 use crate::shared::token::token::{Token, TokenContent};
 use crate::shared::utils::position::Position;
+use lazy_static::lazy_static;
 
 lazy_static! {
     static ref COMMENT_LEADING_SLASH: &'static str = "//";

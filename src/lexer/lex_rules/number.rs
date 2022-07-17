@@ -1,7 +1,7 @@
-use lazy_static::lazy_static;
-use regex::Regex;
 use crate::shared::token::token::{Token, TokenContent};
 use crate::shared::utils::position::Position;
+use lazy_static::lazy_static;
+use regex::Regex;
 
 lazy_static! {
     /*
@@ -21,7 +21,10 @@ pub fn match_number(content: &str, base_pos: usize) -> Token {
     let captures = NUMBER_REGEX.captures(content);
     if captures.is_some() {
         let number = captures.unwrap()[1].to_string();
-        return Token::new(TokenContent::Number(number.clone()), Position::new(base_pos, number.len()));
+        return Token::new(
+            TokenContent::Number(number.clone()),
+            Position::new(base_pos, number.len()),
+        );
     }
 
     return Token::new_invalid();

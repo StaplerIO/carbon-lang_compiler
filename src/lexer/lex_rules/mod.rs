@@ -1,3 +1,4 @@
+pub mod comment;
 pub mod container;
 pub mod identifier;
 pub mod keyword;
@@ -6,4 +7,3 @@ pub mod operator;
 pub mod semicolon;
 pub mod space;
 pub mod string;
-pub mod comment;

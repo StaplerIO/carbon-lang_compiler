@@ -22,8 +22,11 @@ pub fn match_string(content: &str, base_pos: usize) -> Token {
             .trim_start_matches("\"")
             .trim_end_matches("\"")
             .to_string();
-        Token::new(TokenContent::String(bare_string), Position::new(base_pos, result.len() + 2))
-    }
+        Token::new(
+            TokenContent::String(bare_string),
+            Position::new(base_pos, result.len() + 2),
+        )
+    };
 }
 
 // TODO: Convert escape characters

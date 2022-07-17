@@ -17,6 +17,9 @@ pub fn match_spaces(content: &str, base_pos: usize) -> Token {
     return if result.is_empty() {
         Token::new_invalid()
     } else {
-        Token::new(Whitespace(result.clone()), Position::new(base_pos, result.len()))
-    }
+        Token::new(
+            Whitespace(result.clone()),
+            Position::new(base_pos, result.len()),
+        )
+    };
 }

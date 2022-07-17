@@ -21,7 +21,7 @@ pub fn check_expression_sequence(expression: SimpleExpression) -> bool {
                     index,
                     ExprTerm {
                         content: TermContent::Validated,
-                        original_token: vec![]
+                        original_token: vec![],
                     },
                 );
 

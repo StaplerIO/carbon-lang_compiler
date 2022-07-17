@@ -1,8 +1,8 @@
-use std::collections::HashMap;
-use lazy_static::lazy_static;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::token::{Token, TokenContent};
 use crate::shared::utils::position::Position;
+use lazy_static::lazy_static;
+use std::collections::HashMap;
 
 lazy_static! {
     pub static ref KEYWORDS: HashMap<KeywordType, &'static str> = [
@@ -29,14 +29,20 @@ lazy_static! {
         (KeywordType::KwAny, "any"),
         (KeywordType::KwTrue, "true"),
         (KeywordType::KwFalse, "false"),
-    ].iter().cloned().collect();
+    ]
+    .iter()
+    .cloned()
+    .collect();
 }
 
 // Convert keyword string to token
 pub fn match_keyword(content: &str, base_pos: usize) -> Token {
     for (&keyword, &keyword_str) in KEYWORDS.iter() {
         if content.starts_with(keyword_str) {
-            return Token::new(TokenContent::Keyword(keyword), Position::new(base_pos, keyword_str.len()));
+            return Token::new(
+                TokenContent::Keyword(keyword),
+                Position::new(base_pos, keyword_str.len()),
+            );
         }
     }
 
