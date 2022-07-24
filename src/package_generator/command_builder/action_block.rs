@@ -27,6 +27,7 @@ pub fn action_block_builder(
 
     // Create a new domain if necessary
     if surround_domain {
+        result.command_entries.push(result.commands.len());
         result.append_commands(vec![combine_command(
             RootCommand::Domain.to_opcode(),
             DomainCommand::Create.to_opcode(),
@@ -36,6 +37,7 @@ pub fn action_block_builder(
     for action in &block.actions {
         match &action.content {
             ActionContent::DeclarationStatement(x) => {
+                result.command_entries.push(result.commands.len());
                 result.append_commands(build_data_declaration_command(false));
                 defined_data_current_domain.push(DataDeclarator {
                     name: x.identifier.clone(),
@@ -49,6 +51,7 @@ pub fn action_block_builder(
                 data_count += 1;
             }
             ActionContent::AssignmentStatement(x) => {
+                result.command_entries.push(result.commands.len());
                 result.append_commands(build_assignment_command(
                     &x,
                     &defined_data_current_domain,
@@ -56,6 +59,7 @@ pub fn action_block_builder(
                 ));
             }
             ActionContent::CallStatement(x) => {
+                result.command_entries.push(result.commands.len());
                 result.append_commands(build_function_call_command(
                     &x,
                     &defined_data_current_domain,
@@ -81,9 +85,11 @@ pub fn action_block_builder(
                 ));
             }
             ActionContent::BreakStatement => {
+                result.command_entries.push(result.commands.len());
                 result.combine(break_action_command_builder(&metadata));
             }
             ActionContent::ContinueStatement => {
+                result.command_entries.push(result.commands.len());
                 result.combine(continue_action_command_builder(&metadata));
             }
             _ => {
@@ -94,6 +100,7 @@ pub fn action_block_builder(
 
     // Destroy the domain if created
     if surround_domain {
+        result.command_entries.push(result.commands.len());
         result.append_commands(vec![combine_command(
             RootCommand::Domain.to_opcode(),
             DomainCommand::Destroy.to_opcode(),

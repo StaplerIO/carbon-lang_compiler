@@ -38,5 +38,7 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclarator>,
 }
 
 pub fn while_command_builder(action: &WhileBlock, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> RelocatableCommandList {
-    return condition_block_builder(action, ConditionBlockType::WhileBlock, 1, defined_data, metadata);
+    let mut result = condition_block_builder(action, ConditionBlockType::WhileBlock, 1, defined_data, metadata);
+    result.combine(direct_jump_command_builder(RelocationTargetType::Relative(0 - result.commands.len() as i32), metadata));
+    return result;
 }

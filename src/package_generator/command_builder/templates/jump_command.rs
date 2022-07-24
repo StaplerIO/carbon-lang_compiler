@@ -21,28 +21,6 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     result.commands.extend(build_expression_evaluation_command(&expr.left, defined_data, metadata));
     result.commands.extend(build_expression_evaluation_command(&expr.right, defined_data, metadata));
 
-    // Pre-save relocation target
-    // Add descriptors
-    result.descriptors.targets.extend(vec![
-        RelocationTarget {
-            relocation_type: RelocationTargetType::Undefined,
-            command_array_position: 1,
-            relocated_address: vec![]
-        },
-        RelocationTarget {
-            relocation_type: RelocationTargetType::Undefined,
-            command_array_position: metadata.address_alignment as usize,
-            relocated_address: vec![]
-        },
-        RelocationTarget {
-            relocation_type: RelocationTargetType::Undefined,
-
-            command_array_position: (metadata.address_alignment as usize) * 2,
-            relocated_address: vec![]
-        }
-
-    ]);
-
     // Current stack layout
     // |      left        |
     // |      right       |
@@ -53,6 +31,32 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     // Current stack layout
     // |   right - left   |
     // |      other       |
+
+    result.append_commands(vec![combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ByStackTop.to_opcode())]);
+
+    // Pre-save relocation target
+    // Add descriptors
+    result.descriptors.targets.extend(vec![
+        RelocationTarget {
+            relocation_type: RelocationTargetType::Undefined,
+            command_array_position: 1 + result.commands.len(),
+            relocated_address: vec![],
+        },
+        RelocationTarget {
+            relocation_type: RelocationTargetType::Undefined,
+            command_array_position: metadata.address_alignment as usize + result.commands.len(),
+            relocated_address: vec![],
+        },
+        RelocationTarget {
+            relocation_type: RelocationTargetType::Undefined,
+
+            command_array_position: (metadata.address_alignment as usize) * 2 + result.commands.len(),
+            relocated_address: vec![],
+        },
+    ]);
+
+    // Push placeholder
+    result.append_commands(vec![0; metadata.data_alignment as usize * 3]);
 
     // Command scheme: `0xD2 <PositiveLocation(0)> <NegativePosition(1)> <ZeroPosition(2)>`
     let mut true_pos = (false, false, false);
@@ -93,18 +97,19 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
 pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &PackageMetadata) -> RelocatableCommandList {
     let mut cmd_arr = vec![];
 
-    cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToOffset.to_opcode()));
+    cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToAbsolute.to_opcode()));
     cmd_arr.extend(jump_command_address_placeholder(metadata));
 
     return RelocatableCommandList {
         commands: cmd_arr,
         descriptors: RelocationCredential {
-            targets: vec![RelocationTarget{
+            targets: vec![RelocationTarget {
                 relocation_type: r_type,
                 command_array_position: 1,
                 relocated_address: vec![],
             }],
-            references: vec![]
-        }
+            references: vec![],
+        },
+        command_entries: vec![0],
     };
 }

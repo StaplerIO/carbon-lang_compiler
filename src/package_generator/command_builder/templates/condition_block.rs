@@ -16,6 +16,7 @@ pub fn condition_block_builder(block: &ConditionBlock, c_type: ConditionBlockTyp
     let remaining_domain_count = 1 + domains_after;
 
     let r1 = jump_by_stack_top_command_template_builder(&block.condition, defined_data, metadata);
+    let len = r1.0.commands.len();
     let mut reloc_list = r1.0;
 
     match c_type {
@@ -34,19 +35,19 @@ pub fn condition_block_builder(block: &ConditionBlock, c_type: ConditionBlockTyp
     // Update relocation target by what we required
     let args = r1.1;
     if args.0 {
-        reloc_list.descriptors.targets[0].relocation_type = RelocationTargetType::NextCommand;
+        reloc_list.descriptors.targets[0].relocation_type = RelocationTargetType::Relative(len as i32);
     } else {
         reloc_list.descriptors.targets[0].relocation_type = RelocationTargetType::IgnoreDomain(remaining_domain_count);
     }
 
     if args.1 {
-        reloc_list.descriptors.targets[1].relocation_type = RelocationTargetType::NextCommand;
+        reloc_list.descriptors.targets[1].relocation_type = RelocationTargetType::Relative(len as i32);
     } else {
         reloc_list.descriptors.targets[1].relocation_type = RelocationTargetType::IgnoreDomain(remaining_domain_count);
     }
 
     if args.2 {
-        reloc_list.descriptors.targets[2].relocation_type = RelocationTargetType::NextCommand;
+        reloc_list.descriptors.targets[2].relocation_type = RelocationTargetType::Relative(len as i32);
     } else {
         reloc_list.descriptors.targets[2].relocation_type = RelocationTargetType::IgnoreDomain(remaining_domain_count);
     }

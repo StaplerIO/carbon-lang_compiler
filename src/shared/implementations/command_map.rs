@@ -39,7 +39,7 @@ lazy_static! {
             .cloned()
             .collect();
     pub static ref JUMP_COMMAND_OPCODE: HashMap<JumpCommand, u8> =
-        [(JumpCommand::ToOffset, 0x1), (JumpCommand::ByStackTop, 0x2),]
+        [(JumpCommand::ToAbsolute, 0x1), (JumpCommand::ByStackTop, 0x2),]
             .iter()
             .cloned()
             .collect();

@@ -7,5 +7,5 @@ pub fn break_action_command_builder(metadata: &PackageMetadata) -> RelocatableCo
 }
 
 pub fn continue_action_command_builder(metadata: &PackageMetadata) -> RelocatableCommandList {
-    return direct_jump_command_builder(RelocationTargetType::DomainHead(0), metadata);
+    return direct_jump_command_builder(RelocationTargetType::DomainHead, metadata);
 }

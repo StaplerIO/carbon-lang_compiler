@@ -90,7 +90,7 @@ pub fn align_data_width(data_array: Vec<u8>, target_len: u8) -> Vec<u8> {
             result.insert(0, 0x00);
         }
     } else if data_array.len() > target_len as usize {
-        panic!("Data width is too short, consider changing it into a longer width")
+        panic!("Data width is too short, consider changing it into a longer width (data/target : {}/{})", data_array.len(), target_len);
     }
 
     return result;

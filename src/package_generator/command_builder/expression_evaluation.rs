@@ -8,6 +8,8 @@ use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::token::operator::{CalculationOperator, Operator};
 
+// TODO: Mark commands by `result.command_entries.push(result.commands.len());`
+
 /// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(
     expr: &SimpleExpression,
