@@ -1,4 +1,4 @@
-use std::io::Write;
+// use std::io::Write;
 
 use crate::lexer::tokenize::tokenize;
 use crate::package_generator::command_builder::action_block::action_block_builder;
@@ -15,8 +15,9 @@ fn no_function_relocation() {
                    bar = 2 + 4;\
                    while (foo < bar) {\
                        foo = foo + 1;\
-                   }",
-                   true);
+                   }
+                   foo = 4;",
+        true);
 
     let actions = crate::parser::builder::blocks::action_block::action_block_builder(
         decorate_token(tokens),
@@ -28,17 +29,21 @@ fn no_function_relocation() {
         command_alignment: 2,
         entry_point_offset: 5,
         domain_layer_count_alignment: 2,
-        address_alignment: 4
+        address_alignment: 4,
     };
 
     let mut target = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // Write file
-    let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
+    // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let mut bytes = metadata.serialize();
-    bytes.extend(target.commands.clone());
-    file.write_all(bytes.as_slice()).unwrap();
+    // let mut bytes = metadata.serialize();
 
-    target.apply_ref_to_target(metadata.address_alignment, metadata.serialize().len());
+    // bytes.extend(target.commands.clone());
+    // file.write_all(bytes.as_slice()).unwrap();
+
+    target.calculate_ref_to_target(metadata.serialize().len());
+    target.apply_relocation(metadata.address_alignment);
+
+    // println!("{}", itertools::Itertools::join(&mut target.commands.iter(), ", "));
 }

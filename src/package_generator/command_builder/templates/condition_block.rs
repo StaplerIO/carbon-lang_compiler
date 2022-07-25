@@ -5,6 +5,7 @@ use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetType};
 
+#[allow(dead_code)]
 pub enum ConditionBlockType {
     IfBlock,
     ElifBlock,

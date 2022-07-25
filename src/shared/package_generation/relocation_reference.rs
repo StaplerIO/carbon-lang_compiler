@@ -29,7 +29,9 @@ pub enum RelocationTargetType {
 pub struct RelocationTarget {
     pub relocation_type: RelocationTargetType,
     pub command_array_position: usize,
-    pub relocated_address: Vec<u8>,
+    pub offset: i32,
+
+    pub relocated_address: usize,
 }
 
 #[derive(Clone, Debug)]
@@ -39,7 +41,7 @@ pub struct RelocatableCommandList {
     pub descriptors: RelocationCredential
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum RelocationReferenceType {
     FunctionEntrance,
     EndFunction,

@@ -39,19 +39,21 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     result.descriptors.targets.extend(vec![
         RelocationTarget {
             relocation_type: RelocationTargetType::Undefined,
-            command_array_position: 1 + result.commands.len(),
-            relocated_address: vec![],
+            command_array_position: result.commands.len(),
+            offset: 0,
+            relocated_address: 0,
         },
         RelocationTarget {
             relocation_type: RelocationTargetType::Undefined,
             command_array_position: metadata.address_alignment as usize + result.commands.len(),
-            relocated_address: vec![],
+            offset: 0,
+            relocated_address: 0,
         },
         RelocationTarget {
             relocation_type: RelocationTargetType::Undefined,
-
             command_array_position: (metadata.address_alignment as usize) * 2 + result.commands.len(),
-            relocated_address: vec![],
+            offset: 0,
+            relocated_address: 0,
         },
     ]);
 
@@ -106,7 +108,8 @@ pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &Pack
             targets: vec![RelocationTarget {
                 relocation_type: r_type,
                 command_array_position: 1,
-                relocated_address: vec![],
+                offset: 0,
+                relocated_address: 0,
             }],
             references: vec![],
         },

@@ -40,5 +40,22 @@ pub fn if_command_builder(action: &IfAction, defined_data: &Vec<DataDeclarator>,
 pub fn while_command_builder(action: &WhileBlock, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> RelocatableCommandList {
     let mut result = condition_block_builder(action, ConditionBlockType::WhileBlock, 0, defined_data, metadata);
     result.combine(direct_jump_command_builder(RelocationTargetType::Relative(0 - result.commands.len() as i32), metadata));
+
+    // Make a copy first
+    let mut targets_copy = result.descriptors.targets.clone();
+    
+    // Ignore the back-to-entrance jump command when condition is already unsatisfied
+    for (index, item) in result.descriptors.targets.iter().enumerate() {
+        match item.relocation_type {
+            RelocationTargetType::IgnoreDomain(_) => {
+                targets_copy[index].offset = 1 + metadata.address_alignment as i32;
+            },
+            _ => {}
+        }
+    }
+    
+    // Paste it back
+    result.descriptors.targets = targets_copy;
+
     return result;
 }
