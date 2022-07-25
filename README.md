@@ -3,7 +3,7 @@
 
 ## Current status
 
-Refractoring lexer and parser base models... Slow progress
+Working on symbol relocation
 
 ## Components
 
