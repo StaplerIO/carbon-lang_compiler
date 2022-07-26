@@ -155,8 +155,12 @@ impl RelocatableCommandList {
 
     pub fn apply_relocation(&mut self, addr_len: u8) {
         for desc in &self.descriptors.targets {
-            let addr_u8_vec = align_data_width(desc.relocated_address.to_be_bytes().to_vec(), addr_len);
-            self.commands.splice(desc.command_array_position..(addr_len as usize), addr_u8_vec);
+            let mut addr_bytes = desc.relocated_address.to_be_bytes().to_vec();
+            while addr_bytes[0] == 0x00 {
+                addr_bytes.remove(0);
+            }
+            let addr_u8_vec = align_data_width(addr_bytes, addr_len);
+            self.commands.splice(desc.command_array_position..(desc.command_array_position + addr_len as usize), addr_u8_vec);
         }
     }
 }
