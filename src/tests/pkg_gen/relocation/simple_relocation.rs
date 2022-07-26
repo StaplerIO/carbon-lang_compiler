@@ -16,7 +16,12 @@ fn no_function_relocation() {
                    while (foo < bar) {\
                        foo = foo + 1;\
                    }
-                   foo = 4;",
+                   foo = 4;
+                   if (foo > 1202) {
+                        foo = foo + 1;
+                   } else {
+                        foo = foo + 2;
+                   }",
         true);
 
     let actions = crate::parser::builder::blocks::action_block::action_block_builder(
@@ -35,15 +40,15 @@ fn no_function_relocation() {
     let mut target = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // Write file
-    // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
+    let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    // let mut bytes = metadata.serialize();
-
-    // bytes.extend(target.commands.clone());
-    // file.write_all(bytes.as_slice()).unwrap();
+    let mut bytes = metadata.serialize();
 
     target.calculate_ref_to_target(metadata.serialize().len());
     target.apply_relocation(metadata.address_alignment);
+
+    // bytes.extend(target.commands.clone());
+    // file.write_all(bytes.as_slice()).unwrap();
 
     // println!("{}", itertools::Itertools::join(&mut target.commands.iter(), ", "));
 }
