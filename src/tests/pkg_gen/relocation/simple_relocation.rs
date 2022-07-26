@@ -40,11 +40,10 @@ fn no_function_relocation() {
     let mut target = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // Write file
-    let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
+    // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let mut bytes = metadata.serialize();
-
-    target.calculate_ref_to_target(metadata.serialize().len());
+    let bytes = metadata.serialize();
+    target.calculate_ref_to_target(bytes.len());
     target.apply_relocation(metadata.address_alignment);
 
     // bytes.extend(target.commands.clone());

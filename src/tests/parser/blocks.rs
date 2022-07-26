@@ -85,7 +85,7 @@ fn return_from_function_no_value() {
     let result = raw.clone().ok().unwrap().0.get_return_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.value.postfix_expr.len(), 0);
+    assert_eq!(result.value.unwrap().postfix_expr.len(), 0);
 }
 
 #[test]
@@ -96,10 +96,11 @@ fn return_from_function_with_value() {
     let result = raw.clone().ok().unwrap().0.get_return_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.value.postfix_expr.len(), 5);
+    let val = result.value.unwrap();
+    assert_eq!(val.postfix_expr.len(), 5);
     // Value expression: 1 2 tb_234 * +
     assert!(
-        result.value.postfix_expr[0]
+        val.postfix_expr[0]
             .content
             .get_data_term()
             .unwrap()

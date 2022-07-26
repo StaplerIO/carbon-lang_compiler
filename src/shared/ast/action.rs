@@ -68,9 +68,11 @@ pub struct CallAction {
     pub arguments: Vec<SimpleExpression>,
 }
 
+/// ### Field:
+/// - `value`: No return value when the field is `None`
 #[derive(Clone, PartialEq, Debug)]
 pub struct ReturnAction {
-    pub value: SimpleExpression,
+    pub value: Option<SimpleExpression>,
 }
 
 #[derive(Clone, PartialEq, Debug)]

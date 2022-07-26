@@ -1,7 +1,6 @@
-use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array};
+use crate::package_generator::utils::{align_data_width, combine_command, is_domain_create_command, is_domain_destroy_command};
 use crate::shared::command_map::{DomainCommand, RootCommand};
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationReference, RelocationReferenceType, RelocationTarget, RelocationTargetType};
-use crate::shared::package_generation::utils::{is_domain_create_command, is_domain_destroy_command};
 
 impl RelocatableCommandList {
     pub fn combine(&mut self, model: RelocatableCommandList) {

@@ -22,20 +22,20 @@ pub fn return_action_builder(
                     if next_semicolon_pos.unwrap() == 1 {
                         // No return value
                         result = Option::from(ReturnAction {
-                            value: SimpleExpression {
+                            value: Some(SimpleExpression {
                                 postfix_expr: vec![],
                                 output_type: String::new(),
-                            },
+                            }),
                         });
                     } else {
                         // With return value
                         let expression_zone = tokens[1..next_semicolon_pos.unwrap()].to_vec();
 
                         result = Option::from(ReturnAction {
-                            value: SimpleExpression {
+                            value: Some(SimpleExpression {
                                 postfix_expr: expression_infix_to_postfix(expression_term_decorator(expression_zone.clone())),
                                 output_type: String::new(),
-                            },
+                            }),
                         });
                     }
 

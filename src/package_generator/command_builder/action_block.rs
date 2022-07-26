@@ -7,6 +7,7 @@ use crate::package_generator::command_builder::function_call::build_function_cal
 use crate::package_generator::command_builder::loop_interception::{
     break_action_command_builder, continue_action_command_builder,
 };
+use crate::package_generator::command_builder::return_from_function::return_command_builder;
 use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array};
 use crate::shared::ast::action::{ActionBlock, ActionContent};
 use crate::shared::command_map::{DomainCommand, RootCommand};
@@ -22,8 +23,7 @@ pub fn action_block_builder(
 ) -> RelocatableCommandList {
     let mut result = RelocatableCommandList::new();
 
-    let mut defined_data_current_domain: Vec<DataDeclarator> = defined_data.clone();
-    let mut data_count: usize = 0;
+    let mut available_defined_data: Vec<DataDeclarator> = defined_data.clone();
 
     // Create a new domain if necessary
     if surround_domain {
@@ -39,22 +39,20 @@ pub fn action_block_builder(
             ActionContent::DeclarationStatement(x) => {
                 result.command_entries.push(result.commands.len());
                 result.append_commands(build_data_declaration_command(false));
-                defined_data_current_domain.push(DataDeclarator {
+                available_defined_data.push(DataDeclarator {
                     name: x.identifier.clone(),
                     slot: align_data_width(
-                        convert_to_u8_array(format!("{:X}", data_count)),
+                        convert_to_u8_array(available_defined_data.len().to_string()),
                         metadata.data_alignment,
                     ),
                     is_global: false,
                 });
-
-                data_count += 1;
             }
             ActionContent::AssignmentStatement(x) => {
                 result.command_entries.push(result.commands.len());
                 result.append_commands(build_assignment_command(
                     &x,
-                    &defined_data_current_domain,
+                    &available_defined_data,
                     metadata,
                 ));
             }
@@ -62,25 +60,26 @@ pub fn action_block_builder(
                 result.command_entries.push(result.commands.len());
                 result.append_commands(build_function_call_command(
                     &x,
-                    &defined_data_current_domain,
+                    &available_defined_data,
                     metadata,
                     &vec![],
                 ));
             }
-            ActionContent::ReturnStatement(_x) => {
-                // Will jump to destroy the domain
+            ActionContent::ReturnStatement(x) => {
+                // Interrupt function execution
+                result.combine(return_command_builder(x, &available_defined_data, metadata));
             }
             ActionContent::IfBlock(x) => {
                 result.combine(if_command_builder(
                     x,
-                    &defined_data_current_domain,
+                    &available_defined_data,
                     &metadata,
                 ));
             }
             ActionContent::WhileStatement(x) => {
                 result.combine(while_command_builder(
                     x,
-                    &defined_data_current_domain,
+                    &available_defined_data,
                     &metadata,
                 ));
             }
