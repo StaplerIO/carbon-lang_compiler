@@ -19,8 +19,8 @@ pub fn build_function_command(func: &Function, metadata: &PackageMetadata) -> Re
     }
 
     let mut result = action_block_builder(&ActionBlock { actions: func.body.clone() }, true, &params, metadata);
-    result.descriptors.references.push(RelocationReference { ref_type: FunctionEntrance, command_array_position: 0 });
-    result.descriptors.references.push(RelocationReference { ref_type: EndFunction, command_array_position: result.commands.len() - 1 });
+    result.descriptors.references.push(RelocationReference { ref_type: FunctionEntrance(func.name.clone()), command_array_position: 0 });
+    result.descriptors.references.push(RelocationReference { ref_type: EndFunction(func.name.clone()), command_array_position: result.commands.len() - 1 });
 
     return result;
 }

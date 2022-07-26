@@ -43,8 +43,9 @@ pub struct RelocatableCommandList {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum RelocationReferenceType {
-    FunctionEntrance,
-    EndFunction,
+    // The string includes function name
+    FunctionEntrance(String),
+    EndFunction(String),
     IfEntrance,
     ElifEntrance,
     ElseEntrance,
