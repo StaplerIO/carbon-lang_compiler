@@ -6,7 +6,6 @@ use crate::package_generator::utils::{align_data_width, combine_command, convert
 use crate::shared::ast::blocks::expression::{ExprDataTerm, SimpleExpression};
 use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
-use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 use crate::shared::token::operator::{CalculationOperator, Operator};
@@ -16,7 +15,6 @@ use crate::shared::token::operator::{CalculationOperator, Operator};
 /// The result of the expression is on the top of the `DomainStack`
 pub fn build_expression_evaluation_command(
     expr: &SimpleExpression,
-    defined_functions: &Vec<FunctionDescriptor>,
     defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> RelocatableCommandList {
@@ -61,7 +59,7 @@ pub fn build_expression_evaluation_command(
                 },
                 ExprDataTerm::FunctionCall(x) => {
                     // The called function will automatically put the return value on the top of the stack
-                    result.combine(build_function_call_command(x, defined_functions, defined_data, metadata));
+                    result.combine(build_function_call_command(x, defined_data, metadata));
                 }
                 _ => panic!("Other types of ExprTerm are not implemented yet!")
             }

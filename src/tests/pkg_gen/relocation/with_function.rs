@@ -26,7 +26,7 @@ fn single_function() {
         address_alignment: 4,
     };
 
-    let mut target = build_function_command(&tree.functions[0], &vec![], &metadata);
+    let mut target = build_function_command(&tree.functions[0], &metadata);
 
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
@@ -76,7 +76,7 @@ fn multiple_functions() {
 
     let mut target = RelocatableCommandList::new();
     for func in &tree.functions {
-        target.combine(build_function_command(func, &vec![], &metadata));
+        target.combine(build_function_command(func, &metadata));
     }
 
     // Write file

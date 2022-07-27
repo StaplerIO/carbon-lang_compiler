@@ -3,13 +3,11 @@ use crate::package_generator::utils::combine_command;
 use crate::shared::ast::action::AssignmentAction;
 use crate::shared::command_map::{PLACE_HOLDER, RootCommand, StackCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
-use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 
 pub fn build_assignment_command(
     action: &AssignmentAction,
-    defined_functions: &Vec<FunctionDescriptor>,
     defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> RelocatableCommandList {
@@ -21,7 +19,7 @@ pub fn build_assignment_command(
         .clone();
 
     let expression_command_set =
-        build_expression_evaluation_command(&action.eval_expression, defined_functions, defined_data, metadata);
+        build_expression_evaluation_command(&action.eval_expression, defined_data, metadata);
     result.combine(expression_command_set);
 
     // Push stack top to target data slot

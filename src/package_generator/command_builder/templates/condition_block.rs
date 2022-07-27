@@ -1,8 +1,7 @@
-use crate::package_generator::command_builder::action_block::action_block_builder;
+use crate::package_generator::command_builder::action_block::action_block_command_builder;
 use crate::package_generator::command_builder::templates::jump_command::jump_by_stack_top_command_template_builder;
 use crate::shared::ast::action::ConditionBlock;
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
-use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetType};
 
@@ -17,8 +16,7 @@ pub enum ConditionBlockType {
 pub fn condition_block_builder(block: &ConditionBlock,
                                c_type: ConditionBlockType, 
                                domains_after: usize, 
-                               defined_functions: &Vec<FunctionDescriptor>, 
-                               defined_data: &Vec<DataDeclarator>, 
+                               defined_data: &Vec<DataDeclarator>,
                                metadata: &PackageMetadata
 ) -> RelocatableCommandList {
     let remaining_domain_count = 1 + domains_after;
@@ -60,7 +58,7 @@ pub fn condition_block_builder(block: &ConditionBlock,
         reloc_list.descriptors.targets[2].relocation_type = RelocationTargetType::IgnoreDomain(remaining_domain_count);
     }
 
-    reloc_list.combine(action_block_builder(&block.body, true, defined_functions, defined_data, metadata));
+    reloc_list.combine(action_block_command_builder(&block.body, true, defined_data, metadata));
 
     match c_type {
         ConditionBlockType::IfBlock => {

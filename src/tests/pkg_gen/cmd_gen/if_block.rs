@@ -17,7 +17,7 @@ fn bare_if_test() {
         address_alignment: 4
     };
 
-    let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.get_if_action().unwrap(), &vec![], &vec![], &metadata);
+    let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.get_if_action().unwrap(),  &vec![], &metadata);
 
     assert_eq!(result.descriptors.targets.len(), 3);
 
@@ -37,7 +37,7 @@ fn complex_if_test() {
         address_alignment: 4
     };
 
-    let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.get_if_action().unwrap(), &vec![], &vec![], &metadata);
+    let result = if_command_builder(&if_block_builder(&decorate_token(tokens)).unwrap().0.get_if_action().unwrap(), &vec![], &metadata);
 
     assert_eq!(result.descriptors.targets.len(), 8);
 

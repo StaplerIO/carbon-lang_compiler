@@ -1,7 +1,7 @@
 // use std::io::Write;
 
 use crate::lexer::tokenize::tokenize;
-use crate::package_generator::command_builder::action_block::action_block_builder;
+use crate::package_generator::command_builder::action_block::action_block_command_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::ActionBlock;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
@@ -37,7 +37,7 @@ fn no_function_relocation() {
         address_alignment: 4,
     };
 
-    let mut target = action_block_builder(&ActionBlock { actions }, false, &vec![], &vec![], &metadata);
+    let mut target = action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();

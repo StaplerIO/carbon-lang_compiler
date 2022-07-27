@@ -1,5 +1,6 @@
 use crate::lexer::tokenize::tokenize;
-use crate::package_generator::command_builder::action_block::action_block_builder;
+use crate::package_generator::command_builder::action_block::action_block_command_builder;
+use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::ActionBlock;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
@@ -13,7 +14,7 @@ fn action_block_no_condition() {
                    foo = 1;\
                    bar = 2;\
                    res = foo + bar;", true);
-    let actions = crate::parser::builder::blocks::action_block::action_block_builder(
+    let actions = action_block_builder(
         decorate_token(tokens),
     );
 
@@ -26,7 +27,7 @@ fn action_block_no_condition() {
         address_alignment: 0
     };
 
-    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &vec![], &metadata);
+    let _commands = action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // for element in commands {
     //     print!("{},", format!("{:X}", element));
@@ -49,7 +50,7 @@ fn action_block_complete() {
                    }"
     , true);
 
-    let actions = crate::parser::builder::blocks::action_block::action_block_builder(
+    let actions = action_block_builder(
         decorate_token(tokens),
     );
 
@@ -62,5 +63,5 @@ fn action_block_complete() {
         address_alignment: 0
     };
 
-    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &vec![], &metadata);
+    let _commands = action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 }

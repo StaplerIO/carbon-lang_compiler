@@ -3,13 +3,11 @@ use crate::package_generator::utils::{combine_command, jump_command_address_plac
 use crate::shared::ast::action::CallAction;
 use crate::shared::command_map::{FunctionCommand, RootCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
-use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationTarget, RelocationTargetType};
 
 pub fn build_function_call_command(
     action: &CallAction,
-    defined_functions: &Vec<FunctionDescriptor>,
     defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> RelocatableCommandList {
@@ -19,7 +17,7 @@ pub fn build_function_call_command(
     let mut sorted_params = action.arguments.clone();
     sorted_params.reverse();
     for expr in &sorted_params {
-        let expr_eval_cmd = build_expression_evaluation_command(expr, defined_functions, defined_data, metadata);
+        let expr_eval_cmd = build_expression_evaluation_command(expr, defined_data, metadata);
         result.combine(expr_eval_cmd);
     }
 

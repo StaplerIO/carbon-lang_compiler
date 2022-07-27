@@ -31,7 +31,7 @@ fn simple_test() {
         is_global: false,
     }];
 
-    let result = build_assignment_command(&action, &vec![], &defined_data, &metadata);
+    let result = build_assignment_command(&action, &defined_data, &metadata);
     assert_eq!(
         result.commands,
         vec![
