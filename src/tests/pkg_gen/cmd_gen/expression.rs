@@ -26,9 +26,9 @@ fn expression_with_number_only() {
     };
 
     // This is very abstract, needs to be validated
-    let commands = build_expression_evaluation_command(&expression, &vec![], &metadata);
+    let result = build_expression_evaluation_command(&expression, &vec![], &vec![], &metadata);
     assert_eq!(
-        commands,
+        result.commands,
         vec![
             0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xb1, 0, 0, 0, 0,
             0, 0, 0, 0x03, 0xf1, 0x03, 0xf1, 0x01
@@ -68,9 +68,9 @@ fn expression_with_defined_data() {
         },
     ];
 
-    let commands = build_expression_evaluation_command(&expression, &defined_data, &metadata);
+    let result = build_expression_evaluation_command(&expression, &vec![], &defined_data, &metadata);
     assert_eq!(
-        commands,
+        result.commands,
         vec![
             0xb2, 0, 0, 0, 0xb2, 0, 0, 1, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xf1, 0x03, 0xf1,
             0x01

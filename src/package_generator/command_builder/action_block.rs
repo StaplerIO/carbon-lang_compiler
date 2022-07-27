@@ -12,12 +12,14 @@ use crate::package_generator::utils::{align_data_width, combine_command, convert
 use crate::shared::ast::action::{ActionBlock, ActionContent};
 use crate::shared::command_map::{DomainCommand, RootCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
+use crate::shared::package_generation::function::FunctionDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 
 pub fn action_block_builder(
     block: &ActionBlock,
     surround_domain: bool,
+    defined_functions: &Vec<FunctionDescriptor>,
     defined_data: &Vec<DataDeclarator>,
     metadata: &PackageMetadata,
 ) -> RelocatableCommandList {
@@ -38,7 +40,7 @@ pub fn action_block_builder(
         match &action.content {
             ActionContent::DeclarationStatement(x) => {
                 result.command_entries.push(result.commands.len());
-                result.append_commands(build_data_declaration_command(false));
+                result.combine(build_data_declaration_command(false));
                 available_defined_data.push(DataDeclarator {
                     name: x.identifier.clone(),
                     slot: align_data_width(
@@ -50,28 +52,30 @@ pub fn action_block_builder(
             }
             ActionContent::AssignmentStatement(x) => {
                 result.command_entries.push(result.commands.len());
-                result.append_commands(build_assignment_command(
+                result.combine(build_assignment_command(
                     &x,
+                    defined_functions,
                     &available_defined_data,
                     metadata,
                 ));
             }
             ActionContent::CallStatement(x) => {
                 result.command_entries.push(result.commands.len());
-                result.append_commands(build_function_call_command(
+                result.combine(build_function_call_command(
                     &x,
+                    &vec![],
                     &available_defined_data,
                     metadata,
-                    &vec![],
                 ));
             }
             ActionContent::ReturnStatement(x) => {
                 // Interrupt function execution
-                result.combine(return_command_builder(x, &available_defined_data, metadata));
+                result.combine(return_command_builder(x, defined_functions, &available_defined_data, metadata));
             }
             ActionContent::IfBlock(x) => {
                 result.combine(if_command_builder(
                     x,
+                    defined_functions,
                     &available_defined_data,
                     &metadata,
                 ));
@@ -79,6 +83,7 @@ pub fn action_block_builder(
             ActionContent::WhileStatement(x) => {
                 result.combine(while_command_builder(
                     x,
+                    defined_functions,
                     &available_defined_data,
                     &metadata,
                 ));

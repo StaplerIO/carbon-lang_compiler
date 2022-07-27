@@ -30,7 +30,7 @@ fn function_call() {
         is_global: false,
     }];
 
-    let _commands = build_function_call_command(&action, &defined_data, &metadata, &vec![]);
+    let _commands = build_function_call_command(&action, &vec![], &defined_data, &metadata);
 
     // for element in commands {
     //     print!("{},", convert_number_to_hex(element.to_string()));

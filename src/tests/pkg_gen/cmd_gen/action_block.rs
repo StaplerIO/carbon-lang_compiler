@@ -26,7 +26,7 @@ fn action_block_no_condition() {
         address_alignment: 0
     };
 
-    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
+    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &vec![], &metadata);
 
     // for element in commands {
     //     print!("{},", format!("{:X}", element));
@@ -62,5 +62,5 @@ fn action_block_complete() {
         address_alignment: 0
     };
 
-    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
+    let _commands = action_block_builder(&ActionBlock { actions }, false, &vec![], &vec![], &metadata);
 }

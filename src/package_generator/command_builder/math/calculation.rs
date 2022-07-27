@@ -50,13 +50,3 @@ pub fn mod_command() -> Vec<u8> {
         MathCalcCommand::Mod.to_opcode(),
     ];
 }
-
-pub fn inverse_command() -> Vec<u8> {
-    return vec![
-        combine_command(
-            RootCommand::Math.to_opcode(),
-            MathCommand::Calculation.to_opcode(),
-        ),
-        MathCalcCommand::Inverse.to_opcode(),
-    ];
-}

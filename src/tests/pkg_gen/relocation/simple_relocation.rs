@@ -37,7 +37,7 @@ fn no_function_relocation() {
         address_alignment: 4,
     };
 
-    let mut target = action_block_builder(&ActionBlock { actions }, false, &vec![], &metadata);
+    let mut target = action_block_builder(&ActionBlock { actions }, false, &vec![], &vec![], &metadata);
 
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();

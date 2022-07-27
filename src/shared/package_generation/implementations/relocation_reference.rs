@@ -77,16 +77,16 @@ impl RelocatableCommandList {
 
         let mut targets = self.descriptors.targets.clone();
 
-        for (index, desc) in self.descriptors.targets.iter().enumerate() {
-            match desc.relocation_type {
+        for (iter_target_index, iter_reloc_target) in self.descriptors.targets.iter().enumerate() {
+            match &iter_reloc_target.relocation_type {
                 RelocationTargetType::Relative(x) => {
                     // Up to now, `Relative` is just sign because it updates every time when merging into main `RelocatableCommandList`
-                    targets[index].relocated_address = (x + base_offset as i32 + desc.offset) as usize;
+                    targets[iter_target_index].relocated_address = (x + base_offset as i32 + iter_reloc_target.offset) as usize;
                 }
                 RelocationTargetType::DomainHead => {
                     // Search for domain flags
                     let mut domain_refs = self.descriptors.references.clone();
-                    domain_refs.retain(|r| r.command_array_position >= desc.command_array_position && (is_domain_create_command(r) || is_domain_destroy_command(r)));
+                    domain_refs.retain(|r| r.command_array_position >= iter_reloc_target.command_array_position && (is_domain_create_command(r) || is_domain_destroy_command(r)));
 
                     // Maybe there are some inner-domains
                     let mut domain_layer: usize = 0;
@@ -99,7 +99,7 @@ impl RelocatableCommandList {
 
                         // Which means we have got out from all sub-domains
                         if domain_layer == 0 {
-                            targets[index].relocated_address = (item.command_array_position as i32 + base_offset as i32 + desc.offset) as usize;
+                            targets[iter_target_index].relocated_address = (item.command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
                             break;
                         }
                     }
@@ -111,12 +111,12 @@ impl RelocatableCommandList {
                     let mut refs = self.descriptors.references.clone();
                     refs.retain(|p| is_domain_destroy_command(p));
 
-                    targets[index].relocated_address = (refs[0].command_array_position as i32 + base_offset as i32 + desc.offset) as usize;
+                    targets[iter_target_index].relocated_address = (refs[0].command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
                 }
                 RelocationTargetType::IgnoreDomain(x) => {
                     // Search for domain flags
                     let mut domain_refs = self.descriptors.references.clone();
-                    domain_refs.retain(|r| r.command_array_position >= desc.command_array_position && (is_domain_create_command(r) || is_domain_destroy_command(r)));
+                    domain_refs.retain(|r| r.command_array_position >= iter_reloc_target.command_array_position && (is_domain_create_command(r) || is_domain_destroy_command(r)));
 
                     // Maybe there are some inner-domains
                     let mut domain_layer: usize = 0;
@@ -133,18 +133,24 @@ impl RelocatableCommandList {
                         }
 
                         // Which means we have got out from all sub-domains
-                        if current_ignored == x {
-                            targets[index].relocated_address = (item.command_array_position as i32 + base_offset as i32 + desc.offset) as usize;
+                        if current_ignored == *x {
+                            targets[iter_target_index].relocated_address = (item.command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
                             break;
                         }
                     }
 
                     // panic!("Unexpected error! Couldn't find the only DomainCreate command")
                 }
-                RelocationTargetType::EnterFunction(_) => {
-                    panic!("Feature not implemented!")
+                RelocationTargetType::EnterFunction(x) => {
+                    targets[iter_target_index].relocated_address = self.descriptors.references
+                                                                       .iter()
+                                                                       .find(|&f| f.ref_type == RelocationReferenceType::FunctionEntrance(x.clone()))
+                                                                       .unwrap()
+                                                                       .command_array_position;
                 }
-                RelocationTargetType::Undefined => {}
+                RelocationTargetType::Undefined => {
+                    panic!("Encountered undefined relocation target!");
+                }
             }
         }
 

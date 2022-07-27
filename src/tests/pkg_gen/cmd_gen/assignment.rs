@@ -31,9 +31,9 @@ fn simple_test() {
         is_global: false,
     }];
 
-    let commands = build_assignment_command(&action, &defined_data, &metadata);
+    let result = build_assignment_command(&action, &vec![], &defined_data, &metadata);
     assert_eq!(
-        commands,
+        result.commands,
         vec![
             0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xb1, 0, 0, 0, 0,
             0, 0, 0, 0x03, 0xf1, 0x03, 0xf1, 0x01, 0xb4, 0, 0, 0

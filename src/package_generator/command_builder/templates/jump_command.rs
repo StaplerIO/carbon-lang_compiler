@@ -18,8 +18,8 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     // Evaluate expressions
     // The evaluation result of the left-side expression is on the 2nd top position
     // The right-side result is on the first position
-    result.commands.extend(build_expression_evaluation_command(&expr.left, defined_data, metadata));
-    result.commands.extend(build_expression_evaluation_command(&expr.right, defined_data, metadata));
+    result.combine(build_expression_evaluation_command(&expr.left, &vec![], defined_data, metadata));
+    result.combine(build_expression_evaluation_command(&expr.right, &vec![], defined_data, metadata));
 
     // Current stack layout
     // |      left        |
