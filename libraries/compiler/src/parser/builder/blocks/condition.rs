@@ -3,13 +3,13 @@ use crate::parser::builder::templates::condition_block_builder;
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{Action, ActionBlock, ActionContent, ElifBlock, IfAction};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 
 pub fn if_block_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(Action, usize), GeneralError<String>> {
+) -> Result<(Action, usize), GeneralIssue<String>> {
     let if_part = condition_block_builder(KeywordType::KwIf, tokens.clone());
     if if_part.is_ok() {
         let mut result = IfAction {
@@ -39,9 +39,10 @@ pub fn if_block_builder(
         return Ok((Action::new(ActionContent::IfBlock(result), vec![]), current_index));
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }
 

@@ -1,10 +1,10 @@
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 
 pub fn link_statement_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(String, usize), GeneralError<String>> {
+) -> Result<(String, usize), GeneralIssue<String>> {
     if tokens.len() >= 3 {
         let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
@@ -17,8 +17,9 @@ pub fn link_statement_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }

@@ -15,7 +15,7 @@ fn single_function() {
                                                     decl var number result; \
                                                     result = foo + bar;\
                                                     return result;\
-                                                }", true);
+                                                }", true).unwrap();
     let tree = build_whole_file(decorate_token(tokens), "main".to_string()).unwrap();
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,
@@ -63,7 +63,7 @@ fn multiple_functions() {
                                                 decl func f1()[none] {\
                                                     decl var number v2;\
                                                     v2 = 37413;\
-                                                }", true);
+                                                }", true).unwrap();
     let tree = build_whole_file(decorate_token(tokens), "main".to_string()).unwrap();
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,

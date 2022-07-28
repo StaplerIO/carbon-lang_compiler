@@ -106,7 +106,7 @@ impl RelocatableCommandList {
 
                     // panic!("Unexpected error! Couldn't find the only DomainCreate command")
                 }
-                RelocationTargetType::BreakDomain(x) => {
+                RelocationTargetType::BreakDomain(_x) => {
                     // TODO：Bug here
                     let mut refs = self.descriptors.references.clone();
                     refs.retain(|p| is_domain_destroy_command(p));

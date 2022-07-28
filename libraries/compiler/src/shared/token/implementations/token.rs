@@ -74,4 +74,11 @@ impl Token {
             _ => None,
         }
     }
+
+    pub fn get_comment(&self) -> Option<String> {
+        match self.content {
+            TokenContent::Comment(ref comment) => Some(comment.clone()),
+            _ => None,
+        }
+    }
 }

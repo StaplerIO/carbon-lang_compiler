@@ -26,7 +26,21 @@ pub fn compile_package(args: CompileCommandArgs) {
     } else {
         let file_content = fs::read_to_string(&args.input_path);
         if file_content.is_ok() {
-            let tokens = tokenize(file_content.unwrap().as_str(), true);
+            let tokens_result = tokenize(file_content.unwrap().as_str(), true);
+
+            // Handle errors
+            if tokens_result.is_err() {
+                let err = tokens_result.unwrap_err();
+                for item in err.description {
+                    log_error(format!("({}) {}", err.code, item).as_str());
+                }
+                return;
+            }
+
+            let tokens = tokens_result.unwrap();
+
+            log_info(format!("Found {} tokens", tokens.len()).as_str());
+
             let decorated_tokens = decorate_token(tokens);
             let tree_result = build_whole_file(decorated_tokens, args.entry_function);
 

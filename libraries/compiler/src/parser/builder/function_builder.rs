@@ -3,7 +3,7 @@ use crate::parser::utils::{pair_container, split_comma_expression};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::ast::parameter::Parameter;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 
@@ -11,7 +11,7 @@ use crate::shared::token::keyword::KeywordType;
 // Set <typename> as "none" to return nothing
 pub fn function_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(Function, usize), GeneralError<String>> {
+) -> Result<(Function, usize), GeneralIssue<String>> {
     if tokens.len() >= 10 {
         if tokens[0].content.get_decorated_keyword().is_some()
             && tokens[1].content.get_decorated_keyword().is_some()
@@ -64,9 +64,10 @@ pub fn function_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }
 

@@ -7,7 +7,9 @@ use crate::lexer::lex_rules::operator::match_operator;
 use crate::lexer::lex_rules::semicolon::match_semicolon;
 use crate::lexer::lex_rules::space::match_spaces;
 use crate::lexer::lex_rules::string::match_string;
-use crate::shared::token::token::{Token, TokenContent};
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::lexical_analysis_error::LexicalAnalysisIssue;
+use crate::shared::token::token::Token;
 
 /**
  * ## Regular expression sequence for lexing source code
@@ -22,17 +24,28 @@ use crate::shared::token::token::{Token, TokenContent};
  * ## Parameters
  * - `source_code`: The source code to lex
  * - `remove_unnecessary_token`: Remove comments and whitespaces when the flag is on
-**/
-pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token> {
+ **/
+pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Result<Vec<Token>, GeneralIssue<Vec<LexicalAnalysisIssue>>> {
+    // Error handling variables
+    let mut errored: bool = false;
+    let mut error_start_index: usize = 0;
+    let mut errors: Vec<LexicalAnalysisIssue> = vec![];
+    // End region
+
     let mut result: Vec<Token> = vec![];
 
     let mut index: usize = 0;
     while index < source_code.len() {
-        #[allow(unused_assignments)]
-        let mut token: Token = Token::new_invalid();
+        let mut token: Token;
 
         token = match_comment(&source_code[index..], index);
         if !token.is_invalid() {
+            // Check if is in error procedure
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -40,6 +53,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_semicolon(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -47,6 +65,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_identifier(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -54,6 +77,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_keyword(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -61,6 +89,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_operator(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -68,6 +101,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_number(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -75,6 +113,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_string(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -82,6 +125,11 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_container(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
@@ -89,28 +137,30 @@ pub fn tokenize(source_code: &str, remove_unnecessary_token: bool) -> Vec<Token>
 
         token = match_spaces(&source_code[index..], index);
         if !token.is_invalid() {
+            if errored {
+                errored = false;
+                errors.push(LexicalAnalysisIssue { file_path: "N/A".to_string(), start_index: error_start_index, end_index: index - 1 });
+            }
+
             index += token.position.length;
             result.push(token);
             continue;
         }
-    }
 
-    if remove_unnecessary_token {
-        let mut index: usize = 0;
-        while index < result.len() {
-            match result[index].content {
-                TokenContent::Comment(_) => {
-                    result.remove(index);
-                }
-                TokenContent::Whitespace(_) => {
-                    result.remove(index);
-                }
-                _ => {
-                    index += 1;
-                }
-            }
+        // Error handling
+        if !errored {
+            errored = true;
+            error_start_index = index;
         }
     }
 
-    return result;
+    if remove_unnecessary_token {
+        result.retain(|t| t.get_whitespace().is_none() && t.get_comment().is_none());
+    }
+
+    return if errors.is_empty() {
+        Ok(result)
+    } else {
+        Err(GeneralIssue { level: IssueLevel::Error, code: "L0001".to_string(), description: errors })
+    };
 }

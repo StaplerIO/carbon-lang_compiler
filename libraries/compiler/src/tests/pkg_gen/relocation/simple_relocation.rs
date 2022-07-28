@@ -22,7 +22,7 @@ fn no_function_relocation() {
                    } else {
                         foo = foo + 2;
                    }",
-        true);
+        true).unwrap();
 
     let actions = crate::parser::builder::blocks::action_block::action_block_builder(
         decorate_token(tokens),

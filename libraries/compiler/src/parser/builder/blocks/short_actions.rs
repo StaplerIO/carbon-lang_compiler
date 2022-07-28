@@ -2,14 +2,14 @@ use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, LoopBlock};
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 
 // Build "continue", "break" and "loop" action
 pub fn short_statements_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(Action, usize), GeneralError<String>> {
+) -> Result<(Action, usize), GeneralIssue<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     if tokens[0].content.get_decorated_keyword().is_some(){
@@ -50,8 +50,9 @@ pub fn short_statements_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }

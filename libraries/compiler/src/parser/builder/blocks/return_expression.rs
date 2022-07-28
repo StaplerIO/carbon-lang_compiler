@@ -3,12 +3,12 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, ReturnAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::keyword::KeywordType;
 
 pub fn return_action_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(Action, usize), GeneralError<String>> {
+) -> Result<(Action, usize), GeneralIssue<String>> {
     // Minimum: return ; (2 tokens in total)
     if tokens.len() >= 2 {
         if tokens[0].content.get_decorated_keyword().is_some() {
@@ -47,8 +47,9 @@ pub fn return_action_builder(
             }
         }
     }
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }

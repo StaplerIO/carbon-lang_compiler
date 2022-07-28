@@ -4,7 +4,7 @@ use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
 use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::RelationOperator;
@@ -16,7 +16,7 @@ use crate::shared::token::operator::RelationOperator;
 pub fn condition_block_builder(
     leading_keyword: KeywordType,
     tokens: Vec<DecoratedToken>,
-) -> Result<(ConditionBlock, usize), GeneralError<String>> {
+) -> Result<(ConditionBlock, usize), GeneralIssue<String>> {
     if tokens.len() > 6 && tokens[0].content.get_decorated_keyword().is_some() {
         if *tokens[0].content.get_decorated_keyword().unwrap() == leading_keyword {
             let mut result = ConditionBlock {
@@ -65,8 +65,9 @@ pub fn condition_block_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }

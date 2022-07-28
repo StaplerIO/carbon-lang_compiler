@@ -3,12 +3,12 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, AssignmentAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::operator::Operator;
 
 pub fn assignment_block_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(Action, usize), GeneralError<String>> {
+) -> Result<(Action, usize), GeneralIssue<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     if next_semicolon_pos.is_some() {
         if tokens[0].content.is_valid_identifier() && tokens[1].content.get_operator().is_some() {
@@ -33,8 +33,9 @@ pub fn assignment_block_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }

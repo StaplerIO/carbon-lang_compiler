@@ -13,7 +13,7 @@ fn action_block_no_condition() {
                    decl var number res;\
                    foo = 1;\
                    bar = 2;\
-                   res = foo + bar;", true);
+                   res = foo + bar;", true).unwrap();
     let actions = action_block_builder(
         decorate_token(tokens),
     );
@@ -48,7 +48,7 @@ fn action_block_complete() {
                        decl var number res2;\
                        res2 = foo + bar;\
                    }"
-    , true);
+    , true).unwrap();
 
     let actions = action_block_builder(
         decorate_token(tokens),

@@ -3,14 +3,14 @@ use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expr
 use crate::shared::ast::action::{Action, ActionContent, CallAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_error::GeneralError;
+use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 
 // Scheme: call <identifier>(<param list>);
 pub fn call_action_builder(
     tokens: &Vec<DecoratedToken>,
-) -> Result<(Action, usize), GeneralError<String>> {
+) -> Result<(Action, usize), GeneralIssue<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
 
     // Check format
@@ -28,15 +28,16 @@ pub fn call_action_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }
 
 pub fn bare_function_call_builder(
     tokens: Vec<DecoratedToken>,
-) -> Result<(CallAction, usize), GeneralError<String>> {
+) -> Result<(CallAction, usize), GeneralIssue<String>> {
     if tokens.len() >= 3 {
         if tokens[0].content.is_valid_identifier() && tokens[1].content.get_container().is_some()
         {
@@ -61,8 +62,9 @@ pub fn bare_function_call_builder(
         }
     }
 
-    return Err(GeneralError {
+    return Err(GeneralIssue {
+        level: IssueLevel::Error,
         code: "-1".to_string(),
-        description: None,
+        description: String::new(),
     });
 }
