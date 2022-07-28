@@ -1,4 +1,4 @@
-use console::Term;
+use console::{Term, style};
 use lazy_static::lazy_static;
 use models::command_args::SubCommands;
 use structopt::StructOpt;
@@ -13,7 +13,7 @@ lazy_static! {
 }
 
 fn main() {
-    STDOUT.write_line("Arc build system (version: 0.0.1)");
+    STDOUT.write_line(" -----[ Arc build system (version: 0.0.1) ]-----").unwrap();
 
     let args = CommandArgs::from_args();
 
@@ -22,7 +22,7 @@ fn main() {
             commands::compile::compile_package(compile_args);
         }
         _ => {
-            println!("{:?}", args);
+            STDOUT.write_line(format!("{}: Not enough arguments, please check your commands", style("Error").red()).as_str()).unwrap();
         }
     }
 }

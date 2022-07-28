@@ -10,5 +10,6 @@ edition = "2021"
 lazy_static = "1.4.0"
 structopt = "0.3.26"
 console = "0.15.0"
+chrono = "0.4"
 
 carbon-lang_compiler = { path = "../../" }
