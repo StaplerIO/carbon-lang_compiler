@@ -11,7 +11,10 @@ use carbon_lang_compiler::{
 use chrono::Local;
 use console::style;
 
-use crate::{models::command_args::CompileCommandArgs, STDOUT};
+use crate::{
+    managers::logging::{log_error, log_info},
+    models::command_args::CompileCommandArgs,
+};
 
 pub fn compile_package(args: CompileCommandArgs) {
     // Calculate procedure time
@@ -51,26 +54,28 @@ pub fn compile_package(args: CompileCommandArgs) {
                 output_file
                     .write_all(metadata.serialize().as_slice())
                     .unwrap();
-                output_file
-                    .write_all(&output.commands.as_slice())
-                    .unwrap();
+                output_file.write_all(&output.commands.as_slice()).unwrap();
 
                 let time_spanned = Local::now() - time_start;
-                STDOUT.write_line(format!("{}: Compilation completed in {}s", style("Success").green(), ((time_spanned.num_milliseconds() as f64 / 1000 as f64) as f64)).as_str()).unwrap();
-            } else {
-                STDOUT.write_line(format!("{}: Errors occurred during package compilation", style("Error").red()).as_str()).unwrap();
-            }
-        } else {
-            STDOUT
-                .write_line(
+                log_info(
                     format!(
-                        "{}: couldn't open file \"{}\"",
-                        style("Error").red(),
-                        style(args.input_path.as_path().to_str().unwrap()).green()
+                        "Compilation finished in {}s",
+                        ((time_spanned.num_milliseconds() as f64 / 1000 as f64) as f64)
                     )
                     .as_str(),
+                );
+            } else {
+                log_error("Errors occurred during package compilation");
+            }
+        } else {
+            log_error(
+                format!(
+                    "{}: couldn't open file \"{}\"",
+                    style("Error").red(),
+                    style(args.input_path.as_path().to_str().unwrap()).green()
                 )
-                .unwrap();
+                .as_str(),
+            );
         }
     }
 }
