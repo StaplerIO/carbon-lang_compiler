@@ -12,4 +12,4 @@ structopt = "0.3.26"
 console = "0.15.0"
 chrono = "0.4"
 
-carbon-lang_compiler = { path = "../../" }
+carbon-lang_compiler = { path = "../../libraries/compiler" }
