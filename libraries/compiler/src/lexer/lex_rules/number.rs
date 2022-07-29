@@ -14,7 +14,7 @@ lazy_static! {
     ];
     */
 
-    static ref NUMBER_REGEX: Regex = Regex::new("^([+-]?\\d+(\\.?\\d+)?)[\\s\\S]*").unwrap();
+    static ref NUMBER_REGEX: Regex = Regex::new(r"^([+-]?\d+(\.?\d+)?)[\s\S]*").unwrap();
 }
 
 pub fn match_number(content: &str, base_pos: usize) -> Token {
