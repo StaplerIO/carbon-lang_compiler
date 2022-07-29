@@ -2,6 +2,7 @@
 
 use crate::lexer::tokenize::tokenize;
 use crate::package_generator::command_builder::action_block::action_block_command_builder;
+use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::ActionBlock;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
@@ -24,9 +25,9 @@ fn no_function_relocation() {
                    }",
         true).unwrap();
 
-    let actions = crate::parser::builder::blocks::action_block::action_block_builder(
+    let actions = action_block_builder(
         decorate_token(tokens),
-    );
+    ).unwrap();
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,

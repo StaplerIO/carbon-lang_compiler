@@ -52,7 +52,7 @@ pub fn function_builder(
                                     pair_container(tokens[current_index..].to_vec());
                                 result.body = action_block_builder(
                                     action_block_area[1..action_block_area.len()].to_vec(),
-                                );
+                                ).unwrap();
                                 current_index += action_block_area.len();
 
                                 return Ok((result, current_index + 1));

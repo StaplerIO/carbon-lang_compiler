@@ -77,7 +77,7 @@ fn detached_else_block_builder(tokens: Vec<DecoratedToken>) -> (Option<ActionBlo
                         let action_block_zone = pair_container(tokens[1..].to_vec());
                         result.actions = action_block_builder(
                             action_block_zone[1..action_block_zone.len()].to_vec(),
-                        );
+                        ).unwrap();
 
                         return (Option::from(result), (action_block_zone.len() + 1) as isize);
                     }

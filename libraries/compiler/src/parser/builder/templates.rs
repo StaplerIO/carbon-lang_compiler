@@ -50,7 +50,7 @@ pub fn condition_block_builder(
 
                                 // Build actions
                                 result.body.actions =
-                                    action_block_builder(action_block_zone.clone());
+                                    action_block_builder(action_block_zone.clone()).unwrap();
 
                                 // `4` is like a magic number, do not try to change it unless you can explain it in a better way
                                 return Ok((

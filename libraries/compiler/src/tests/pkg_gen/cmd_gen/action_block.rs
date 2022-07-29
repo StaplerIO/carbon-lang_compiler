@@ -16,7 +16,7 @@ fn action_block_no_condition() {
                    res = foo + bar;", true).unwrap();
     let actions = action_block_builder(
         decorate_token(tokens),
-    );
+    ).unwrap();
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 0,
@@ -52,7 +52,7 @@ fn action_block_complete() {
 
     let actions = action_block_builder(
         decorate_token(tokens),
-    );
+    ).unwrap();
 
     let metadata = PackageMetadata {
         variable_slot_alignment: 0,

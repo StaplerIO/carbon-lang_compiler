@@ -31,8 +31,8 @@ pub fn compile_package(args: CompileCommandArgs) {
             // Handle errors
             if tokens_result.is_err() {
                 let err = tokens_result.unwrap_err();
-                for item in err.description {
-                    log_error(format!("({}) {}", err.code, item).as_str());
+                for item in err.issues {
+                    log_error(format!("({}) {}", item.code, item.detail).as_str());
                 }
                 return;
             }
@@ -74,7 +74,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                 log_info(
                     format!(
                         "Compilation finished in {}s",
-                        ((time_spanned.num_milliseconds() as f64 / 1000 as f64) as f64)
+                        (time_spanned.num_milliseconds() as f64 / 1000 as f64)
                     )
                     .as_str(),
                 );

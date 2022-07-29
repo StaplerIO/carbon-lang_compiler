@@ -24,3 +24,10 @@ pub struct IssueBase<T> {
     pub code: String,
     pub detail: T,
 }
+
+#[derive(Clone, Debug)]
+pub struct FileMatch {
+    pub file_path: String,
+    pub start_pos: usize,
+    pub end_pos: usize,
+}

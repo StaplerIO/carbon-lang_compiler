@@ -41,7 +41,7 @@ pub fn short_statements_builder(
 
                     return Ok((
                         Action::new(ActionContent::LoopBlock(LoopBlock {
-                            actions: action_block_builder(container_content.clone()),
+                            actions: action_block_builder(container_content.clone()).unwrap(),
                         }), vec![]),
                         0,
                     ));

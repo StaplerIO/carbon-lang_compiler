@@ -143,7 +143,7 @@ fn action_block() {
                                                 while (1 == 1) { call func_1(0); }",
                           true).unwrap();
 
-    let result = action_block_builder(decorate_token(tokens.clone()));
+    let result = action_block_builder(decorate_token(tokens.clone())).unwrap();
 
     assert_eq!(result.len(), 7);
 
