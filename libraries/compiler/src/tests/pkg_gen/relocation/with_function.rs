@@ -20,8 +20,8 @@ fn single_function() {
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,
         data_alignment: 4,
-        command_alignment: 2,
-        entry_point_offset: 5,
+        package_type: 2,
+        global_command_offset: 5,
         domain_layer_count_alignment: 2,
         address_alignment: 4,
     };
@@ -68,8 +68,8 @@ fn multiple_functions() {
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,
         data_alignment: 4,
-        command_alignment: 2,
-        entry_point_offset: 5,
+        package_type: 2,
+        global_command_offset: 5,
         domain_layer_count_alignment: 2,
         address_alignment: 4,
     };

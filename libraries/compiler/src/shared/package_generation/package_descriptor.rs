@@ -14,10 +14,10 @@ pub struct PackageDescriptor {
 }
 
 pub struct PackageMetadata {
-    pub variable_slot_alignment: u8,
+    pub package_type: u8,
     pub data_alignment: u8,
-    pub command_alignment: u8,
     pub domain_layer_count_alignment: u8,
+    pub variable_slot_alignment: u8,
     pub address_alignment: u8,
-    pub entry_point_offset: i32,
+    pub global_command_offset: u8,
 }

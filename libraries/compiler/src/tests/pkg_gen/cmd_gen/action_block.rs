@@ -19,10 +19,10 @@ fn action_block_no_condition() {
     ).unwrap();
 
     let metadata = PackageMetadata {
+        package_type: 0,
         variable_slot_alignment: 0,
         data_alignment: 8,
-        command_alignment: 0,
-        entry_point_offset: 0,
+        global_command_offset: 0,
         domain_layer_count_alignment: 0,
         address_alignment: 0
     };
@@ -57,8 +57,8 @@ fn action_block_complete() {
     let metadata = PackageMetadata {
         variable_slot_alignment: 0,
         data_alignment: 8,
-        command_alignment: 0,
-        entry_point_offset: 0,
+        package_type: 0,
+        global_command_offset: 0,
         domain_layer_count_alignment: 0,
         address_alignment: 0
     };

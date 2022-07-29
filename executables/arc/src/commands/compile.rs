@@ -2,10 +2,10 @@ use std::{fs, io::Write};
 
 use carbon_lang_compiler::{
     lexer::tokenize::tokenize,
-    package_generator::command_builder::function_block::build_function_command,
+    package_generator::{command_builder::function_block::build_function_command, utils::align_data_width},
     parser::{decorator::decorate_token, pipeline::build_whole_file},
     shared::package_generation::{
-        package_descriptor::PackageMetadata, relocation_reference::RelocatableCommandList,
+        package_descriptor::PackageMetadata, relocation_reference::{RelocatableCommandList, RelocationReferenceType},
     },
 };
 use chrono::Local;
@@ -47,10 +47,10 @@ pub fn compile_package(args: CompileCommandArgs) {
             let metadata = PackageMetadata {
                 variable_slot_alignment: 2,
                 data_alignment: 8,
-                command_alignment: 4,
+                package_type: 0,
                 domain_layer_count_alignment: 2,
                 address_alignment: 8,
-                entry_point_offset: 5,
+                global_command_offset: 5,
             };
 
             if tree_result.is_ok() {
@@ -61,8 +61,22 @@ pub fn compile_package(args: CompileCommandArgs) {
                     output.combine(build_function_command(func, &metadata));
                 }
 
-                output.calculate_ref_to_target(metadata.serialize().len());
+                // Reserve location for entry point
+                let prefix_len = metadata.serialize().len();
+                output.append_commands(align_data_width(vec![0x00], metadata.address_alignment));
+
+                output.calculate_ref_to_target(prefix_len);
                 output.apply_relocation(metadata.address_alignment);
+
+                // Place entry_point
+                let addr_u8_vec = align_data_width((output.descriptors.references.iter()
+                                                                    .find(|&p| p.ref_type == RelocationReferenceType::FunctionEntrance(tree.entry_point.clone()))
+                                                                    .unwrap()
+                                                                    .command_array_position + prefix_len)
+                                                                    .to_be_bytes()
+                                                                    .to_vec(),
+                                                                    metadata.address_alignment);
+                output.commands.splice(prefix_len..(prefix_len + metadata.address_alignment as usize), addr_u8_vec);
 
                 let mut output_file = fs::File::create(&args.output_path).unwrap();
                 output_file

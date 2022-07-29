@@ -18,8 +18,8 @@ fn function_call() {
     let metadata = PackageMetadata {
         variable_slot_alignment: 2,
         data_alignment: 4,
-        command_alignment: 0,
-        entry_point_offset: 0,
+        package_type: 0,
+        global_command_offset: 0,
         domain_layer_count_alignment: 2,
         address_alignment: 0
     };

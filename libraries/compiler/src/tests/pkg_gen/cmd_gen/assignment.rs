@@ -19,8 +19,8 @@ fn simple_test() {
     let metadata = PackageMetadata {
         variable_slot_alignment: 0,
         data_alignment: 8,
-        command_alignment: 0,
-        entry_point_offset: 0,
+        package_type: 0,
+        global_command_offset: 0,
         domain_layer_count_alignment: 0,
         address_alignment: 0
     };
