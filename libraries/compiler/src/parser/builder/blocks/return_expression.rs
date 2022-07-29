@@ -3,7 +3,7 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, ReturnAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::keyword::KeywordType;
 
 pub fn return_action_builder(
@@ -48,8 +48,11 @@ pub fn return_action_builder(
         }
     }
     return Err(GeneralIssue {
-        level: IssueLevel::Error,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }

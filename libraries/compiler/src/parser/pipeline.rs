@@ -2,7 +2,7 @@ use crate::parser::builder::blocks::link::link_statement_builder;
 use crate::parser::builder::function_builder::function_builder;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::ast::package::ParserPackageStructure;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::keyword::KeywordType;
 
 pub fn build_whole_file(
@@ -31,16 +31,22 @@ pub fn build_whole_file(
 
     if tokens[current_index].content.get_decorated_keyword().is_none() {
         return Err(GeneralIssue {
-            level: IssueLevel::Error,
-            code: "-1".to_string(),
-            description:"Invalid token stream encountered!".to_string(),
+            issues: vec![IssueBase {
+                level: IssueLevel::Info,
+                position: IssuePosition::Parsing,
+                code: "-1".to_string(),
+                detail: "Invalid token stream encountered!".to_string(),
+            }]
         });
     } else {
         if *tokens[current_index].content.get_decorated_keyword().unwrap() != KeywordType::KwDeclare {
             return Err(GeneralIssue {
-                level: IssueLevel::Error,
-                code: "-1".to_string(),
-                description: "Invalid token stream encountered!".to_string(),
+                issues: vec![IssueBase {
+                    level: IssueLevel::Info,
+                    position: IssuePosition::Parsing,
+                    code: "-1".to_string(),
+                    detail: "Invalid token stream encountered!".to_string(),
+                }]
             });
         }
     }

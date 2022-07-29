@@ -3,7 +3,7 @@ use crate::parser::utils::{pair_container, split_comma_expression};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::ast::parameter::Parameter;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 
@@ -65,9 +65,12 @@ pub fn function_builder(
     }
 
     return Err(GeneralIssue {
-        level: IssueLevel::Error,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }
 

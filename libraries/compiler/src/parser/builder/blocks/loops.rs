@@ -1,7 +1,7 @@
 use crate::parser::builder::templates::condition_block_builder;
 use crate::shared::ast::action::{Action, ActionContent};
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::keyword::KeywordType;
 
 // result.1 : The end of the while statement (the last anti-brace)
@@ -17,9 +17,12 @@ pub fn while_action_builder(
     }
 
     return Err(GeneralIssue {
-        level: IssueLevel::Info,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }
 

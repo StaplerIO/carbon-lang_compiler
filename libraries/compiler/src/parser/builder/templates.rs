@@ -4,7 +4,7 @@ use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
 use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::RelationOperator;
@@ -66,8 +66,11 @@ pub fn condition_block_builder(
     }
 
     return Err(GeneralIssue {
-        level: IssueLevel::Error,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }

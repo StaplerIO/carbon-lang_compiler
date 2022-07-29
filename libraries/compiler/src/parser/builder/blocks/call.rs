@@ -3,7 +3,7 @@ use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expr
 use crate::shared::ast::action::{Action, ActionContent, CallAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 
@@ -29,9 +29,12 @@ pub fn call_action_builder(
     }
 
     return Err(GeneralIssue {
-        level: IssueLevel::Error,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }
 
@@ -63,8 +66,11 @@ pub fn bare_function_call_builder(
     }
 
     return Err(GeneralIssue {
-        level: IssueLevel::Error,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }

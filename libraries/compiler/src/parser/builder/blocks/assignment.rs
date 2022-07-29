@@ -3,7 +3,7 @@ use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, AssignmentAction};
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
-use crate::shared::error::general_issue::{GeneralIssue, IssueLevel};
+use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::operator::Operator;
 
 pub fn assignment_block_builder(
@@ -23,8 +23,8 @@ pub fn assignment_block_builder(
                         identifier: tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
                         eval_expression: SimpleExpression {
                             postfix_expr,
-                            output_type: "".to_string()
-                        }
+                            output_type: "".to_string(),
+                        },
                         // TODO: Add tokens that make this block
                     }), vec![]),
                     next_semicolon_pos.unwrap() + 1,
@@ -34,8 +34,11 @@ pub fn assignment_block_builder(
     }
 
     return Err(GeneralIssue {
-        level: IssueLevel::Error,
-        code: "-1".to_string(),
-        description: String::new(),
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
     });
 }
