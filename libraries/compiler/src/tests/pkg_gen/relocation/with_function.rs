@@ -18,7 +18,7 @@ fn single_function() {
                                                 }", true).unwrap();
     let tree = build_whole_file(decorate_token(tokens), "main".to_string()).unwrap();
     let metadata = PackageMetadata {
-        variable_slot_alignment: 2,
+        data_slot_alignment: 2,
         data_alignment: 4,
         package_type: 2,
         global_command_offset: 5,
@@ -66,7 +66,7 @@ fn multiple_functions() {
                                                 }", true).unwrap();
     let tree = build_whole_file(decorate_token(tokens), "main".to_string()).unwrap();
     let metadata = PackageMetadata {
-        variable_slot_alignment: 2,
+        data_slot_alignment: 2,
         data_alignment: 4,
         package_type: 2,
         global_command_offset: 5,

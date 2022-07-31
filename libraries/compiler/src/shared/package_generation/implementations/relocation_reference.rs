@@ -1,4 +1,4 @@
-use crate::package_generator::utils::{align_data_width, combine_command, is_domain_create_command, is_domain_destroy_command};
+use crate::package_generator::utils::{align_array_width, combine_command, is_domain_create_command, is_domain_destroy_command};
 use crate::shared::command_map::{DomainCommand, RootCommand};
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationReference, RelocationReferenceType, RelocationTarget, RelocationTargetType};
 
@@ -164,7 +164,7 @@ impl RelocatableCommandList {
             while addr_bytes[0] == 0x00 {
                 addr_bytes.remove(0);
             }
-            let addr_u8_vec = align_data_width(addr_bytes, addr_len);
+            let addr_u8_vec = align_array_width(addr_bytes, addr_len);
             self.commands.splice(desc.command_array_position..(desc.command_array_position + addr_len as usize), addr_u8_vec);
         }
     }

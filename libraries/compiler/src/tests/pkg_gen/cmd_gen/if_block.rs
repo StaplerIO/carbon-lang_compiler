@@ -9,7 +9,7 @@ fn bare_if_test() {
     let tokens = tokenize("if (234 > 123) { decl var number foo; foo = 3; }", true).unwrap();
 
     let metadata = PackageMetadata {
-        variable_slot_alignment: 2,
+        data_slot_alignment: 2,
         data_alignment: 4,
         package_type: 0,
         global_command_offset: 0,
@@ -29,7 +29,7 @@ fn complex_if_test() {
     let tokens = tokenize("if (234 > 123) { decl var number foo; foo = 3; } elif (456 < 234) { decl var number bar; } else { }", true).unwrap();
 
     let metadata = PackageMetadata {
-        variable_slot_alignment: 2,
+        data_slot_alignment: 2,
         data_alignment: 4,
         package_type: 0,
         global_command_offset: 0,

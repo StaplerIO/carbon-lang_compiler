@@ -1,11 +1,12 @@
+use crate::package_generator::command_builder::allocators::mutable_data_alloc::dac_builder;
 use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::package_generator::command_builder::math::calculation::{
     divide_command, minus_command, mod_command, multiplication_command, plus_command,
 };
-use crate::package_generator::utils::{align_data_width, combine_command, convert_number_to_hex, convert_to_u8_array};
+use crate::package_generator::utils::combine_command;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, SimpleExpression};
-use crate::shared::command_map::{RootCommand, StackCommand, PLACE_HOLDER};
-use crate::shared::package_generation::data_descriptor::DataDeclarator;
+use crate::shared::command_map::{RootCommand, StackCommand};
+use crate::shared::package_generation::data_descriptor::{DataAccessDescriptor, DataDeclarator};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 use crate::shared::token::operator::{CalculationOperator, Operator};
@@ -27,39 +28,56 @@ pub fn build_expression_evaluation_command(
             // push data to stack
             match data {
                 ExprDataTerm::Identifier(x) => {
+                    result.command_entries.push(result.commands.len());
+                    result.append_commands(vec![combine_command(
+                        RootCommand::Stack.to_opcode(),
+                        StackCommand::PushFromObject.to_opcode(),
+                    )]);
+
                     // Seek existing identifiers
                     let identifier = defined_data
                         .iter()
                         .find(|&dd| dd.name == *x)
                         .unwrap();
 
-                    // Push leading command
-                    result.append_commands(vec![combine_command(
-                        RootCommand::Stack.to_opcode(),
-                        StackCommand::PushFromObject.to_opcode(),
-                    )]);
-                    // Push GDF(visit src/shared/command_map.rs)
-                    result.append_commands(vec![combine_command(
-                        u8::from(identifier.is_global),
-                        PLACE_HOLDER,
-                    )]);
-                    // Push slot id
-                    result.append_commands(identifier.slot.clone());
+                    let dac_build_result = dac_builder(DataAccessDescriptor::new_identifier(identifier.clone()), metadata);
+                    if dac_build_result.is_ok() {
+                        result.commands.extend(dac_build_result.unwrap());
+                    } else {
+                        panic!("Failed to build data access command for identifier: {}", x);
+                    }
                 },
                 ExprDataTerm::Number(x) => {
+                    result.command_entries.push(result.commands.len());
                     result.append_commands(vec![combine_command(
                         RootCommand::Stack.to_opcode(),
                         StackCommand::Push.to_opcode(),
                     )]);
 
-                    let number_hex = convert_number_to_hex(x.clone());
-                    let number_hex_array = convert_to_u8_array(number_hex);
-
-                    result.append_commands(align_data_width(number_hex_array, metadata.data_alignment));
+                    let dac_build_result = dac_builder(DataAccessDescriptor::new_instant_value(x.clone()), metadata);
+                    if dac_build_result.is_ok() {
+                        result.commands.extend(dac_build_result.unwrap());
+                    } else {
+                        panic!("Failed to build data access command for number: {}", x);
+                    }
                 },
                 ExprDataTerm::FunctionCall(x) => {
                     // The called function will automatically put the return value on the top of the stack
                     result.combine(build_function_call_command(x, defined_data, metadata));
+                },
+                ExprDataTerm::String(x) => {
+                    result.command_entries.push(result.commands.len());
+                    result.append_commands(vec![combine_command(
+                        RootCommand::Stack.to_opcode(),
+                        StackCommand::PushFromObject.to_opcode(),
+                    )]);
+
+                    let dac_build_result = dac_builder(DataAccessDescriptor::new_string_constant(x.clone()), metadata);
+                    if dac_build_result.is_ok() {
+                        result.commands.extend(dac_build_result.unwrap());
+                    } else {
+                        panic!("Failed to build data access command for string: {}", x.value);
+                    }
                 }
                 _ => panic!("Other types of ExprTerm are not implemented yet!")
             }

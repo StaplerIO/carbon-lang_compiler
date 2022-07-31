@@ -8,10 +8,10 @@ use crate::package_generator::command_builder::loop_interception::{
     break_action_command_builder, continue_action_command_builder,
 };
 use crate::package_generator::command_builder::return_from_function::return_command_builder;
-use crate::package_generator::utils::{align_data_width, combine_command, convert_to_u8_array};
+use crate::package_generator::utils::combine_command;
 use crate::shared::ast::action::{ActionBlock, ActionContent};
 use crate::shared::command_map::{DomainCommand, RootCommand};
-use crate::shared::package_generation::data_descriptor::DataDeclarator;
+use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 
@@ -41,11 +41,9 @@ pub fn action_block_command_builder(
                 result.combine(build_data_declaration_command(false));
                 available_defined_data.push(DataDeclarator {
                     name: x.identifier.clone(),
-                    slot: align_data_width(
-                        convert_to_u8_array(available_defined_data.len().to_string()),
-                        metadata.data_alignment,
-                    ),
-                    is_global: false,
+                    slot: available_defined_data.len(),
+                    location: DataLocation::Local,
+                    is_string: false,
                 });
             }
             ActionContent::AssignmentStatement(x) => {
@@ -69,18 +67,10 @@ pub fn action_block_command_builder(
                 result.combine(return_command_builder(x, &available_defined_data, metadata));
             }
             ActionContent::IfBlock(x) => {
-                result.combine(if_command_builder(
-                    x,
-                    &available_defined_data,
-                    &metadata,
-                ));
+                result.combine(if_command_builder(x, &available_defined_data, &metadata));
             }
             ActionContent::WhileStatement(x) => {
-                result.combine(while_command_builder(
-                    x,
-                    &available_defined_data,
-                    &metadata,
-                ));
+                result.combine(while_command_builder(x, &available_defined_data, &metadata));
             }
             ActionContent::BreakStatement => {
                 result.command_entries.push(result.commands.len());

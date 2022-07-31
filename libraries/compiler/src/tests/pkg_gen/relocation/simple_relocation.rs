@@ -30,7 +30,7 @@ fn no_function_relocation() {
     ).unwrap();
 
     let metadata = PackageMetadata {
-        variable_slot_alignment: 2,
+        data_slot_alignment: 2,
         data_alignment: 4,
         package_type: 2,
         global_command_offset: 5,

@@ -2,7 +2,7 @@ use crate::lexer::tokenize::tokenize;
 use crate::package_generator::command_builder::function_call::build_function_call_command;
 use crate::parser::builder::blocks::call::call_action_builder;
 use crate::parser::decorator::decorate_token;
-use crate::shared::package_generation::data_descriptor::DataDeclarator;
+use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
@@ -16,7 +16,7 @@ fn function_call() {
         .clone();
 
     let metadata = PackageMetadata {
-        variable_slot_alignment: 2,
+        data_slot_alignment: 2,
         data_alignment: 4,
         package_type: 0,
         global_command_offset: 0,
@@ -26,8 +26,9 @@ fn function_call() {
 
     let defined_data = vec![DataDeclarator {
         name: "bar".to_string(),
-        slot: vec![0x00, 0x00],
-        is_global: false,
+        slot: 0,
+        location: DataLocation::Local,
+        is_string: false
     }];
 
     let _commands = build_function_call_command(&action, &defined_data, &metadata);

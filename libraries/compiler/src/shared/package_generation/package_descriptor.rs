@@ -17,7 +17,7 @@ pub struct PackageMetadata {
     pub package_type: u8,
     pub data_alignment: u8,
     pub domain_layer_count_alignment: u8,
-    pub variable_slot_alignment: u8,
+    pub data_slot_alignment: u8,
     pub address_alignment: u8,
     pub global_command_offset: u8,
 }

@@ -2,7 +2,7 @@ use std::{fs, io::Write};
 
 use carbon_lang_compiler::{
     lexer::tokenize::tokenize,
-    package_generator::{command_builder::function_block::build_function_command, utils::align_data_width},
+    package_generator::{command_builder::function_block::build_function_command, utils::align_array_width},
     parser::{decorator::decorate_token, pipeline::build_whole_file},
     shared::package_generation::{
         package_descriptor::PackageMetadata, relocation_reference::{RelocatableCommandList, RelocationReferenceType},
@@ -45,7 +45,7 @@ pub fn compile_package(args: CompileCommandArgs) {
             let tree_result = build_whole_file(decorated_tokens, args.entry_function);
 
             let metadata = PackageMetadata {
-                variable_slot_alignment: 2,
+                data_slot_alignment: 2,
                 data_alignment: 8,
                 package_type: 0,
                 domain_layer_count_alignment: 2,
@@ -63,19 +63,19 @@ pub fn compile_package(args: CompileCommandArgs) {
 
                 // Reserve location for entry point
                 let prefix_len = metadata.serialize().len();
-                output.append_commands(align_data_width(vec![0x00], metadata.address_alignment));
+                output.append_commands(align_array_width(vec![0x00], metadata.address_alignment));
 
                 output.calculate_ref_to_target(prefix_len);
                 output.apply_relocation(metadata.address_alignment);
 
                 // Place entry_point
-                let addr_u8_vec = align_data_width((output.descriptors.references.iter()
-                                                                    .find(|&p| p.ref_type == RelocationReferenceType::FunctionEntrance(tree.entry_point.clone()))
-                                                                    .unwrap()
-                                                                    .command_array_position + prefix_len)
+                let addr_u8_vec = align_array_width((output.descriptors.references.iter()
+                                                           .find(|&p| p.ref_type == RelocationReferenceType::FunctionEntrance(tree.entry_point.clone()))
+                                                           .unwrap()
+                                                           .command_array_position + prefix_len)
                                                                     .to_be_bytes()
                                                                     .to_vec(),
-                                                                    metadata.address_alignment);
+                                                    metadata.address_alignment);
                 output.commands.splice(prefix_len..(prefix_len + metadata.address_alignment as usize), addr_u8_vec);
 
                 let mut output_file = fs::File::create(&args.output_path).unwrap();

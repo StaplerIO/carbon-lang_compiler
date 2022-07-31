@@ -1,4 +1,5 @@
 use crate::shared::ast::action::CallAction;
+use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::operator::{Operator, RelationOperator};
 use crate::shared::token::token::Token;
 
@@ -36,7 +37,7 @@ pub struct ExprTerm {
 #[derive(Clone, Debug, PartialEq)]
 pub enum ExprDataTerm {
     Number(String),
-    String(String),
+    String(StringConstant),
     Identifier(String),
     FunctionCall(CallAction),
     Typename(String),

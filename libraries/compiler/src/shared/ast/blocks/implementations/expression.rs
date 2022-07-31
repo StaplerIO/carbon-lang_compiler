@@ -1,6 +1,7 @@
 use crate::shared::ast::action::CallAction;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, TermContent};
 use crate::shared::ast::decorated_token::DataToken;
+use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::operator::Operator;
 
 impl TermContent {
@@ -30,7 +31,7 @@ impl ExprDataTerm {
     pub fn from_data_token(d: &DataToken) -> ExprDataTerm {
         return match &d {
             DataToken::Number(x) => ExprDataTerm::Number(x.clone()),
-            DataToken::String(x) => ExprDataTerm::String(x.clone()),
+            DataToken::String(x) => ExprDataTerm::String(StringConstant{ value: x.clone(), slot: 0 }),
             DataToken::Identifier(x) => ExprDataTerm::Identifier(x.clone()),
             _ => panic!("Invalid data token"),
         }
@@ -43,7 +44,7 @@ impl ExprDataTerm {
         };
     }
 
-    pub fn get_string(&self) -> Option<&String> {
+    pub fn get_string(&self) -> Option<&StringConstant> {
         return match self {
             ExprDataTerm::String(string) => return Some(string),
             _ => None,

@@ -1,9 +1,13 @@
 use apa::apa::modulo::modulo;
+
 use crate::package_generator::type_inference::expression::infer_expression_term_data_type;
 use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, SimpleExpression, TermContent};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
+use crate::shared::package_generation::relocation_reference::{
+    RelocationReference, RelocationReferenceType,
+};
 
 pub fn find_function(name: &str, available_functions: &Vec<Function>) -> Option<Function> {
     let result = available_functions.iter().find(|&e| e.name == name);
@@ -56,45 +60,39 @@ pub fn convert_number_to_hex(mut number: String) -> String {
     return result;
 }
 
-/// Example:
+/// ## Example:
+///
 /// `1234567` -> `[01, 23, 45, 67]`
+///
 /// `0x7c00` -> `[7c, 00]`
 pub fn convert_to_u8_array(number: String) -> Vec<u8> {
-    let mut result = vec![];
+    let t = number.parse::<isize>().unwrap();
+    let result = t.to_be_bytes();
 
-    for (index, digit) in number.chars().rev().enumerate() {
-        // It will create an empty element first
-        if index % 2 == 0 {
-            result.insert(0, 0x00);
-        }
-
-        result[0] *= 0x10;
-        if digit >= '0' && digit <= '9' {
-            result[0] += (digit as u8 - '0' as u8) as u8;
-        } else if digit >= 'a' && digit <= 'f' {
-            result[0] += ((digit as u8 - 'a' as u8) + 0xA) as u8;
-        } else if digit >= 'A' && digit <= 'F' {
-            result[0] += ((digit as u8 - 'A' as u8) + 0xA) as u8;
-        }
-    }
-
-    return result;
+    return result.to_vec();
 }
 
-pub fn align_data_width(data_array: Vec<u8>, target_len: u8) -> Vec<u8> {
-    // Align to width assigned in package_metadata
+pub fn align_array_width(mut data_array: Vec<u8>, target_len: u8) -> Vec<u8> {
+    let mut result: Vec<u8> = vec![];
+
     if data_array.len() < target_len as usize {
         let placeholder = vec![0 as u8; target_len as usize - data_array.len()];
-        let mut result: Vec<u8> = vec![];
+
         result.extend(placeholder);
         result.extend(data_array);
-
-        return result;
     } else if data_array.len() > target_len as usize {
-        panic!("Data width is too short, consider changing it into a longer width (data/target : {}/{})", data_array.len(), target_len);
+        result = data_array.clone();
+        while result.len() > target_len as usize {
+            if result[0] == 0x00 {
+                result.remove(0);
+            } else {
+                panic!("Data width is too short, consider changing it into a longer width (data/target : {}/{})", data_array.len(), target_len);
+            }
+        }
+    } else {
+        result = data_array.clone();
     }
-
-    return data_array;
+    return result;
 }
 
 pub fn string_to_hex_char(s: String) -> char {
@@ -139,8 +137,6 @@ pub fn jump_command_address_placeholder(metadata: &PackageMetadata) -> Vec<u8> {
     return vec![0x00 as u8].repeat(metadata.address_alignment as usize);
 }
 
-use crate::shared::package_generation::relocation_reference::{RelocationReference, RelocationReferenceType};
-
 pub fn is_domain_create_command(reloc_ref: &RelocationReference) -> bool {
     return match reloc_ref.ref_type {
         RelocationReferenceType::FunctionEntrance(_) => true,
@@ -149,7 +145,7 @@ pub fn is_domain_create_command(reloc_ref: &RelocationReference) -> bool {
         RelocationReferenceType::ElseEntrance => true,
         RelocationReferenceType::WhileEntrance => true,
         RelocationReferenceType::LoopEntrance => true,
-        _ => false
+        _ => false,
     };
 }
 
@@ -161,7 +157,6 @@ pub fn is_domain_destroy_command(reloc_ref: &RelocationReference) -> bool {
         RelocationReferenceType::EndElse => true,
         RelocationReferenceType::EndWhile => true,
         RelocationReferenceType::EndLoop => true,
-        _ => false
+        _ => false,
     };
 }
-

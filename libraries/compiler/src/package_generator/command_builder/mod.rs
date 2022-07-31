@@ -10,3 +10,4 @@ pub mod loop_interception;
 pub mod lat_command_builder;
 pub mod function_block;
 pub mod return_from_function;
+pub mod allocators;

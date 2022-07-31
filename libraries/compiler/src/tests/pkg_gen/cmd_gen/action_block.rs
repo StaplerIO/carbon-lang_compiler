@@ -20,11 +20,11 @@ fn action_block_no_condition() {
 
     let metadata = PackageMetadata {
         package_type: 0,
-        variable_slot_alignment: 0,
+        data_slot_alignment: 2,
         data_alignment: 8,
         global_command_offset: 0,
-        domain_layer_count_alignment: 0,
-        address_alignment: 0
+        domain_layer_count_alignment: 2,
+        address_alignment: 4
     };
 
     let _commands = action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);
@@ -55,12 +55,12 @@ fn action_block_complete() {
     ).unwrap();
 
     let metadata = PackageMetadata {
-        variable_slot_alignment: 0,
+        data_slot_alignment: 2,
         data_alignment: 8,
         package_type: 0,
-        global_command_offset: 0,
-        domain_layer_count_alignment: 0,
-        address_alignment: 0
+        global_command_offset: 5,
+        domain_layer_count_alignment: 2,
+        address_alignment: 8
     };
 
     let _commands = action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);

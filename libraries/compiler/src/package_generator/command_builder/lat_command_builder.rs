@@ -1,7 +1,6 @@
 use crate::package_generator::command_builder::assignment_action::build_assignment_command;
 use crate::package_generator::command_builder::data_commands::build_data_declaration_command;
-use crate::package_generator::utils::{align_data_width, convert_to_u8_array};
-use crate::shared::package_generation::data_descriptor::DataDeclarator;
+use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::linear_action_tree::{LinearActionTree, LinearActionType};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
@@ -33,8 +32,9 @@ pub fn linear_action_tree_command(tree: LinearActionTree, metadata: &PackageMeta
 
                 defined_data.push(DataDeclarator {
                     name: x.identifier,
-                    slot: align_data_width(convert_to_u8_array((defined_data.len() + 1).to_string()), metadata.data_alignment),
-                    is_global: false
+                    slot:defined_data.len() + 1,
+                    location: DataLocation::Local,
+                    is_string: false
                 });
             }
             LinearActionType::CallAction(_x) => {}
