@@ -41,7 +41,10 @@ pub fn compile_package(args: CompileCommandArgs) {
 
             log_info(format!("Found {} tokens", tokens.len()).as_str());
 
-            let decorated_tokens = decorate_token(tokens);
+            let decorate_result = decorate_token(tokens);
+
+            let decorated_tokens = decorate_result.0;
+            let string_pool = decorate_result.1;
             let tree_result = build_whole_file(decorated_tokens, args.entry_function);
 
             let metadata = PackageMetadata {
@@ -63,7 +66,7 @@ pub fn compile_package(args: CompileCommandArgs) {
 
                 // Reserve location for entry point
                 let prefix_len = metadata.serialize().len();
-                output.append_commands(align_array_width(vec![0x00], metadata.address_alignment));
+                output.append_commands(align_array_width(&vec![0x00], metadata.address_alignment));
 
                 output.calculate_ref_to_target(prefix_len);
                 output.apply_relocation(metadata.address_alignment);
@@ -74,7 +77,8 @@ pub fn compile_package(args: CompileCommandArgs) {
                                                            .unwrap()
                                                            .command_array_position + prefix_len)
                                                                     .to_be_bytes()
-                                                                    .to_vec(),
+                                                                    .to_vec()
+                                                                    .as_ref(),
                                                     metadata.address_alignment);
                 output.commands.splice(prefix_len..(prefix_len + metadata.address_alignment as usize), addr_u8_vec);
 

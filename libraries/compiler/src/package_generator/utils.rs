@@ -72,7 +72,7 @@ pub fn convert_to_u8_array(number: String) -> Vec<u8> {
     return result.to_vec();
 }
 
-pub fn align_array_width(mut data_array: Vec<u8>, target_len: u8) -> Vec<u8> {
+pub fn align_array_width(data_array: &Vec<u8>, target_len: u8) -> Vec<u8> {
     let mut result: Vec<u8> = vec![];
 
     if data_array.len() < target_len as usize {

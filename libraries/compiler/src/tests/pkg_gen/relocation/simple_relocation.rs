@@ -26,7 +26,7 @@ fn no_function_relocation() {
         true).unwrap();
 
     let actions = action_block_builder(
-        decorate_token(tokens),
+        decorate_token(tokens).0,
     ).unwrap();
 
     let metadata = PackageMetadata {

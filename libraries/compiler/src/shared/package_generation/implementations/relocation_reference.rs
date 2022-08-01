@@ -164,7 +164,7 @@ impl RelocatableCommandList {
             while addr_bytes[0] == 0x00 {
                 addr_bytes.remove(0);
             }
-            let addr_u8_vec = align_array_width(addr_bytes, addr_len);
+            let addr_u8_vec = align_array_width(&addr_bytes, addr_len);
             self.commands.splice(desc.command_array_position..(desc.command_array_position + addr_len as usize), addr_u8_vec);
         }
     }

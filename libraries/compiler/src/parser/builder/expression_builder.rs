@@ -22,7 +22,7 @@ lazy_static! {
     ].iter().cloned().collect();
 }
 
-pub fn expression_term_decorator(tokens: Vec<DecoratedToken>) -> Vec<ExprTerm> {
+pub fn expression_term_decorator(tokens: &Vec<DecoratedToken>) -> Vec<ExprTerm> {
     let mut result: Vec<ExprTerm> = vec![];
 
     let mut index: usize = 0;

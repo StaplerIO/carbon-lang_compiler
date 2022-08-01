@@ -16,7 +16,7 @@ fn single_function() {
                                                     result = foo + bar;\
                                                     return result;\
                                                 }", true).unwrap();
-    let tree = build_whole_file(decorate_token(tokens), "main".to_string()).unwrap();
+    let tree = build_whole_file(decorate_token(tokens).0, "main".to_string()).unwrap();
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
         data_alignment: 4,
@@ -64,7 +64,7 @@ fn multiple_functions() {
                                                     decl var number v2;\
                                                     v2 = 37413;\
                                                 }", true).unwrap();
-    let tree = build_whole_file(decorate_token(tokens), "main".to_string()).unwrap();
+    let tree = build_whole_file(decorate_token(tokens).0, "main".to_string()).unwrap();
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
         data_alignment: 4,

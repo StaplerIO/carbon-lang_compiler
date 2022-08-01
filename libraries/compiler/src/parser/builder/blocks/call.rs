@@ -55,7 +55,7 @@ pub fn bare_function_call_builder(
                     split_comma_expression(parameter_zone[1..parameter_zone.len()].to_vec())
                 {
                     result.arguments.push(SimpleExpression {
-                        postfix_expr: expression_infix_to_postfix(expression_term_decorator(param.clone())),
+                        postfix_expr: expression_infix_to_postfix(expression_term_decorator(&param)),
                         output_type: String::new(),
                     });
                 }

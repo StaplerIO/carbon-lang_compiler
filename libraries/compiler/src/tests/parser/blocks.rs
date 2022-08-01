@@ -15,7 +15,7 @@ use crate::shared::token::operator::CalculationOperator;
 #[test]
 fn assignment() {
     let tokens = tokenize("a = 1 + 2;", true).unwrap();
-    let raw = assignment_block_builder(&decorate_token(tokens.clone()));
+    let raw = assignment_block_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_assignment_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -41,7 +41,7 @@ fn assignment() {
 #[test]
 fn variable_declaration() {
     let tokens = tokenize("decl var number foo;", true).unwrap();
-    let raw = declaration_action_builder(&decorate_token(tokens.clone()));
+    let raw = declaration_action_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_declaration_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -54,7 +54,7 @@ fn variable_declaration() {
 #[test]
 fn function_call() {
     let tokens = tokenize("call func_1(5, 2.66, var1, 3 - 2);", true).unwrap();
-    let raw = call_action_builder(&decorate_token(tokens.clone()));
+    let raw = call_action_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_call_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -80,7 +80,7 @@ fn function_call() {
 #[test]
 fn return_from_function_no_value() {
     let tokens = tokenize("return;", true).unwrap();
-    let raw = return_action_builder(&decorate_token(tokens.clone()));
+    let raw = return_action_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_return_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -91,7 +91,7 @@ fn return_from_function_no_value() {
 #[test]
 fn return_from_function_with_value() {
     let tokens = tokenize("return 1 + 2 * tb_234;", true).unwrap();
-    let raw = return_action_builder(&decorate_token(tokens.clone()));
+    let raw = return_action_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_return_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -113,7 +113,7 @@ fn return_from_function_with_value() {
 #[test]
 fn single_token_statement_break() {
     let tokens = tokenize("break;", true).unwrap();
-    let raw = short_statements_builder(&decorate_token(tokens.clone()));
+    let raw = short_statements_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -124,7 +124,7 @@ fn single_token_statement_break() {
 #[test]
 fn single_token_statement_continue() {
     let tokens = tokenize("continue;", true).unwrap();
-    let raw = short_statements_builder(&decorate_token(tokens.clone()));
+    let raw = short_statements_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -143,7 +143,7 @@ fn action_block() {
                                                 while (1 == 1) { call func_1(0); }",
                           true).unwrap();
 
-    let result = action_block_builder(decorate_token(tokens.clone())).unwrap();
+    let result = action_block_builder(decorate_token(tokens.clone()).0).unwrap();
 
     assert_eq!(result.len(), 7);
 
@@ -157,7 +157,7 @@ fn action_block() {
 #[test]
 fn while_block() {
     let tokens = tokenize("while (1 + 1 == 2) { a = a + 1; return; }", true).unwrap();
-    let raw = while_action_builder(&decorate_token(tokens.clone()));
+    let raw = while_action_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_while_block().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -178,7 +178,7 @@ fn if_block() {
                                                  else \
                                                     { decl var number foo; }", 
                           true).unwrap();
-    let raw = if_block_builder(&decorate_token(tokens.clone()));
+    let raw = if_block_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0.get_if_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
@@ -192,7 +192,7 @@ fn if_block() {
 #[test]
 fn function_block() {
     let tokens = tokenize("decl func main(number a, number b)[number] { return a + b; }", true).unwrap();
-    let raw = function_builder(&decorate_token(tokens.clone()));
+    let raw = function_builder(&decorate_token(tokens.clone()).0);
 
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());

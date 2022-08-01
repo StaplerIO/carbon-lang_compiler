@@ -31,7 +31,7 @@ impl ExprDataTerm {
     pub fn from_data_token(d: &DataToken) -> ExprDataTerm {
         return match &d {
             DataToken::Number(x) => ExprDataTerm::Number(x.clone()),
-            DataToken::String(x) => ExprDataTerm::String(StringConstant{ value: x.clone(), slot: 0 }),
+            DataToken::String(x) => ExprDataTerm::String(x.clone()),
             DataToken::Identifier(x) => ExprDataTerm::Identifier(x.clone()),
             _ => panic!("Invalid data token"),
         }

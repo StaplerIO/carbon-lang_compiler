@@ -6,16 +6,14 @@ use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::operator::Operator;
 
-pub fn assignment_block_builder(
-    tokens: &Vec<DecoratedToken>,
-) -> Result<(Action, usize), GeneralIssue<String>> {
+pub fn assignment_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralIssue<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
     if next_semicolon_pos.is_some() {
         if tokens[0].content.is_valid_identifier() && tokens[1].content.get_operator().is_some() {
             if *tokens[1].content.get_operator().unwrap() == Operator::Assignment {
                 // Convert expression
                 let postfix_expr = expression_infix_to_postfix(
-                    expression_term_decorator(tokens.clone()[2..next_semicolon_pos.unwrap()].to_vec()),
+                    expression_term_decorator(&tokens[2..next_semicolon_pos.unwrap()].to_vec()),
                 );
 
                 return Ok((

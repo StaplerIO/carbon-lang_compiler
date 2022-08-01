@@ -1,3 +1,4 @@
+use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
@@ -21,7 +22,7 @@ pub struct DecoratedToken {
 #[derive(Clone, PartialEq, Debug)]
 pub enum DataToken {
     Number(String),
-    String(String),
+    String(StringConstant),
     Identifier(String),
     Typename(String),
 }

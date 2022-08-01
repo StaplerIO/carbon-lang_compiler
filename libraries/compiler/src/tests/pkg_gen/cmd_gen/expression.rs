@@ -12,7 +12,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 fn expression_with_number_only() {
     let tokens = tokenize("1 + 2 * 3", true).unwrap();
     let expression = SimpleExpression {
-        postfix_expr: expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone()))),
+        postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
         output_type: "number".to_string(),
     };
 
@@ -42,7 +42,7 @@ fn expression_with_number_only() {
 fn expression_with_defined_data() {
     let tokens = tokenize("a + b * 2", true).unwrap();
     let expression = SimpleExpression {
-        postfix_expr: expression_infix_to_postfix(expression_term_decorator(decorate_token(tokens.clone()))),
+        postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
         output_type: "number".to_string(),
     };
 

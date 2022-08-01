@@ -33,7 +33,7 @@ pub fn return_action_builder(
 
                         result = Option::from(ReturnAction {
                             value: Some(SimpleExpression {
-                                postfix_expr: expression_infix_to_postfix(expression_term_decorator(expression_zone.clone())),
+                                postfix_expr: expression_infix_to_postfix(expression_term_decorator(&expression_zone)),
                                 output_type: String::new(),
                             }),
                         });

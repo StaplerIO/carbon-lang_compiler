@@ -1,4 +1,5 @@
 use crate::shared::ast::decorated_token::{DataToken, DecoratedTokenContent};
+use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
@@ -94,7 +95,7 @@ impl DataToken {
         }
     }
 
-    pub fn get_string(&self) -> Option<&String> {
+    pub fn get_string(&self) -> Option<&StringConstant> {
         return match &self {
             DataToken::String(x) => Option::from(x),
             _ => Option::None

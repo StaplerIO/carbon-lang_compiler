@@ -1,12 +1,14 @@
 use crate::shared::ast::decorated_token::{
     DataToken, DecoratedToken, DecoratedTokenContent,
 };
+use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::token::{Token, TokenContent};
 
-pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
+pub fn decorate_token(tokens: Vec<Token>) -> (Vec<DecoratedToken>, Vec<StringConstant>) {
     let mut result: Vec<DecoratedToken> = Vec::new();
 
+    let mut string_pool: Vec<StringConstant> = vec![];
     for token in tokens {
         match token.clone().content {
             TokenContent::Identifier(x) => {
@@ -20,10 +22,21 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
                 content: DecoratedTokenContent::Data(DataToken::Number(x)),
                 original_token: token.clone()
             }),
-            TokenContent::String(x) => result.push(DecoratedToken {
-                content: DecoratedTokenContent::Data(DataToken::String(x)),
-                original_token: token.clone()
-            }),
+            TokenContent::String(x) => {
+                if string_pool.iter().any(|s| s.value == x.clone()) {
+                    result.push(DecoratedToken {
+                        content: DecoratedTokenContent::Data(DataToken::String(string_pool.iter().find(|s| s.value == x.clone()).unwrap().clone())),
+                        original_token: token.clone()
+                    });
+                } else {
+                    let constant = StringConstant{ value: x.clone(), slot: string_pool.len() };
+                    string_pool.push(constant.clone());
+                    result.push(DecoratedToken {
+                        content: DecoratedTokenContent::Data(DataToken::String(constant)),
+                        original_token: token.clone()
+                    });
+                }
+            },
             TokenContent::Container(x) => result.push(DecoratedToken {
                 content: DecoratedTokenContent::Container(x),
                 original_token: token.clone()
@@ -58,5 +71,5 @@ pub fn decorate_token(tokens: Vec<Token>) -> Vec<DecoratedToken> {
         }
     }
 
-    return result;
+    return (result, string_pool);
 }

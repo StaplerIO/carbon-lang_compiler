@@ -33,7 +33,7 @@ pub fn condition_block_builder(
                 if *tokens[1].content.get_container().unwrap() == ContainerType::Bracket {
                     // Build expression
                     let expression_zone = pair_container(tokens[1..].to_vec());
-                    result.condition = relation_expression_builder(expression_term_decorator(expression_zone[1..].to_vec()));
+                    result.condition = relation_expression_builder(expression_term_decorator(&expression_zone[1..].to_vec()));
 
                     if expression_zone.len() >= 1 {
                         // Build actions inside the while statement
