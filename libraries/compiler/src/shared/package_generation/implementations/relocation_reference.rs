@@ -1,5 +1,6 @@
 use crate::package_generator::utils::{align_array_width, combine_command, is_domain_create_command, is_domain_destroy_command};
 use crate::shared::command_map::{DomainCommand, RootCommand};
+use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationReference, RelocationReferenceType, RelocationTarget, RelocationTargetType};
 
 impl RelocatableCommandList {
@@ -53,6 +54,7 @@ impl RelocatableCommandList {
             commands: cmd,
             command_entries: vec![],
             descriptors: RelocationCredential::new(),
+            string_pool: vec![],
         }
     }
 
@@ -61,6 +63,7 @@ impl RelocatableCommandList {
             commands: vec![],
             command_entries: vec![],
             descriptors: RelocationCredential::new(),
+            string_pool: vec![],
         };
     }
 
@@ -167,6 +170,17 @@ impl RelocatableCommandList {
             let addr_u8_vec = align_array_width(&addr_bytes, addr_len);
             self.commands.splice(desc.command_array_position..(desc.command_array_position + addr_len as usize), addr_u8_vec);
         }
+    }
+
+    pub fn generate_string_pool(&mut self, addr_len: u8) -> Vec<u8> {
+        let mut result = vec![];
+        for string in &self.string_pool {
+            let len = align_array_width(&string.value.len().to_be_bytes().to_vec(), addr_len);
+            result.extend(len);
+            result.extend(string.value.as_bytes().to_vec());
+        }
+
+        return result;
     }
 }
 

@@ -1,3 +1,5 @@
+use crate::shared::package_generation::data_descriptor::StringConstant;
+
 #[derive(Clone, Debug)]
 pub struct RelocationCredential {
     pub targets: Vec<RelocationTarget>,
@@ -38,7 +40,8 @@ pub struct RelocationTarget {
 pub struct RelocatableCommandList {
     pub commands: Vec<u8>,
     pub command_entries: Vec<usize>,
-    pub descriptors: RelocationCredential
+    pub descriptors: RelocationCredential,
+    pub string_pool: Vec<StringConstant>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

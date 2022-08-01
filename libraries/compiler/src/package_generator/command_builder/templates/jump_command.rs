@@ -114,5 +114,6 @@ pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &Pack
             references: vec![],
         },
         command_entries: vec![0],
+        string_pool: vec![]
     };
 }
