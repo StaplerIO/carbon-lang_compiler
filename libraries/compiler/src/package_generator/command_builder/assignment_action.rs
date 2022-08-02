@@ -33,7 +33,7 @@ pub fn build_assignment_command(
     // Acquire DAC
     let dac_build_result = dac_builder(DataAccessDescriptor::new_identifier(target_data), metadata);
     if dac_build_result.is_ok() {
-        result.commands.extend(dac_build_result.unwrap());
+        result.combine(dac_build_result.unwrap());
     } else {
         panic!("Failed to build data access command for identifier: {}", action.identifier);
     }

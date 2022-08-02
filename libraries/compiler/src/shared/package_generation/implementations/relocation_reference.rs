@@ -1,6 +1,5 @@
 use crate::package_generator::utils::{align_array_width, combine_command, is_domain_create_command, is_domain_destroy_command};
 use crate::shared::command_map::{DomainCommand, RootCommand};
-use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationReference, RelocationReferenceType, RelocationTarget, RelocationTargetType};
 
 impl RelocatableCommandList {

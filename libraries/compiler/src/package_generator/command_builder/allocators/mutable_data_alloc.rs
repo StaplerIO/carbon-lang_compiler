@@ -3,6 +3,7 @@ use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, I
 use crate::shared::error::pkg_gen_issue::PackageGenerationIssue;
 use crate::shared::package_generation::data_descriptor::DataAccessDescriptor;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
+use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 
 /// dac : Data access command
 /// # Command scheme:
@@ -12,7 +13,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 ///                 0x02 string from static string heap
 /// [from 1] :      data slot (when [0] is 0x00, it is the instant data binary)
 /// ```
-pub fn dac_builder(data: DataAccessDescriptor, metadata: &PackageMetadata) -> Result<Vec<u8>, GeneralIssue<PackageGenerationIssue>> {
+pub fn dac_builder(data: DataAccessDescriptor, metadata: &PackageMetadata) -> Result<RelocatableCommandList, GeneralIssue<PackageGenerationIssue>> {
     let mut result = vec![];
 
     if data.identifier.is_some() {
@@ -44,5 +45,5 @@ pub fn dac_builder(data: DataAccessDescriptor, metadata: &PackageMetadata) -> Re
         });
     }
 
-    return Ok(result);
+    return Ok(RelocatableCommandList::new_no_relocation(result));
 }

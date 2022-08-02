@@ -42,7 +42,7 @@ pub fn build_expression_evaluation_command(
 
                     let dac_build_result = dac_builder(DataAccessDescriptor::new_identifier(identifier.clone()), metadata);
                     if dac_build_result.is_ok() {
-                        result.commands.extend(dac_build_result.unwrap());
+                        result.combine(dac_build_result.unwrap());
                     } else {
                         panic!("Failed to build data access command for identifier: {}", x);
                     }
@@ -56,7 +56,7 @@ pub fn build_expression_evaluation_command(
 
                     let dac_build_result = dac_builder(DataAccessDescriptor::new_instant_value(x.clone()), metadata);
                     if dac_build_result.is_ok() {
-                        result.commands.extend(dac_build_result.unwrap());
+                        result.combine(dac_build_result.unwrap());
                     } else {
                         panic!("Failed to build data access command for number: {}", x);
                     }
@@ -74,7 +74,7 @@ pub fn build_expression_evaluation_command(
 
                     let dac_build_result = dac_builder(DataAccessDescriptor::new_string_constant(x.clone()), metadata);
                     if dac_build_result.is_ok() {
-                        result.commands.extend(dac_build_result.unwrap());
+                        result.combine(dac_build_result.unwrap());
                     } else {
                         panic!("Failed to build data access command for string: {}", x.value);
                     }

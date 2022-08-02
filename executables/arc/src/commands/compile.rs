@@ -1,5 +1,8 @@
 use std::{fs, io::Write};
 
+use chrono::Local;
+use console::style;
+
 use carbon_lang_compiler::{
     lexer::tokenize::tokenize,
     package_generator::{command_builder::function_block::build_function_command, utils::align_array_width},
@@ -8,8 +11,6 @@ use carbon_lang_compiler::{
         package_descriptor::PackageMetadata, relocation_reference::{RelocatableCommandList, RelocationReferenceType},
     },
 };
-use chrono::Local;
-use console::style;
 
 use crate::{
     managers::logging::{log_error, log_info},
@@ -63,20 +64,22 @@ pub fn compile_package(args: CompileCommandArgs) {
                 output.string_pool = string_pool;
                 // Place metadata
                 let serialized_metadata = metadata.serialize();
-                let prefix_len = serialized_metadata.len();
                 output.append_commands(serialized_metadata);
+                let prefix_len = output.commands.len();
+
+                // Reserve space for entry point if it is an executable
+                if metadata.package_type == 0 {
+                    output.append_commands(align_array_width(&vec![0x00], metadata.address_alignment));
+                }
+
+                // Place string pool
+                let string_pool_command = output.generate_string_pool(metadata.data_slot_alignment);
+                output.append_commands(string_pool_command);
 
                 // Place functions
                 for func in &tree.functions {
                     output.combine(build_function_command(func, &metadata));
                 }
-
-                // Reserve space for entry point
-                output.append_commands(align_array_width(&vec![0x00], metadata.address_alignment));
-
-                // Place string pool
-                let string_pool_command = output.generate_string_pool(metadata.data_slot_alignment);
-                output.append_commands(string_pool_command);
 
                 output.calculate_ref_to_target(output.commands.len());
                 output.apply_relocation(metadata.address_alignment);
@@ -85,7 +88,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                 let entry_function = output.descriptors.references.iter()
                                            .find(|&p| p.ref_type == RelocationReferenceType::FunctionEntrance(tree.entry_point.clone()))
                                            .unwrap();
-                let addr_u8_vec = align_array_width((entry_function.command_array_position + prefix_len).to_be_bytes().to_vec().as_ref(), metadata.address_alignment);
+                let addr_u8_vec = align_array_width(entry_function.command_array_position.to_be_bytes().to_vec().as_ref(), metadata.address_alignment);
                 output.commands.splice(prefix_len..(prefix_len + metadata.address_alignment as usize), addr_u8_vec);
 
                 let mut output_file = fs::File::create(&args.output_path).unwrap();
@@ -97,7 +100,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                         "Compilation finished in {}s",
                         (time_spanned.num_milliseconds() as f64 / 1000 as f64)
                     )
-                    .as_str(),
+                        .as_str(),
                 );
             } else {
                 log_error("Errors occurred during package compilation");
@@ -109,7 +112,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                     style("Error").red(),
                     style(args.input_path.as_path().to_str().unwrap()).green()
                 )
-                .as_str(),
+                    .as_str(),
             );
         }
     }
