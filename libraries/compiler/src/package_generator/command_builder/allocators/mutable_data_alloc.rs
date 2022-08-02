@@ -23,11 +23,13 @@ pub fn dac_builder(data: DataAccessDescriptor, metadata: &PackageMetadata) -> Re
         result.extend(align_array_width(&identifier.slot.to_be_bytes().to_vec(), metadata.data_slot_alignment));
     } else if data.instant_value.is_some() {
         let value = data.instant_value.unwrap();
+        result.push(0x00);
 
         // Push value
         result.extend(align_array_width(&convert_to_u8_array(value), metadata.data_alignment));
     } else if data.string_constant.is_some() {
         let string_value = data.string_constant.unwrap();
+        result.push(0x02);
 
         // Push slot id on heap
         result.extend(align_array_width(&string_value.slot.to_be_bytes().to_vec(), metadata.data_slot_alignment));
