@@ -18,10 +18,14 @@ pub fn find_next_comma(tokens: Vec<DecoratedToken>) -> Option<usize> {
 }
 
 pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedToken>> {
-    let mut result: Vec<Vec<DecoratedToken>> = Vec::new();
+    if tokens.is_empty() {
+        return vec![];
+    }
+
+    // Reserve initial expression space
+    let mut result: Vec<Vec<DecoratedToken>> = vec![vec![]];
 
     // Initialize result by an empty Vec
-    result.push(vec![]);
     for token in tokens {
         if token.content.get_operator().is_some() {
             if *token.content.get_operator().unwrap() == Operator::Comma {
@@ -32,10 +36,8 @@ pub fn split_comma_expression(tokens: Vec<DecoratedToken>) -> Vec<Vec<DecoratedT
         }
 
         // Add new expression term
-        let mut current_expression = result.last().unwrap().to_vec();
-        current_expression.push(token.clone());
-        result.remove(result.len() - 1);
-        result.push(current_expression.clone());
+        let len = result.len();
+        result[len - 1].push(token);
     }
 
     return result;
