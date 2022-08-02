@@ -29,10 +29,7 @@ fn expression_with_number_only() {
     let result = build_expression_evaluation_command(&expression, &vec![], &metadata);
     assert_eq!(
         result.commands,
-        vec![
-            0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xb1, 0, 0, 0, 0,
-            0, 0, 0, 0x03, 0xf1, 0x03, 0xf1, 0x01
-        ]
+        vec![177, 0, 0, 0, 0, 0, 0, 0, 0, 1, 177, 0, 0, 0, 0, 0, 0, 0, 0, 2, 177, 0, 0, 0, 0, 0, 0, 0, 0, 3, 241, 3, 241, 1]
     );
 
     // println!("{:?}", commands);
@@ -73,7 +70,7 @@ fn expression_with_defined_data() {
     let result = build_expression_evaluation_command(&expression, &defined_data, &metadata);
     assert_eq!(
         result.commands,
-        vec![0xb2, 1, 0, 0, 0xb2, 1, 0, 1, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xf1, 0x03, 0xf1, 0x01]
+        vec![178, 1, 0, 0, 178, 1, 0, 1, 177, 0, 0, 0, 0, 0, 0, 0, 0, 2, 241, 3, 241, 1]
     );
 
     // println!("{:?}", commands);

@@ -35,10 +35,7 @@ fn simple_test() {
     let result = build_assignment_command(&action, &defined_data, &metadata);
     assert_eq!(
         result.commands,
-        vec![
-            0xb1, 0, 0, 0, 0, 0, 0, 0, 0x01, 0xb1, 0, 0, 0, 0, 0, 0, 0, 0x02, 0xb1, 0, 0, 0, 0,
-            0, 0, 0, 0x03, 0xf1, 0x03, 0xf1, 0x01, 0xb4, 1, 0, 0
-        ]
+        vec![177, 0, 0, 0, 0, 0, 0, 0, 0, 1, 177, 0, 0, 0, 0, 0, 0, 0, 0, 2, 177, 0, 0, 0, 0, 0, 0, 0, 0, 3, 241, 3, 241, 1, 180, 1, 0, 0]
     );
 
     // println!("{:?}", commands);
