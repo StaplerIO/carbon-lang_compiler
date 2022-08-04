@@ -13,7 +13,7 @@ use carbon_lang_compiler::{
 };
 
 use crate::{
-    managers::logging::{log_error, log_info},
+    managers::logging::{log_error, log_info, log_trace},
     models::command_args::CompileCommandArgs,
 };
 
@@ -40,7 +40,7 @@ pub fn compile_package(args: CompileCommandArgs) {
 
             let tokens = tokens_result.unwrap();
 
-            log_info(format!("Found {} tokens", tokens.len()).as_str());
+            log_trace(format!("Found {} tokens", tokens.len()).as_str());
 
             let decorate_result = decorate_token(tokens);
 
