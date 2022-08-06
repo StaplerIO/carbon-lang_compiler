@@ -1,10 +1,11 @@
 # apa (Arbitrary-precision arithmetics)
 
-Support big number calculation, numbers passed with Strings.
+A part of TCPL Compiler
+
+> Refactoring project with a special model named `MathObject`
+
+Support big number calculation, ~~numbers passed with Strings.~~
 
 ## Supported calculations
-- [x] Addition
-- [ ] Subtraction
-- [ ] Multiplication
-- [ ] Division
-- [ ] Modulo
+
+Will be supported with operator reloading (something like that, because there's no operator reloading in Rust)
