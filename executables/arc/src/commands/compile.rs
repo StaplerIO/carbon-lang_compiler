@@ -4,9 +4,7 @@ use chrono::Local;
 use console::style;
 
 use carbon_lang_compiler::{
-    lexer::tokenize::tokenize,
     package_generator::{command_builder::function_block::build_function_command, utils::align_array_width},
-    parser::{decorator::decorate_token, pipeline::build_whole_file},
     shared::package_generation::{
         package_descriptor::PackageMetadata, relocation_reference::{RelocatableCommandList, RelocationReferenceType},
     },
@@ -16,6 +14,7 @@ use crate::{
     managers::logging::{log_error, log_info, log_trace},
     models::command_args::CompileCommandArgs,
 };
+use crate::managers::compilation::{parse_tokens, token_conversion};
 
 pub fn compile_package(args: CompileCommandArgs) {
     // Calculate procedure time
@@ -23,30 +22,32 @@ pub fn compile_package(args: CompileCommandArgs) {
 
     // Find out whether we are going to compile a directory or files
     if args.input_path.is_dir() {
-        // Fill code later
+        // TODO: Add directory builder
     } else {
         let file_content = fs::read_to_string(&args.input_path);
         if file_content.is_ok() {
-            let tokens_result = tokenize(file_content.unwrap().as_str(), true);
-
-            // Handle errors
-            if tokens_result.is_err() {
-                let err = tokens_result.unwrap_err();
-                for item in err.issues {
-                    log_error(format!("({}) {}", item.code, item.detail).as_str());
-                }
+            let tokens_result = token_conversion(file_content.unwrap().as_str());
+            if tokens_result.is_none() {
+                log_error("Failed to pass lexical analysis, compilation aborted");
                 return;
+            } else {
+                log_info("Lexical analysis passed");
             }
 
             let tokens = tokens_result.unwrap();
 
-            log_trace(format!("Found {} tokens", tokens.len()).as_str());
+            log_trace(format!("Found {} tokens", tokens.0.len()).as_str());
 
-            let decorate_result = decorate_token(tokens);
+            let decorated_tokens = tokens.0;
+            let string_pool = tokens.1;
 
-            let decorated_tokens = decorate_result.0;
-            let string_pool = decorate_result.1;
-            let tree_result = build_whole_file(decorated_tokens, args.entry_function);
+            let tree_result = parse_tokens(decorated_tokens, Some(args.entry_function));
+            if tree_result.is_none() {
+                log_error("Failed to pass token parsing, compilation aborted!");
+                return;
+            } else {
+                log_info("Token parsing passed");
+            }
 
             let metadata = PackageMetadata {
                 data_slot_alignment: 2,
@@ -57,7 +58,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                 global_command_offset: 5,
             };
 
-            if tree_result.is_ok() {
+            if tree_result.is_some() {
                 let tree = tree_result.unwrap();
 
                 let mut output = RelocatableCommandList::new();
@@ -103,7 +104,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                         .as_str(),
                 );
             } else {
-                log_error("Errors occurred during package compilation");
+                log_error("Errors occurred during code generation");
             }
         } else {
             log_error(
