@@ -1,7 +1,7 @@
 use crate::shared::ast::action::Action;
 use crate::shared::ast::parameter::Parameter;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Function {
     pub name: String,
 

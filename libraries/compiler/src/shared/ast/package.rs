@@ -1,5 +1,6 @@
 use crate::shared::ast::blocks::function::Function;
 
+#[derive(Debug, Clone)]
 pub struct ParserPackageStructure {
     pub functions: Vec<Function>,
     // The entry of the package (executable)
