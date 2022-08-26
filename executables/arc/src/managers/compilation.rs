@@ -4,6 +4,7 @@ use carbon_lang_compiler::parser::pipeline::build_whole_file;
 use carbon_lang_compiler::shared::ast::decorated_token::DecoratedToken;
 use carbon_lang_compiler::shared::ast::package::ParserPackageStructure;
 use carbon_lang_compiler::shared::package_generation::data_descriptor::StringConstant;
+use carbon_lang_compiler::shared::utils::identifier::Identifier;
 use crate::log_error;
 
 pub fn token_conversion(source: &str) -> Option<(Vec<DecoratedToken>, Vec<StringConstant>)> {
@@ -21,7 +22,7 @@ pub fn token_conversion(source: &str) -> Option<(Vec<DecoratedToken>, Vec<String
 }
 
 pub fn parse_tokens(tokens: Vec<DecoratedToken>, entry_function: Option<String>) -> Option<ParserPackageStructure> {
-    let tree_result = build_whole_file(tokens, entry_function.unwrap());
+    let tree_result = build_whole_file(tokens, Identifier::single(entry_function.unwrap().as_str()));
 
     if tree_result.is_err() {
         let err = tree_result.unwrap_err();

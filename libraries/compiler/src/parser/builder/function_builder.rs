@@ -6,6 +6,7 @@ use crate::shared::ast::parameter::Parameter;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
+use crate::shared::utils::identifier::Identifier;
 
 // Minimum: decl func <name> () [<typename>] {} : 11 tokens
 // Set <typename> as "none" to return nothing
@@ -26,7 +27,7 @@ pub fn function_builder(
                     name: tokens[2].content.get_data().unwrap().get_identifier().unwrap().clone(),
                     parameters: vec![],
                     body: vec![],
-                    return_type: "".to_string(),
+                    return_type: Identifier::empty(),
                 };
 
                 // Build argument list
@@ -101,13 +102,13 @@ fn parameter_array_builder(tokens: Vec<DecoratedToken>) -> Vec<Parameter> {
 }
 
 // Return the typename
-fn return_value_type_builder(tokens: Vec<DecoratedToken>) -> String {
+fn return_value_type_builder(tokens: Vec<DecoratedToken>) -> Identifier {
     if tokens.len() == 1 {
         if tokens[0].content.is_valid_type() {
             return tokens[0].content.get_data().unwrap().get_typename().unwrap().clone();
         } else if tokens[0].content.eq_entry(&DecoratedTokenContent::DecoratedKeyword(KeywordType::Invalid)) {
             if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwNone {
-                return String::from("");
+                return Identifier::empty();
             }
         }
     }

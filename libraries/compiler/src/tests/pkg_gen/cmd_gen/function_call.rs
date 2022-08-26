@@ -4,6 +4,7 @@ use crate::parser::builder::blocks::call::call_action_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn function_call() {
@@ -25,7 +26,7 @@ fn function_call() {
     };
 
     let defined_data = vec![DataDeclarator {
-        name: "bar".to_string(),
+        name: Identifier::single("bar"),
         slot: 0,
         location: DataLocation::Local,
         is_string: false

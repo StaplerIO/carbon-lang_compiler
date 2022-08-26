@@ -3,7 +3,6 @@ use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
 use crate::shared::token::data::Number;
-use crate::shared::utils::identifier::Identifier;
 use crate::shared::utils::position::Position;
 
 #[derive(Clone, PartialEq, Debug)]
@@ -14,7 +13,7 @@ pub struct Token {
 
 #[derive(Clone, PartialEq, Debug)]
 pub enum TokenContent {
-    Identifier(Identifier),
+    Identifier(String),
     Number(Number),
     String(String),
     Container(ContainerType),
@@ -23,6 +22,5 @@ pub enum TokenContent {
     Whitespace(String),
     Comment(Comment),
     Semicolon,
-    Scope,
     Invalid,
 }

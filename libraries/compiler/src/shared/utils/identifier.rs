@@ -1,3 +1,7 @@
-// TODO: Expand Identifier to [scope, name]
+pub type Scope = Vec<String>;
 
-pub type Identifier = String;
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct Identifier {
+	pub name: String,
+	pub scope: Scope,
+}

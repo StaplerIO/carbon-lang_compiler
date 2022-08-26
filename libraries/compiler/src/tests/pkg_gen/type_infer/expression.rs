@@ -6,25 +6,26 @@ use crate::parser::builder::expression_builder::expression_term_decorator;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::SimpleExpression;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn expression_data_type() {
     let tokens = tokenize("1 + 2 - 3.55", true).unwrap();
     let mut expr = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
-        output_type: "".to_string(),
+        output_type: Identifier::empty(),
     };
 
     let defined_vars: Vec<VariableDefinition> = [VariableDefinition {
-        identifier: String::from("bcd"),
-        type_name: String::from("number"),
+        identifier: Identifier::single("bcd"),
+        type_name: Identifier::single("number"),
     }]
         .to_vec();
 
-    let defined_types: Vec<String> = [
-        String::from("number"),
-        String::from("str"),
-        String::from("char"),
+    let defined_types: Vec<Identifier> = [
+        Identifier::single("number"),
+        Identifier::single("str"),
+        Identifier::single("char"),
     ]
         .to_vec();
 
@@ -33,6 +34,6 @@ fn expression_data_type() {
 
     assert_eq!(
         infer_expression_output_type(&expr, &defined_types).unwrap(),
-        String::from("number")
+        Identifier::single("number")
     );
 }

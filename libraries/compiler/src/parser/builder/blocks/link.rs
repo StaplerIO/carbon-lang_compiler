@@ -10,9 +10,13 @@ pub fn link_statement_builder(
 
         if next_semicolon_pos.unwrap_or(0) == 2 {
             if tokens[0].content.get_decorated_keyword().is_some()
-                && tokens[1].content.is_valid_identifier()
             {
-                return Ok((tokens[1].content.get_data().unwrap().get_identifier().unwrap().clone(), 2));
+                if tokens[1].original_token.get_string().is_some() {
+                    return Ok((tokens[1].content.get_data().unwrap().get_string().unwrap().clone().value, 2));
+                } else if tokens[1].content.is_valid_identifier() {
+                    return Ok((tokens[1].content.get_data().unwrap().get_identifier().unwrap().to_string(), 2));
+                }
+
             }
         }
     }

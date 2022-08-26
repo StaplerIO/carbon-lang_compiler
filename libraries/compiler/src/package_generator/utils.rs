@@ -8,9 +8,10 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::{
     RelocationReference, RelocationReferenceType,
 };
+use crate::shared::utils::identifier::Identifier;
 
-pub fn find_function(name: &str, available_functions: &Vec<Function>) -> Option<Function> {
-    let result = available_functions.iter().find(|&e| e.name == name);
+pub fn find_function(name: &Identifier, available_functions: &Vec<Function>) -> Option<Function> {
+    let result = available_functions.iter().find(|&e| e.name == *name);
     if result.is_some() {
         return Option::from(result.unwrap().clone());
     }

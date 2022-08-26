@@ -1,16 +1,17 @@
 use crate::shared::ast::action::VariableDefinition;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprTerm, SimpleExpression};
 use crate::shared::ast::blocks::function::Function;
+use crate::shared::utils::identifier::Identifier;
 
 // Term must be DataTerm
 pub fn infer_expression_term_data_type(
     term: &ExprDataTerm,
     defined_functions: &Vec<Function>,
     defined_variables: &Vec<VariableDefinition>,
-) -> Option<String> {
+) -> Option<Identifier> {
     return match term {
-        ExprDataTerm::Number(_) => Option::from(String::from("number")),
-        ExprDataTerm::String(_) => Option::from(String::from("str")),
+        ExprDataTerm::Number(_) => Some(Identifier::single("number")),
+        ExprDataTerm::String(_) => Some(Identifier::single("str")),
         ExprDataTerm::Identifier(x) => {
             for def_var in defined_variables {
                 if def_var.identifier == *x {
@@ -22,7 +23,7 @@ pub fn infer_expression_term_data_type(
         }
         ExprDataTerm::FunctionCall(x) => {
             for def_func in defined_functions {
-                if def_func.name == *x.function_name {
+                if def_func.name == x.function_name {
                     return Option::from(def_func.return_type.clone());
                 }
             }
@@ -35,15 +36,15 @@ pub fn infer_expression_term_data_type(
 
 pub fn infer_expression_output_type(
     expression: &SimpleExpression,
-    defined_types: &Vec<String>,
-) -> Option<String> {
+    defined_types: &Vec<Identifier>,
+) -> Option<Identifier> {
     let mut possible_types = defined_types.clone();
     for term in &expression.postfix_expr {
         let mut indexes_to_remove: Vec<usize> = vec![];
         // Find out impossible data type
         if term.content.get_data_term().is_some() {
             for current in possible_types.iter().enumerate() {
-                if !is_castable_to_type(term.clone(), current.1.to_string()) {
+                if !is_castable_to_type(term, current.1) {
                     indexes_to_remove.push(current.0);
                 }
             }
@@ -66,10 +67,10 @@ pub fn infer_expression_output_type(
 }
 
 // TermType must be Data, check it before calling this function
-fn is_castable_to_type(term: ExprTerm, target_type: String) -> bool {
+fn is_castable_to_type(term: &ExprTerm, target_type: &Identifier) -> bool {
     // Compiler defined types
     let data = term.content.get_data_term().unwrap();
-    if *data.get_typename().unwrap() == target_type {
+    if data.get_typename().unwrap() == target_type {
         return true;
     }
 

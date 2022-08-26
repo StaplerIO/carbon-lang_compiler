@@ -8,6 +8,7 @@ use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, I
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::RelationOperator;
+use crate::shared::utils::identifier::Identifier;
 
 /// A `ConditionBlock` has 2 parts: `Expression` part and `ActionBlock` part, formatted like this:
 /// ` leading_keyword (expression) { action_block }`
@@ -21,8 +22,8 @@ pub fn condition_block_builder(
         if *tokens[0].content.get_decorated_keyword().unwrap() == leading_keyword {
             let mut result = ConditionBlock {
                 condition: RelationExpression {
-                    left: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
-                    right: SimpleExpression { postfix_expr: vec![], output_type: "".to_string() },
+                    left: SimpleExpression { postfix_expr: vec![], output_type: Identifier::empty() },
+                    right: SimpleExpression { postfix_expr: vec![], output_type: Identifier::empty() },
                     expected_relation: RelationOperator::Invalid
                 },
                 body: ActionBlock { actions: vec![] },

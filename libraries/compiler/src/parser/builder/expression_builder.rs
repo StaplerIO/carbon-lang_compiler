@@ -7,6 +7,7 @@ use crate::parser::builder::blocks::call::bare_function_call_builder;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprTerm, RelationExpression, SimpleExpression, TermContent};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::token::container::ContainerType;
+use crate::shared::utils::identifier::Identifier;
 
 lazy_static! {
     /**
@@ -217,8 +218,8 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     };
 
     return RelationExpression {
-        left: SimpleExpression { postfix_expr: left_expr, output_type: "".to_string() },
-        right: SimpleExpression { postfix_expr: right_expr, output_type: "".to_string() },
+        left: SimpleExpression { postfix_expr: left_expr, output_type: Identifier::empty() },
+        right: SimpleExpression { postfix_expr: right_expr, output_type: Identifier::empty() },
         expected_relation: *rel_op
     };
 }

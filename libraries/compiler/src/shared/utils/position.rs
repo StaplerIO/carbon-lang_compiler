@@ -15,5 +15,4 @@ impl Position {
     pub fn new(start: usize, length: usize) -> Position {
         Position { start, length, }
     }
-    
 }

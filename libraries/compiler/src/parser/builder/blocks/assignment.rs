@@ -5,6 +5,7 @@ use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::operator::Operator;
+use crate::shared::utils::identifier::Identifier;
 
 pub fn assignment_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action, usize), GeneralIssue<String>> {
     let next_semicolon_pos = find_next_semicolon(tokens.clone());
@@ -21,7 +22,7 @@ pub fn assignment_block_builder(tokens: &Vec<DecoratedToken>) -> Result<(Action,
                         identifier: tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
                         eval_expression: SimpleExpression {
                             postfix_expr,
-                            output_type: "".to_string(),
+                            output_type: Identifier::empty(),
                         },
                         // TODO: Add tokens that make this block
                     }), vec![]),

@@ -1,6 +1,7 @@
 use crate::shared::ast::blocks::expression::{SimpleExpression, RelationExpression};
 use crate::shared::ast::parameter::Parameter;
 use crate::shared::token::token::Token;
+use crate::shared::utils::identifier::Identifier;
 
 pub type VariableDefinition = Parameter;
 
@@ -51,19 +52,19 @@ pub struct DeclarationAction {
     // A variable or a constant
     pub is_variable: bool,
 
-    pub identifier: String,
-    pub data_type: String,
+    pub identifier: Identifier,
+    pub data_type: Identifier,
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct AssignmentAction {
-    pub identifier: String,
+    pub identifier: Identifier,
     pub eval_expression: SimpleExpression,
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct CallAction {
-    pub function_name: String,
+    pub function_name: Identifier,
     // Arguments are Expressions
     pub arguments: Vec<SimpleExpression>,
 }

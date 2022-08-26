@@ -11,6 +11,7 @@ use crate::parser::builder::function_builder::function_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::ActionContent;
 use crate::shared::token::operator::CalculationOperator;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn assignment() {
@@ -20,7 +21,7 @@ fn assignment() {
     let result = raw.clone().ok().unwrap().0.get_assignment_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.identifier, String::from("a"));
+    assert_eq!(result.identifier, Identifier::single("a"));
 
     let expr = &result.eval_expression.postfix_expr;
     assert_eq!(expr.len(), 3);
@@ -46,8 +47,8 @@ fn variable_declaration() {
     let result = raw.clone().ok().unwrap().0.get_declaration_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.identifier, String::from("foo"));
-    assert_eq!(result.data_type, String::from("number"));
+    assert_eq!(result.identifier, Identifier::single("foo"));
+    assert_eq!(result.data_type, Identifier::single("number"));
     assert_eq!(result.is_variable, true);
 }
 
@@ -59,7 +60,7 @@ fn function_call() {
     let result = raw.clone().ok().unwrap().0.get_call_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.function_name, String::from("func_1"));
+    assert_eq!(result.function_name, Identifier::single("func_1"));
     assert_eq!(result.arguments.len(), 4);
     assert_eq!(result.arguments[0].postfix_expr.len(), 1);
     assert_eq!(result.arguments[1].postfix_expr.len(), 1);
@@ -71,7 +72,7 @@ fn function_call() {
             .unwrap()
             .get_identifier()
             .unwrap(),
-        String::from("var1")
+        Identifier::single("var1")
     );
     // Postfix expression: 3 2 -
     assert!(result.arguments.last().unwrap().postfix_expr.last().unwrap().content.get_operator().is_some());
@@ -197,8 +198,16 @@ fn function_block() {
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.name, String::from("main"));
-    assert_eq!(result.return_type, String::from("number"));
+    assert_eq!(result.name, Identifier::single("main"));
+    assert_eq!(result.return_type, Identifier::single("number"));
     assert_eq!(result.parameters.len(), 2);
     assert_eq!(result.body.len(), 1);
+}
+
+#[test]
+fn identifier_section() {
+    let tokens = tokenize("StaplerIO::arc::tcpl::compiler", true).unwrap();
+    let raw = decorate_token(tokens).0;
+
+    assert_eq!(raw.len(), 1);
 }

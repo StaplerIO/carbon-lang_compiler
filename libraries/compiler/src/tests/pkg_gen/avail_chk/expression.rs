@@ -4,6 +4,7 @@ use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::builder::expression_builder::expression_term_decorator;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::blocks::expression::SimpleExpression;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn sequence() {
@@ -13,7 +14,7 @@ fn sequence() {
 
     assert!(check_expression_sequence(SimpleExpression {
         postfix_expr: expr.clone(),
-        output_type: String::new()
+        output_type: Identifier::empty()
     }));
 
     // An illegal expression
@@ -21,6 +22,6 @@ fn sequence() {
     expr = expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0));
     assert!(!check_expression_sequence(SimpleExpression {
         postfix_expr: expr.clone(),
-        output_type: String::new()
+        output_type: Identifier::empty()
     }));
 }

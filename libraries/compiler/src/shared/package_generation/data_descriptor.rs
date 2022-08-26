@@ -1,3 +1,5 @@
+use crate::shared::utils::identifier::Identifier;
+
 #[derive(Debug, Clone)]
 pub enum DataLocation {
     Local,
@@ -6,7 +8,7 @@ pub enum DataLocation {
 
 #[derive(Debug, Clone)]
 pub struct DataDeclarator {
-    pub name: String,
+    pub name: Identifier,
     // Slot is start from 0
     pub slot: usize,
     pub location: DataLocation,

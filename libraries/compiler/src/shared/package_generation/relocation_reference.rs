@@ -1,4 +1,5 @@
 use crate::shared::package_generation::data_descriptor::StringConstant;
+use crate::shared::utils::identifier::Identifier;
 
 #[derive(Clone, Debug)]
 pub struct RelocationCredential {
@@ -23,7 +24,7 @@ pub enum RelocationTargetType {
     // Set to 0 to jump out to nearest loop
     BreakDomain(usize),
     IgnoreDomain(usize),
-    EnterFunction(String),
+    EnterFunction(Identifier),
     Undefined
 }
 
@@ -47,8 +48,8 @@ pub struct RelocatableCommandList {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub enum RelocationReferenceType {
     // The string includes function name
-    FunctionEntrance(String),
-    EndFunction(String),
+    FunctionEntrance(Identifier),
+    EndFunction(Identifier),
     IfEntrance,
     ElifEntrance,
     ElseEntrance,

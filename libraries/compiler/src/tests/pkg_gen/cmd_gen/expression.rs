@@ -6,6 +6,7 @@ use crate::parser::decorator::decorate_token;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
+use crate::shared::utils::identifier::Identifier;
 
 // TODO: Validate the possibility of the test
 #[test]
@@ -13,7 +14,7 @@ fn expression_with_number_only() {
     let tokens = tokenize("1 + 2 * 3", true).unwrap();
     let expression = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
-        output_type: "number".to_string(),
+        output_type: Identifier::single("number"),
     };
 
     let metadata = PackageMetadata {
@@ -40,7 +41,7 @@ fn expression_with_defined_data() {
     let tokens = tokenize("a + b * 2", true).unwrap();
     let expression = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
-        output_type: "number".to_string(),
+        output_type: Identifier::single("number"),
     };
 
     let metadata = PackageMetadata {
@@ -54,13 +55,13 @@ fn expression_with_defined_data() {
 
     let defined_data = vec![
         DataDeclarator {
-            name: "a".to_string(),
+            name: Identifier::single("a"),
             slot: 0,
             location: DataLocation::Local,
             is_string: false
         },
         DataDeclarator {
-            name: "b".to_string(),
+            name: Identifier::single("b"),
             slot: 1,
             location: DataLocation::Local,
             is_string: false

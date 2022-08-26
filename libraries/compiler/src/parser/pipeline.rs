@@ -4,10 +4,11 @@ use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::ast::package::ParserPackageStructure;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::keyword::KeywordType;
+use crate::shared::utils::identifier::Identifier;
 
 pub fn build_whole_file(
     tokens: Vec<DecoratedToken>,
-    entry_point: String,
+    entry_point: Identifier,
 ) -> Result<ParserPackageStructure, GeneralIssue<String>> {
     let mut result = ParserPackageStructure {
         functions: vec![],

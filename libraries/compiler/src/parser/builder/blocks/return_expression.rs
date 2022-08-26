@@ -5,6 +5,7 @@ use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::keyword::KeywordType;
+use crate::shared::utils::identifier::Identifier;
 
 pub fn return_action_builder(
     tokens: &Vec<DecoratedToken>,
@@ -24,7 +25,7 @@ pub fn return_action_builder(
                         result = Option::from(ReturnAction {
                             value: Some(SimpleExpression {
                                 postfix_expr: vec![],
-                                output_type: String::new(),
+                                output_type: Identifier::empty(),
                             }),
                         });
                     } else {
@@ -34,7 +35,7 @@ pub fn return_action_builder(
                         result = Option::from(ReturnAction {
                             value: Some(SimpleExpression {
                                 postfix_expr: expression_infix_to_postfix(expression_term_decorator(&expression_zone)),
-                                output_type: String::new(),
+                                output_type: Identifier::empty(),
                             }),
                         });
                     }

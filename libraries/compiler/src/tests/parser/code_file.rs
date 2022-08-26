@@ -3,6 +3,7 @@ use lazy_static::lazy_static;
 use crate::lexer::tokenize::tokenize;
 use crate::parser::decorator::decorate_token;
 use crate::parser::pipeline::build_whole_file;
+use crate::shared::utils::identifier::Identifier;
 
 lazy_static! {
         static ref FILE_CONTENT: &'static str = r#"
@@ -31,7 +32,7 @@ lazy_static! {
 #[test]
 fn file_example() {
     let tokens = decorate_token(tokenize(&FILE_CONTENT, true).unwrap()).0;
-    let structure = build_whole_file(tokens, String::from("main")).ok().unwrap();
+    let structure = build_whole_file(tokens, Identifier::single("main")).ok().unwrap();
 
     assert_eq!(structure.linked_code_files.len(), 2);
     assert_eq!(structure.functions.len(), 2);

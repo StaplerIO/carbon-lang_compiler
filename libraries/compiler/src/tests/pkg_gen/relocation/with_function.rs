@@ -6,6 +6,7 @@ use crate::parser::decorator::decorate_token;
 use crate::parser::pipeline::build_whole_file;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn single_function() {
@@ -16,7 +17,7 @@ fn single_function() {
                                                     result = foo + bar;\
                                                     return result;\
                                                 }", true).unwrap();
-    let tree = build_whole_file(decorate_token(tokens).0, "main".to_string()).unwrap();
+    let tree = build_whole_file(decorate_token(tokens).0, Identifier::single("main")).unwrap();
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
         data_alignment: 4,
@@ -64,7 +65,7 @@ fn multiple_functions() {
                                                     decl var number v2;\
                                                     v2 = 37413;\
                                                 }", true).unwrap();
-    let tree = build_whole_file(decorate_token(tokens).0, "main".to_string()).unwrap();
+    let tree = build_whole_file(decorate_token(tokens).0, Identifier::single("main")).unwrap();
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
         data_alignment: 4,

@@ -4,6 +4,7 @@ use crate::parser::builder::blocks::assignment::assignment_block_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn simple_test() {
@@ -26,7 +27,7 @@ fn simple_test() {
     };
 
     let defined_data = vec![DataDeclarator {
-        name: "t".to_string(),
+        name: Identifier::single("t"),
         slot: 0,
         location: DataLocation::Local,
         is_string: false

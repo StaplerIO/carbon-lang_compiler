@@ -6,6 +6,7 @@ use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
+use crate::shared::utils::identifier::Identifier;
 
 // Scheme: call <identifier>(<param list>);
 pub fn call_action_builder(
@@ -56,7 +57,7 @@ pub fn bare_function_call_builder(
                 {
                     result.arguments.push(SimpleExpression {
                         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&param)),
-                        output_type: String::new(),
+                        output_type: Identifier::empty(),
                     });
                 }
 

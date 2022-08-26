@@ -3,7 +3,6 @@ use crate::shared::token::data::Number;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
 use crate::shared::token::token::{Token, TokenContent};
-use crate::shared::utils::identifier::Identifier;
 use crate::shared::utils::position::Position;
 
 impl Token {
@@ -26,7 +25,7 @@ impl Token {
     }
 
     // Get value inside the enum TokenContent
-    pub fn get_identifier(&self) -> Option<Identifier> {
+    pub fn get_identifier(&self) -> Option<String> {
         match self.content {
             TokenContent::Identifier(ref identifier) => Some(identifier.clone()),
             _ => None,

@@ -3,6 +3,7 @@ use crate::shared::ast::blocks::expression::{ExprDataTerm, TermContent};
 use crate::shared::ast::decorated_token::DataToken;
 use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::operator::Operator;
+use crate::shared::utils::identifier::Identifier;
 
 impl TermContent {
     pub fn get_data_term(&self) -> Option<&ExprDataTerm> {
@@ -51,7 +52,7 @@ impl ExprDataTerm {
         };
     }
 
-    pub fn get_identifier(&self) -> Option<&String> {
+    pub fn get_identifier(&self) -> Option<&Identifier> {
         return match self {
             ExprDataTerm::Identifier(identifier) => return Some(identifier),
             _ => None,
@@ -65,7 +66,7 @@ impl ExprDataTerm {
         };
     }
 
-    pub fn get_typename(&self) -> Option<&String> {
+    pub fn get_typename(&self) -> Option<&Identifier> {
         return match self {
             ExprDataTerm::Typename(typename) => return Some(typename),
             _ => None,

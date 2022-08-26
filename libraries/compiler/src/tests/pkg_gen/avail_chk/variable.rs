@@ -6,16 +6,17 @@ use crate::parser::builder::blocks::assignment::assignment_block_builder;
 use crate::parser::builder::blocks::declaration::declaration_action_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::VariableDefinition;
+use crate::shared::utils::identifier::Identifier;
 
 #[test]
 fn check_def() {
     let tokens = tokenize("decl var number a;", true).unwrap();
     let stmt = declaration_action_builder(&decorate_token(tokens).0);
 
-    let defined_types: Vec<String> = [
-        String::from("number"),
-        String::from("str"),
-        String::from("char"),
+    let defined_types = vec![
+        Identifier::single("number"),
+        Identifier::single("str"),
+        Identifier::single("char"),
     ]
         .to_vec();
 
@@ -32,15 +33,15 @@ fn check_assignment() {
     let stmt = assignment_block_builder(&decorate_token(tokens).0);
 
     let defined_vars: Vec<VariableDefinition> = [VariableDefinition {
-        identifier: String::from("bcd"),
-        type_name: String::from("number"),
+        identifier: Identifier::single("bcd"),
+        type_name: Identifier::single("number"),
     }]
         .to_vec();
 
-    let defined_types: Vec<String> = [
-        String::from("number"),
-        String::from("str"),
-        String::from("char"),
+    let defined_types = vec![
+        Identifier::single("number"),
+        Identifier::single("str"),
+        Identifier::single("char"),
     ]
         .to_vec();
 

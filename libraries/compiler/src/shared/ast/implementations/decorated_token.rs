@@ -3,6 +3,7 @@ use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
+use crate::shared::utils::identifier::Identifier;
 
 impl DecoratedTokenContent {
     pub fn eq_entry(&self, dtkc: &DecoratedTokenContent) -> bool {
@@ -19,28 +20,28 @@ impl DecoratedTokenContent {
     pub fn get_decorated_keyword(&self) -> Option<&KeywordType> {
         match self {
             DecoratedTokenContent::DecoratedKeyword(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
     pub fn get_operator(&self) -> Option<&Operator> {
         match self {
             DecoratedTokenContent::Operator(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
     pub fn get_data(&self) -> Option<&DataToken> {
         match self {
             DecoratedTokenContent::Data(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
     pub fn get_container(&self) -> Option<&ContainerType> {
         match self {
             DecoratedTokenContent::Container(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
@@ -74,31 +75,31 @@ impl DecoratedTokenContent {
 }
 
 impl DataToken {
-    pub fn get_typename(&self) -> Option<&String> {
+    pub fn get_typename(&self) -> Option<&Identifier> {
         return match &self {
             DataToken::Typename(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
     pub fn get_number(&self) -> Option<&String> {
         return match &self {
             DataToken::Number(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
-    pub fn get_identifier(&self) -> Option<&String> {
+    pub fn get_identifier(&self) -> Option<&Identifier> {
         return match &self {
             DataToken::Identifier(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 
     pub fn get_string(&self) -> Option<&StringConstant> {
         return match &self {
             DataToken::String(x) => Option::from(x),
-            _ => Option::None
+            _ => None
         }
     }
 }
