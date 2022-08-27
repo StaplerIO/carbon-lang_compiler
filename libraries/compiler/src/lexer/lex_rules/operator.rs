@@ -11,6 +11,7 @@ lazy_static! {
         (Operator::Assignment, "="),
         (Operator::Scope, "::"),
         (Operator::Comma, ","),
+        (Operator::Dot, "."),
     ]
     .iter()
     .cloned()

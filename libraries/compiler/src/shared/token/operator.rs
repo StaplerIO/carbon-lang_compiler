@@ -8,6 +8,7 @@ pub enum Operator {
     Assignment, // =
     Scope,      // ::
     Comma,      // ,
+    Dot,        // .
     Invalid,
 }
 
@@ -49,6 +50,7 @@ impl Operator {
             (Operator::Assignment, Operator::Assignment) => true,
             (Operator::Scope, Operator::Scope) => true,
             (Operator::Comma, Operator::Comma) => true,
+            (Operator::Dot, Operator::Dot) => true,
             (Operator::Invalid, Operator::Invalid) => true,
             (_, _) => false }
     }

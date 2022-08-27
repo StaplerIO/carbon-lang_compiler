@@ -5,7 +5,7 @@ use crate::shared::token::operator::Operator;
 
 #[test]
 fn simple() {
-    let result = tokenize("number 132211{ 32.85 dd } >! = >= ,", false).unwrap();
+    let result = tokenize("number 132211{ 32.85 dd } >! = >= , .", false).unwrap();
 
     assert_eq!(
         result[0].get_keyword().unwrap(),
@@ -20,8 +20,12 @@ fn simple() {
         String::from("32.85")
     );
     assert_eq!(
-        result.last().unwrap().get_operator().unwrap(),
+        result[result.len() - 3].get_operator().unwrap(),
         Operator::Comma
+    );
+    assert_eq!(
+        result.last().unwrap().get_operator().unwrap(),
+        Operator::Dot
     );
 }
 
