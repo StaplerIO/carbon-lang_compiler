@@ -32,7 +32,7 @@ pub fn dac_builder(data: DataAccessDescriptor, metadata: &PackageMetadata) -> Re
         let string_value = data.string_constant.unwrap();
         result.push(0x02);
 
-        // Push slot id on heap
+        // Push slot id on string heap
         result.extend(align_array_width(&string_value.slot.to_be_bytes().to_vec(), metadata.data_slot_alignment));
     } else {
         return Err(GeneralIssue {

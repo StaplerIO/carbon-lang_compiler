@@ -1,4 +1,5 @@
 use crate::shared::ast::blocks::function::Function;
+use crate::shared::ast::link::SourceFileLink;
 use crate::shared::utils::identifier::Identifier;
 
 #[derive(Debug, Clone)]
@@ -8,5 +9,5 @@ pub struct ParserPackageStructure {
     pub entry_point: Identifier,
 
     // Will be solved on package generation
-    pub linked_code_files: Vec<String>,
+    pub linked_code_files: Vec<SourceFileLink>,
 }

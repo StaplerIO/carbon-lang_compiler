@@ -30,6 +30,7 @@ pub fn build_assignment_command(
         RootCommand::Stack.to_opcode(),
         StackCommand::PopToObject.to_opcode(),
     )]);
+    
     // Acquire DAC
     let dac_build_result = dac_builder(DataAccessDescriptor::new_identifier(target_data), metadata);
     if dac_build_result.is_ok() {
