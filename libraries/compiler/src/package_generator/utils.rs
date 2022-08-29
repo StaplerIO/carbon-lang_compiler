@@ -29,7 +29,7 @@ pub fn infer_every_expression_data_term_type(
     for (index, term) in expr.postfix_expr.clone().iter().enumerate() {
         if term.content.get_data_term().is_some() {
             let mut data = term.content.get_data_term().unwrap().clone();
-            data = ExprDataTerm::Typename(infer_expression_term_data_type(&data, &defined_functions, &defined_variables).unwrap());
+            data = ExprDataTerm::Identifier(infer_expression_term_data_type(&data, &defined_functions, &defined_variables).unwrap());
             expr.postfix_expr[index].content = TermContent::Data(data);
         }
     }

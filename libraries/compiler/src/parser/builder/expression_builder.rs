@@ -2,11 +2,11 @@ use std::collections::HashMap;
 
 use lazy_static::lazy_static;
 
-use crate::shared::token::operator::{CalculationOperator, Operator};
 use crate::parser::builder::blocks::call::bare_function_call_builder;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprTerm, RelationExpression, SimpleExpression, TermContent};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::token::container::ContainerType;
+use crate::shared::token::operator::{CalculationOperator, Operator};
 use crate::shared::utils::identifier::Identifier;
 
 lazy_static! {
@@ -39,7 +39,7 @@ pub fn expression_term_decorator(tokens: &Vec<DecoratedToken>) -> Vec<ExprTerm> 
                     if function_call.is_ok() {
                         result.push(ExprTerm {
                             content: TermContent::Data(ExprDataTerm::FunctionCall(function_call.clone().ok().unwrap().0)),
-                            original_token: vec![]
+                            original_token: vec![],
                         });
 
                         index += function_call.ok().unwrap().1;
@@ -47,30 +47,28 @@ pub fn expression_term_decorator(tokens: &Vec<DecoratedToken>) -> Vec<ExprTerm> 
                     }
 
                     // 2) normal data
-                    if d.get_typename().is_none() {
-                        result.push(ExprTerm {
-                            content: TermContent::Data(ExprDataTerm::from_data_token(&d.clone())),
-                            original_token: vec![]
-                        });
-                    }
+                    result.push(ExprTerm {
+                        content: TermContent::Data(ExprDataTerm::from_data_token(&d.clone())),
+                        original_token: vec![],
+                    });
                 }
-            },
+            }
             DecoratedTokenContent::Container(x) => {
                 if x.is_bracket() {
                     result.push(ExprTerm {
                         content: TermContent::Priority(x == ContainerType::Bracket),
-                        original_token: vec![]
+                        original_token: vec![],
                     });
                 }
-            },
+            }
             DecoratedTokenContent::Operator(x) => {
                 if is_operator_dt(token.clone()) {
                     result.push(ExprTerm {
                         content: TermContent::Operator(x),
-                        original_token: vec![]
+                        original_token: vec![],
                     });
                 }
-            },
+            }
             _ => panic!("Illegal token stream for expression builder encountered!")
         }
 
@@ -90,9 +88,9 @@ fn is_operator_dt(token: DecoratedToken) -> bool {
                 Operator::Logical(_) => true,
                 _ => false,
             }
-        },
+        }
         _ => false
-    }
+    };
 }
 
 // TODO: We leave the postfix expression for code generator (solve the expression later)
@@ -155,7 +153,7 @@ fn is_operator_et(token: ExprTerm) -> bool {
             Operator::Relation(_) => true,
             Operator::Logical(_) => true,
             _ => false,
-        }
+        };
     }
 
     return false;
@@ -220,7 +218,7 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     return RelationExpression {
         left: SimpleExpression { postfix_expr: left_expr, output_type: Identifier::empty() },
         right: SimpleExpression { postfix_expr: right_expr, output_type: Identifier::empty() },
-        expected_relation: *rel_op
+        expected_relation: *rel_op,
     };
 }
 
@@ -231,5 +229,5 @@ fn get_operator_priority(op: &Operator) -> u8 {
         Operator::Relation(_) => 2,
         Operator::Calculation(_) => 3,
         _ => panic!("Invalid operator type!"),
-    }
+    };
 }

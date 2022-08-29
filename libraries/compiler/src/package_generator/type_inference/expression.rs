@@ -30,7 +30,6 @@ pub fn infer_expression_term_data_type(
 
             None
         }
-        _ => None,
     };
 }
 
@@ -70,7 +69,7 @@ pub fn infer_expression_output_type(
 fn is_castable_to_type(term: &ExprTerm, target_type: &Identifier) -> bool {
     // Compiler defined types
     let data = term.content.get_data_term().unwrap();
-    if data.get_typename().unwrap() == target_type {
+    if data.get_identifier().unwrap() == target_type {
         return true;
     }
 

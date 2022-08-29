@@ -25,5 +25,4 @@ pub enum DataToken {
     Number(String),
     String(StringConstant),
     Identifier(Identifier),
-    Typename(Identifier),
 }

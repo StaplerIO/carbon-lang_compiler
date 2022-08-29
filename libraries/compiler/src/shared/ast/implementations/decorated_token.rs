@@ -49,18 +49,6 @@ impl DecoratedTokenContent {
         return self == &DecoratedTokenContent::StatementEndSign;
     }
 
-    pub fn is_valid_type(&self) -> bool {
-        return match &self {
-            DecoratedTokenContent::Data(x) => {
-                match &x {
-                    DataToken::Typename(_) => true,
-                    _ => false
-                }
-            },
-            _ => false
-        };
-    }
-
     pub fn is_valid_identifier(&self) -> bool {
         return match &self {
             DecoratedTokenContent::Data(x) => {
@@ -75,13 +63,6 @@ impl DecoratedTokenContent {
 }
 
 impl DataToken {
-    pub fn get_typename(&self) -> Option<&Identifier> {
-        return match &self {
-            DataToken::Typename(x) => Option::from(x),
-            _ => None
-        }
-    }
-
     pub fn get_number(&self) -> Option<&String> {
         return match &self {
             DataToken::Number(x) => Option::from(x),

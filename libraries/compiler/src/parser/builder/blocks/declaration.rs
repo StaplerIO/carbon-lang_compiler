@@ -12,7 +12,7 @@ pub fn declaration_action_builder(
     if next_semicolon_pos.unwrap_or(0) == 4 {
         if tokens[0].content.get_decorated_keyword().is_some()
             && tokens[1].content.get_decorated_keyword().is_some()
-            && tokens[2].content.is_valid_type()
+            && tokens[2].content.is_valid_identifier()
             && tokens[3].content.is_valid_identifier()
         {
             // Match declaration statement format: decl <var|const> <data_type> <identifier>
@@ -20,7 +20,7 @@ pub fn declaration_action_builder(
             let mut result = DeclarationAction {
                 is_variable: false,
                 identifier: tokens[3].content.get_data().unwrap().get_identifier().unwrap().clone(),
-                data_type: tokens[2].content.get_data().unwrap().get_typename().unwrap().clone(),
+                data_type: tokens[2].content.get_data().unwrap().get_identifier().unwrap().clone(),
             };
 
             // Lead the Declaration statement

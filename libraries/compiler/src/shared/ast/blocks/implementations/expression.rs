@@ -34,7 +34,6 @@ impl ExprDataTerm {
             DataToken::Number(x) => ExprDataTerm::Number(x.clone()),
             DataToken::String(x) => ExprDataTerm::String(x.clone()),
             DataToken::Identifier(x) => ExprDataTerm::Identifier(x.clone()),
-            _ => panic!("Invalid data token"),
         }
     }
 
@@ -62,13 +61,6 @@ impl ExprDataTerm {
     pub fn get_function_call(&self) -> Option<&CallAction> {
         return match self {
             ExprDataTerm::FunctionCall(function_call) => return Some(function_call),
-            _ => None,
-        };
-    }
-
-    pub fn get_typename(&self) -> Option<&Identifier> {
-        return match self {
-            ExprDataTerm::Typename(typename) => return Some(typename),
             _ => None,
         };
     }

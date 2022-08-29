@@ -45,15 +45,15 @@ pub fn decorate_token(tokens: Vec<Token>) -> (Vec<DecoratedToken>, Vec<StringCon
             }),
             TokenContent::Keyword(x) => match x {
                 KeywordType::KwNumber => result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Typename(Identifier::single("number"))),
+                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single("number"))),
                     original_token: token.clone(),
                 }),
                 KeywordType::KwChar => result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Typename(Identifier::single("char"))),
+                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single("char"))),
                     original_token: token.clone(),
                 }),
                 KeywordType::KwStr => result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Typename(Identifier::single("str"))),
+                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single("str"))),
                     original_token: token.clone(),
                 }),
                 _ => result.push(DecoratedToken {

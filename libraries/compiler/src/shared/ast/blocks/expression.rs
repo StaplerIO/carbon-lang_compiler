@@ -41,5 +41,4 @@ pub enum ExprDataTerm {
     String(StringConstant),
     Identifier(Identifier),
     FunctionCall(CallAction),
-    Typename(Identifier),
 }

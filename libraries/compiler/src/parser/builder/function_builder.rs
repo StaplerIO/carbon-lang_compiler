@@ -113,9 +113,9 @@ fn parameter_array_builder(tokens: Vec<DecoratedToken>) -> Vec<Parameter> {
         let mut result: Vec<Parameter> = vec![];
         for declaration in list {
             if declaration.len() == 2 {
-                if declaration[0].content.is_valid_type() && declaration[1].content.is_valid_identifier() {
+                if declaration[0].content.is_valid_identifier() && declaration[1].content.is_valid_identifier() {
                     result.push(Parameter {
-                        type_name: declaration[0].content.get_data().unwrap().get_typename().unwrap().clone(),
+                        type_name: declaration[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
                         identifier: declaration[1].content.get_data().unwrap().get_identifier().unwrap().clone(),
                     });
                 }
@@ -134,8 +134,8 @@ fn parameter_array_builder(tokens: Vec<DecoratedToken>) -> Vec<Parameter> {
 // Return the typename
 fn return_value_type_builder(tokens: Vec<DecoratedToken>) -> Identifier {
     if tokens.len() == 1 {
-        if tokens[0].content.is_valid_type() {
-            return tokens[0].content.get_data().unwrap().get_typename().unwrap().clone();
+        if tokens[0].content.is_valid_identifier() {
+            return tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone();
         } else if tokens[0].content.eq_entry(&DecoratedTokenContent::DecoratedKeyword(KeywordType::Invalid)) {
             if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwNone {
                 return Identifier::empty();
