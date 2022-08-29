@@ -8,7 +8,7 @@ use crate::shared::package_generation::relocation_reference::RelocationReference
 
 pub fn build_function_command(func: &Function, metadata: &PackageMetadata) -> RelocatableCommandList {
     let mut params: Vec<DataDeclarator> = vec![];
-    for (index, param) in func.parameters.iter().enumerate() {
+    for (index, param) in func.declarator.parameters.iter().enumerate() {
         params.push(DataDeclarator {
             name: param.identifier.clone(),
             slot: index,
@@ -18,8 +18,8 @@ pub fn build_function_command(func: &Function, metadata: &PackageMetadata) -> Re
     }
 
     let mut result = action_block_command_builder(&ActionBlock { actions: func.body.clone() }, true, &params, metadata);
-    result.descriptors.references.push(RelocationReference { ref_type: FunctionEntrance(func.name.clone()), command_array_position: 0 });
-    result.descriptors.references.push(RelocationReference { ref_type: EndFunction(func.name.clone()), command_array_position: result.commands.len() - 1 });
+    result.descriptors.references.push(RelocationReference { ref_type: FunctionEntrance(func.declarator.identifier.clone()), command_array_position: 0 });
+    result.descriptors.references.push(RelocationReference { ref_type: EndFunction(func.declarator.identifier.clone()), command_array_position: result.commands.len() - 1 });
 
     return result;
 }

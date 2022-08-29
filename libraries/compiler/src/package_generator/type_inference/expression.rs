@@ -23,8 +23,8 @@ pub fn infer_expression_term_data_type(
         }
         ExprDataTerm::FunctionCall(x) => {
             for def_func in defined_functions {
-                if def_func.name == x.function_name {
-                    return Option::from(def_func.return_type.clone());
+                if def_func.declarator.identifier == x.function_name {
+                    return Option::from(def_func.declarator.return_type.clone());
                 }
             }
 

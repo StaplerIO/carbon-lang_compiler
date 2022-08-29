@@ -11,7 +11,7 @@ use crate::shared::package_generation::relocation_reference::{
 use crate::shared::utils::identifier::Identifier;
 
 pub fn find_function(name: &Identifier, available_functions: &Vec<Function>) -> Option<Function> {
-    let result = available_functions.iter().find(|&e| e.name == *name);
+    let result = available_functions.iter().find(|&e| e.declarator.identifier == *name);
     if result.is_some() {
         return Option::from(result.unwrap().clone());
     }

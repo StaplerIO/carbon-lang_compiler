@@ -4,9 +4,13 @@ use crate::shared::utils::identifier::Identifier;
 
 #[derive(Clone, Debug)]
 pub struct Function {
-    pub name: Identifier,
-
-    pub parameters: Vec<Parameter>,
+    pub declarator: FunctionDeclarator,
     pub body: Vec<Action>,
+}
+
+#[derive(Clone, Debug)]
+pub struct FunctionDeclarator {
+    pub identifier: Identifier,
+    pub parameters: Vec<Parameter>,
     pub return_type: Identifier,
 }

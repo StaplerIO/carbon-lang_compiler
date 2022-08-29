@@ -85,3 +85,11 @@ fn comment_test() {
 
     assert_eq!(result.len(), 1);
 }
+
+#[test]
+fn group_related_keywords_test() {
+    let result = tokenize("group arc { field number foo(get,set); field str bar(get,set); method run()[none]; method suspend()[number] }\
+                                                 impl arc { default foo = 42; default bar = \"example\"; method suspend()[number] { return self.foo; } }", true).unwrap();
+
+    assert_eq!(result.len(), 65);
+}

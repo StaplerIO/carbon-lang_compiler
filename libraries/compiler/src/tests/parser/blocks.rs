@@ -198,9 +198,9 @@ fn function_block() {
     let result = raw.clone().ok().unwrap().0;
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.name, Identifier::single("main"));
-    assert_eq!(result.return_type, Identifier::single("number"));
-    assert_eq!(result.parameters.len(), 2);
+    assert_eq!(result.declarator.identifier, Identifier::single("main"));
+    assert_eq!(result.declarator.return_type, Identifier::single("number"));
+    assert_eq!(result.declarator.parameters.len(), 2);
     assert_eq!(result.body.len(), 1);
 }
 
