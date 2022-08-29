@@ -56,7 +56,7 @@ impl DecoratedTokenContent {
                     DataToken::Identifier(_) => true,
                     _ => false
                 }
-            },
+            }
             _ => false
         };
     }
@@ -67,20 +67,20 @@ impl DataToken {
         return match &self {
             DataToken::Number(x) => Option::from(x),
             _ => None
-        }
+        };
     }
 
     pub fn get_identifier(&self) -> Option<&Identifier> {
         return match &self {
             DataToken::Identifier(x) => Option::from(x),
             _ => None
-        }
+        };
     }
 
     pub fn get_string(&self) -> Option<&StringConstant> {
         return match &self {
             DataToken::String(x) => Option::from(x),
             _ => None
-        }
+        };
     }
 }

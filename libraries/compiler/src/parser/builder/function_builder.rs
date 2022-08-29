@@ -65,8 +65,7 @@ pub fn function_builder(
 
 pub fn bare_function_declarator_builder(tokens: &Vec<DecoratedToken>) -> Result<(FunctionDeclarator, usize), GeneralIssue<String>> {
     if tokens.len() >= 5 {
-        if tokens[0].content.is_valid_identifier()
-            && tokens[1].content.get_container().is_some()
+        if tokens[0].content.is_valid_identifier() && tokens[1].content.get_container().is_some()
         {
             if *tokens[1].content.get_container().unwrap() == ContainerType::Bracket {
                 // Build argument list

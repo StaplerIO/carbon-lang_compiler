@@ -29,6 +29,15 @@ lazy_static! {
         (KeywordType::KwAny, "any"),
         (KeywordType::KwTrue, "true"),
         (KeywordType::KwFalse, "false"),
+        (KeywordType::KwGroup, "group"),
+        (KeywordType::KwImplement, "impl"),
+        (KeywordType::KwGet, "get"),
+        (KeywordType::KwGet, "get"),
+        (KeywordType::KwSet, "set"),
+        (KeywordType::KwMethod, "method"),
+        (KeywordType::KwField, "field"),
+        (KeywordType::KwDefault, "default"),
+        (KeywordType::KwSelf, "self"),
     ]
     .iter()
     .cloned()
