@@ -19,7 +19,10 @@ lazy_static! {
 fn declarator() {
     let tokens = decorate_token(tokenize(&DECLARATOR, true).unwrap()).0;
 
-    let group_result = group_declaration_builder(&tokens);
+    let group_result = group_declaration_builder(&tokens).unwrap().0;
 
-	assert!(group_result.is_ok());
+    assert_eq!(group_result.identifier.name, "Arc".to_string());
+    assert_eq!(group_result.fields.len(), 2);
+    assert_eq!(group_result.methods.len(), 2);
+    assert_eq!(group_result.functions.len(), 1);
 }
