@@ -20,14 +20,14 @@ pub fn if_command_builder(action: &IfAction,
     // Check if there are Elif and Else blocks
     if remaining_domain_count > 0 {
         // Jump out of IfBlock if there are
-        result.combine(direct_jump_command_builder(RelocationTargetType::BreakDomain(remaining_domain_count), metadata));
+        result.combine(direct_jump_command_builder(RelocationTargetType::IgnoreDomain(remaining_domain_count), metadata));
     }
 
     // Build ElifBlock
     for elif_block in &action.elif_collection {
         result.combine(condition_block_builder(elif_block, ConditionBlockType::ElifBlock, remaining_domain_count, defined_data, metadata));
         remaining_domain_count -= 1;
-        result.combine(direct_jump_command_builder(RelocationTargetType::BreakDomain(remaining_domain_count), metadata));
+        result.combine(direct_jump_command_builder(RelocationTargetType::IgnoreDomain(remaining_domain_count), metadata));
     }
 
     if action.else_action.is_some() {
