@@ -6,48 +6,62 @@ use crate::shared::ast::parameter::Parameter;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
+use crate::shared::token::token::TokenContent;
 use crate::shared::utils::identifier::Identifier;
 
 // Minimum: decl func <name> () [<typename>] {} : 11 tokens
 // Set <typename> as "none" to return nothing
-pub fn function_builder(
-    tokens: &Vec<DecoratedToken>,
-) -> Result<(Function, usize), GeneralIssue<String>> {
+pub fn function_builder(tokens: &Vec<DecoratedToken>) -> Result<(Function, usize), GeneralIssue<String>> {
     if tokens.len() >= 10 {
-        if tokens[0].content.get_decorated_keyword().is_some()
-            && tokens[1].content.get_decorated_keyword().is_some()
-        {
-            if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwDeclare
-                && *tokens[1].content.get_decorated_keyword().unwrap() == KeywordType::KwFunc
-            {
-                let declarator_build_result = bare_function_declarator_builder(&tokens[2..].to_vec());
-                if declarator_build_result.is_ok() {
-                    let declarator_result = declarator_build_result.unwrap();
-                    let mut result = Function {
-                        declarator: declarator_result.0,
-                        body: vec![],
-                    };
+        if tokens[0].original_token.content == TokenContent::Keyword(KeywordType::KwDeclare) {
+            let result = function_builder_base(&tokens[1..].to_vec(), KeywordType::KwFunc);
+            if result.is_ok() {
+                let val = result.unwrap();
+                return Ok((val.0, val.1 + 1));
+            }
 
-                    // Build argument list
-                    let argument_raw_array = pair_container(tokens[3..].to_vec());
-                    result.declarator.parameters = parameter_array_builder(
-                        argument_raw_array[1..argument_raw_array.len()].to_vec(),
-                    );
+            return result;
+        }
+    }
 
-                    // Build ActionBlock
-                    let mut current_index = 2 + declarator_result.1;
-                    if tokens[current_index].content.get_container().is_some() {
-                        if *tokens[current_index].content.get_container().unwrap() == ContainerType::Brace {
-                            let action_block_area =
-                                pair_container(tokens[current_index..].to_vec());
-                            result.body = action_block_builder(
-                                action_block_area[1..action_block_area.len()].to_vec(),
-                            ).unwrap();
-                            current_index += action_block_area.len();
+    return Err(GeneralIssue {
+        issues: vec![IssueBase {
+            level: IssueLevel::Info,
+            position: IssuePosition::Parsing,
+            code: "".to_string(),
+            detail: "".to_string(),
+        }]
+    });
+}
 
-                            return Ok((result, current_index + 1));
-                        }
-                    }
+pub fn function_builder_base(tokens: &Vec<DecoratedToken>, leading_keyword: KeywordType) -> Result<(Function, usize), GeneralIssue<String>> {
+    if tokens[0].original_token.content == TokenContent::Keyword(leading_keyword) {
+        let declarator_build_result = bare_function_declarator_builder(&tokens[1..].to_vec());
+        if declarator_build_result.is_ok() {
+            let declarator_result = declarator_build_result.unwrap();
+            let mut result = Function {
+                declarator: declarator_result.0,
+                body: vec![],
+            };
+
+            // Build argument list
+            let argument_raw_array = pair_container(tokens[2..].to_vec());
+            result.declarator.parameters = parameter_array_builder(
+                argument_raw_array[1..].to_vec(),
+            );
+
+            // Build ActionBlock
+            let mut current_index = 1 + declarator_result.1;
+            if tokens[current_index].content.get_container().is_some() {
+                if *tokens[current_index].content.get_container().unwrap() == ContainerType::Brace {
+                    let action_block_area =
+                        pair_container(tokens[current_index..].to_vec());
+                    result.body = action_block_builder(
+                        action_block_area[1..action_block_area.len()].to_vec(),
+                    ).unwrap();
+                    current_index += action_block_area.len();
+
+                    return Ok((result, current_index + 1));
                 }
             }
         }

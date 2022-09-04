@@ -79,7 +79,6 @@ pub fn build_expression_evaluation_command(
                         panic!("Failed to build data access command for string: {}", x.value);
                     }
                 }
-                _ => panic!("Other types of ExprTerm are not implemented yet!")
             }
         } else if term.content.get_operator().is_some() {
             let operator = term.content.get_operator().unwrap();

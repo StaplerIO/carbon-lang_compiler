@@ -8,7 +8,8 @@ pub struct Function {
     pub body: Vec<Action>,
 }
 
-#[derive(Clone, Debug)]
+
+#[derive(Clone, Debug, PartialEq)]
 pub struct FunctionDeclarator {
     pub identifier: Identifier,
     pub parameters: Vec<Parameter>,
