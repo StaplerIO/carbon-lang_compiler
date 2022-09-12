@@ -23,8 +23,8 @@ fn simple_while_test() {
     result.calculate_ref_to_target(0);
     result.apply_relocation(metadata.address_alignment);
 
-    let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
-    file.write_all(result.commands.as_slice()).unwrap();
-
-    println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
+    // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
+    // file.write_all(result.commands.as_slice()).unwrap();
+    //
+    // println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
 }
