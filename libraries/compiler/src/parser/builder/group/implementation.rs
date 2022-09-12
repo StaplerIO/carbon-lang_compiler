@@ -95,7 +95,7 @@ pub fn group_implementation_builder(tokens: &Vec<DecoratedToken>, defined_groups
             }
         }
 
-        return Ok((result, 1 + body.len() + 1));
+        return Ok((result, 2 + body.len() + 1));
     }
 
     return Err(GeneralIssue {

@@ -1,5 +1,7 @@
 use crate::parser::builder::blocks::link::link_statement_builder;
 use crate::parser::builder::function_builder::function_builder;
+use crate::parser::builder::group::declaration::group_declaration_builder;
+use crate::parser::builder::group::implementation::group_implementation_builder;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::ast::package::ParserPackageStructure;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
@@ -14,6 +16,8 @@ pub fn build_whole_file(
         functions: vec![],
         entry_point,
         linked_code_files: vec![],
+        declared_groups: vec![],
+        declared_implementations: vec![],
     };
 
     // Build Link part
@@ -30,44 +34,50 @@ pub fn build_whole_file(
         current_index += current_link.ok().unwrap().1 + 1;
     }
 
-    if tokens[current_index].content.get_decorated_keyword().is_none() {
-        return Err(GeneralIssue {
-            issues: vec![IssueBase {
-                level: IssueLevel::Info,
-                position: IssuePosition::Parsing,
-                code: "-1".to_string(),
-                detail: "Invalid token stream encountered!".to_string(),
-            }]
-        });
-    } else {
-        if *tokens[current_index].content.get_decorated_keyword().unwrap() != KeywordType::KwDeclare {
-            return Err(GeneralIssue {
-                issues: vec![IssueBase {
-                    level: IssueLevel::Info,
-                    position: IssuePosition::Parsing,
-                    code: "-1".to_string(),
-                    detail: "Invalid token stream encountered!".to_string(),
-                }]
-            });
-        }
-    }
+    // Build Function or group part
+    while current_index < tokens.len() {
+        match tokens[current_index].content.get_decorated_keyword().unwrap() {
+            KeywordType::KwDeclare => {
+                let current_function = function_builder(&tokens[current_index..].to_vec());
+                if current_function.is_err() {
+                    break;
+                }
 
-    // Build Function part
-    loop {
-        // Break if current index points to the last element of the token stream
-        if current_index == tokens.len() {
-            break;
-        }
+                result.functions
+                      .push(current_function.clone().ok().unwrap().0);
+                current_index += current_function.ok().unwrap().1;
+            }
+            KeywordType::KwGroup => {
+                let current_group = group_declaration_builder(&tokens[current_index..].to_vec());
+                if current_group.is_err() {
+                    break;
+                }
 
-        let current_function = function_builder(&tokens[current_index..].to_vec());
-        if current_function.is_err() {
-            break;
-        }
+                result.declared_groups
+                      .push(current_group.clone().ok().unwrap().0);
+                current_index += current_group.ok().unwrap().1;
+            }
+            KeywordType::KwImplement => {
+                let current_group = group_implementation_builder(&tokens[current_index..].to_vec(), &result.declared_groups);
+                if current_group.is_err() {
+                    break;
+                }
 
-        result
-            .functions
-            .push(current_function.clone().ok().unwrap().0);
-        current_index += current_function.ok().unwrap().1;
+                result.declared_implementations
+                      .push(current_group.clone().ok().unwrap().0);
+                current_index += current_group.ok().unwrap().1;
+            }
+            _ => {
+                return Err(GeneralIssue {
+                    issues: vec![IssueBase {
+                        level: IssueLevel::Info,
+                        position: IssuePosition::Parsing,
+                        code: "-1".to_string(),
+                        detail: "Invalid token stream encountered!".to_string(),
+                    }]
+                });
+            }
+        }
     }
 
     return Ok(result);

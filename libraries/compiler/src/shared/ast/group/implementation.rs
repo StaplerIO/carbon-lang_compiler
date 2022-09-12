@@ -7,6 +7,7 @@ pub type MethodImplementation = Function;
 pub type FunctionImplementation = Function;
 pub type FieldGS = ActionBlock;
 
+#[derive(Debug, Clone)]
 pub struct GroupImplementationBlock {
     pub source_group: Identifier,
 
@@ -15,6 +16,7 @@ pub struct GroupImplementationBlock {
     pub functions: Vec<FunctionImplementation>,
 }
 
+#[derive(Debug, Clone)]
 pub struct FieldImplementation {
     pub identifier: Identifier,
 
