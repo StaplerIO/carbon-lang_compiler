@@ -161,3 +161,33 @@ pub fn is_domain_destroy_command(reloc_ref: &RelocationReference) -> bool {
         _ => false,
     };
 }
+
+pub fn is_iteration_interrupt_command(reloc_ref: &RelocationReference) -> bool {
+    return match reloc_ref.ref_type {
+        RelocationReferenceType::EndWhile => true,
+        RelocationReferenceType::EndLoop => true,
+        _ => false,
+    };
+}
+
+pub fn is_iteration_head_command(reloc_ref: &RelocationReference) -> bool {
+    return match reloc_ref.ref_type {
+        RelocationReferenceType::WhileEntrance => true,
+        RelocationReferenceType::LoopEntrance => true,
+        _ => false,
+    };
+}
+
+pub fn is_function_end_command(reloc_ref: &RelocationReference) -> bool {
+    return match reloc_ref.ref_type {
+        RelocationReferenceType::EndFunction(_) => true,
+        _ => false,
+    }
+}
+
+pub fn is_function_begin_command(reloc_ref: &RelocationReference) -> bool {
+    return match reloc_ref.ref_type {
+        RelocationReferenceType::FunctionEntrance(_) => true,
+        _ => false,
+    }
+}

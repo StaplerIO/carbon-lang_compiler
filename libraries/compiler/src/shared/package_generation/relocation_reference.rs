@@ -20,6 +20,8 @@ pub struct RelocationCredential {
 #[derive(Clone, Debug)]
 pub enum RelocationTargetType {
     Relative(i32),
+    IterationHead,
+    BreakIteration,
     DomainHead,
     // Set to 0 to jump out to nearest loop
     BreakDomain(usize),
