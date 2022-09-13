@@ -3,7 +3,9 @@
 
 ## Current status
 
-Working on symbol relocation
+Working with `Group`, a user-defined simple type system.
+
+Everything remains untested;
 
 ## Components
 
