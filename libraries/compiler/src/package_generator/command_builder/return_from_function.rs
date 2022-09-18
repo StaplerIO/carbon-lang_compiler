@@ -10,9 +10,11 @@ pub fn return_command_builder(action: &ReturnAction, defined_data: &Vec<DataDecl
     if action.value.is_some() {
         // Return from function with value
         let mut result = build_expression_evaluation_command(&action.value.clone().unwrap(), defined_data, metadata);
-        result.append_commands(vec![combine_command(RootCommand::Function.to_opcode(), FunctionCommand::LeaveWithValue.to_opcode())]);
-        return result;
-    } else {
-        return RelocatableCommandList::new_no_relocation(vec![combine_command(RootCommand::Function.to_opcode(), FunctionCommand::LeaveWithoutValue.to_opcode())]);
+        if !result.commands.is_empty() {
+            result.append_commands(vec![combine_command(RootCommand::Function.to_opcode(), FunctionCommand::LeaveWithValue.to_opcode())]);
+            return result;
+        }
     }
+
+    return RelocatableCommandList::new_no_relocation(vec![combine_command(RootCommand::Function.to_opcode(), FunctionCommand::LeaveWithoutValue.to_opcode())]);
 }
