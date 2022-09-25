@@ -1,7 +1,10 @@
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
-#[structopt(name = "Arc")]
+#[structopt(
+    name = "Arc",
+    about = "The official build system for TCPL, also will be the official package manager of TCPL in the future."
+)]
 pub struct CommandArgs {
     #[structopt(subcommand)]
     pub sub_command: Option<SubCommands>,
@@ -21,7 +24,7 @@ pub enum SubCommands {
 #[derive(StructOpt, Debug)]
 #[structopt(
     name = "compile",
-    about = "Compile from source files or source directory to a Carbon Package"
+    about = "Compile the target you specified (files or a directory) to a Carbon package."
 )]
 pub struct CompileCommandArgs {
     #[structopt(
@@ -29,14 +32,26 @@ pub struct CompileCommandArgs {
         long = "input",
         parse(from_os_str),
         required = true,
-        help = "Input a series of file or a directory contains an TCPL project (only file is supported so far)"
+        help = "Input a series of file or a directory contains an TCPL project (only file is supported so far)."
     )]
     // TODO: Support multiple files and directories
     pub input_path: std::path::PathBuf,
 
-    #[structopt(short = "o", long = "output", parse(from_os_str), required = true)]
+    #[structopt(
+        short = "o",
+        long = "output",
+        parse(from_os_str),
+        required = true,
+        help = "The file name where the Carbon package is stored after compilation succeeded."
+    )]
     pub output_path: std::path::PathBuf,
 
-    #[structopt(short = "e", long = "entry", required = false, default_value = "main")]
+    #[structopt(
+        short = "e",
+        long = "entry",
+        required = false,
+        default_value = "main",
+        about = "The entry function name when the program starts up, whose default value is\"main\"."
+    )]
     pub entry_function: String,
 }
