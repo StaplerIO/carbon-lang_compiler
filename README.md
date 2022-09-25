@@ -1,24 +1,29 @@
 **The Carbon Programming Language**
+
 # carbon-lang_compiler
 
-## Current status
+## About current branch
 
-Working with `Group`, a user-defined simple type system.
+### ⛏🚧 This branch is set up to resolve issue `HS-YT-TCPL-14`
 
-Everything remains untested;
+### Issue content
 
-## Components
+#### Present situation
 
-The compiler has 4 parts
-- Lexer
-- Parser
-- Optimizer
-- Package generator
+We use an absolute address to navigate to the function we want to call.
 
-Lexer and Parser has already completed in *Project Loop 1*
+#### What problems it could lead to
+
+It is OKAY when we only build a single code file because it is just simple, but things get a bit complex when we want to combine multiple packages, like package linking. When using absolute address navigation, we have to change every jump command to fit the linked package.
+
+#### Solution
+
+Create a function table to save the address of every function and allocate every function an id. When we want to call a function, we just need to use its id but not the absolute address.
+
+Through this method, not only can we place function entry address to function table, but also put more properties such as parameter count and variable count into it.
 
 
 
-## Project Map
+## Changelog
 
-![carbon-lang](readme_assets/carbon-lang.svg)
+There's no changelog so far.
