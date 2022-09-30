@@ -1,4 +1,11 @@
-use crate::package_generator::utils::{align_array_width, combine_command, is_domain_create_command, is_domain_destroy_command, is_function_end_command, is_iteration_head_command, is_iteration_interrupt_command};
+use crate::package_generator::utils::{align_array_width,
+                                      combine_command,
+                                      is_domain_create_command,
+                                      is_domain_destroy_command,
+                                      is_function_end_command,
+                                      is_iteration_head_command,
+                                      is_iteration_interrupt_command,
+                                      jump_command_address_placeholder_len};
 use crate::shared::command_map::{DomainCommand, RootCommand};
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationReference, RelocationReferenceType, RelocationTarget, RelocationTargetType};
 use crate::shared::utils::identifier::Identifier;
@@ -55,6 +62,7 @@ impl RelocatableCommandList {
             command_entries: vec![],
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
+            function_table: vec![],
         }
     }
 
@@ -64,6 +72,7 @@ impl RelocatableCommandList {
             command_entries: vec![],
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
+            function_table: vec![],
         };
     }
 
@@ -145,13 +154,7 @@ impl RelocatableCommandList {
 
                     // panic!("Unexpected error! Couldn't find the only DomainCreate command")
                 }
-                RelocationTargetType::EnterFunction(x) => {
-                    targets[iter_target_index].relocated_address = self.descriptors.references
-                                                                       .iter()
-                                                                       .find(|&f| f.ref_type == RelocationReferenceType::FunctionEntrance(x.clone()))
-                                                                       .unwrap()
-                                                                       .command_array_position;
-                }
+                RelocationTargetType::EnterFunction(_) => {}
                 RelocationTargetType::BreakIteration => {
                     // Find the first valid reference
                     let end_ref = self.descriptors.references.iter().find(|r| r.command_array_position >= iter_reloc_target.command_array_position
@@ -200,13 +203,26 @@ impl RelocatableCommandList {
     }
 
     pub fn apply_relocation(&mut self, addr_len: u8) {
+        let placeholder_len = jump_command_address_placeholder_len(addr_len);
         for desc in &self.descriptors.targets {
-            let mut addr_bytes = desc.relocated_address.to_be_bytes().to_vec();
-            while addr_bytes[0] == 0x00 && addr_bytes.len() > 1 {
-                addr_bytes.remove(0);
+            let mut addr_bytes;
+            match &desc.relocation_type {
+                RelocationTargetType::EnterFunction(id) => {
+                    let target_function = self.function_table
+                                              .iter()
+                                              .find(|f| f.name == *id)
+                                              .unwrap();
+
+                    addr_bytes = align_array_width(&target_function.slot.to_be_bytes().to_vec(), addr_len);
+                    addr_bytes.insert(0, 0x00);
+                }
+                _ => {
+                    addr_bytes = align_array_width(&desc.relocated_address.to_be_bytes().to_vec(), addr_len);
+                    addr_bytes.insert(0, 0xFF);
+                }
             }
-            let addr_u8_vec = align_array_width(&addr_bytes, addr_len);
-            self.commands.splice(desc.command_array_position..(desc.command_array_position + addr_len as usize), addr_u8_vec);
+
+            self.commands.splice(desc.command_array_position..(desc.command_array_position + placeholder_len), addr_bytes);
         }
     }
 

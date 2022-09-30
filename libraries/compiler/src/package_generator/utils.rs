@@ -135,7 +135,11 @@ pub fn string_to_hex_char(s: String) -> char {
 }
 
 pub fn jump_command_address_placeholder(metadata: &PackageMetadata) -> Vec<u8> {
-    return vec![0x00].repeat(metadata.address_alignment as usize);
+    return vec![0x00].repeat(1 + jump_command_address_placeholder_len(metadata.address_alignment));
+}
+
+pub fn jump_command_address_placeholder_len(addr_len: u8) -> usize {
+    return addr_len as usize + 1;
 }
 
 pub fn is_domain_create_command(reloc_ref: &RelocationReference) -> bool {

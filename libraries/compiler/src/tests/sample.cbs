@@ -1,15 +1,67 @@
 link std;
 link os;
 
-decl func demo()[none]
-{
-    call println("demo function!");
+group Arc {
+    field number foo(get, set);
+    field str bar(get);
+
+    method run()[none];
+    method suspend()[number];
+
+    func New()[Arc];
 }
 
-decl func main()[int]
-{
-    call println("Hello, world!");
-    call demo();
+impl Arc {
+	default foo = 2;
+	default bar = "StaplerIO";
 
-    return 0;
+	field bar get {
+		return bar;
+	}
+
+	method run()[none] { foo = foo + 1; }
+	method suspend()[number] { return foo - 1; }
+
+	func New()[Arc] { decl var number i_foo; }
+}
+
+decl func main(number foo)[number] {
+    decl var number bar;
+    bar = 2;
+    decl var number result;
+    result = arc::target(foo * bar);
+    call f1();
+    decl var str test;
+    test = "Hello, world!";
+    return result;
+}
+
+decl func arc::target(number v1)[number] {
+    decl var number bar;
+    bar = 2;
+    decl var number result;
+    result = v1 + bar;
+    return result;
+}
+
+decl func f1()[none] {
+    decl var number v2;
+    v2 = 37413;
+    if (v2 > 30000) {
+        v2 = 1201;
+    }
+
+    return;
+}
+
+decl func f2()[none] {
+    while (234 > 123) {
+        if (234 > 245) {
+            break;
+        } else {
+            continue;
+        }
+    }
+
+    return;
 }
