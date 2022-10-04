@@ -23,13 +23,15 @@ pub fn build_function_call_command(
 
     result.command_entries.push(result.commands.len());
 
-    result.append_commands(vec![combine_command(RootCommand::Function.to_opcode(), FunctionCommand::Enter.to_opcode())]);
     result.descriptors.targets.push(RelocationTarget {
         relocation_type: RelocationTargetType::EnterFunction(action.function_name.clone()),
         command_array_position: result.commands.len(),
-        offset: 0,
+        offset: 1,
         relocated_address: 0,
     });
+
+    result.append_commands(vec![combine_command(RootCommand::Function.to_opcode(), FunctionCommand::Enter.to_opcode())]);
+
     result.append_commands(jump_command_address_placeholder(metadata));
     result.append_commands(vec![sorted_params.len() as u8]);
 

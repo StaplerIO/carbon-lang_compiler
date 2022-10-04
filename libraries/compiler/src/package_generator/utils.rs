@@ -195,3 +195,30 @@ pub fn is_function_begin_command(reloc_ref: &RelocationReference) -> bool {
         _ => false,
     }
 }
+
+pub fn pair_container_action(references: &[RelocationReference]) -> (&RelocationReference, usize)  {
+    let reloc_type = &references[0].ref_type;
+    let opp_reloc_type = match reloc_type{
+        RelocationReferenceType::IfEntrance => RelocationReferenceType::EndIf,
+        RelocationReferenceType::ElifEntrance => RelocationReferenceType::EndElif,
+        RelocationReferenceType::ElseEntrance => RelocationReferenceType::EndElse,
+        RelocationReferenceType::WhileEntrance => RelocationReferenceType::EndWhile,
+        RelocationReferenceType::LoopEntrance => RelocationReferenceType::EndLoop,
+        _ => panic!("Invalid container pair type")
+    };
+
+    let mut layer: usize = 0;
+    for (idx, reference) in references.iter().enumerate() {
+        if reference.ref_type == *reloc_type {
+            layer += 1;
+        } else if reference.ref_type == opp_reloc_type {
+            layer -= 1;
+        }
+
+        if layer == 0 {
+            return (reference, idx);
+        }
+    }
+
+    return (&references[0], 0);
+}

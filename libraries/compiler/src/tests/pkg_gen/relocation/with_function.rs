@@ -32,8 +32,8 @@ fn single_function() {
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let bytes = metadata.serialize();
-    target.calculate_ref_to_target(bytes.len());
+    // let bytes = metadata.serialize();
+    target.calculate_ref_to_target();
     target.apply_relocation(metadata.address_alignment);
 
     // bytes.extend(target.commands.clone());
@@ -85,8 +85,8 @@ fn multiple_functions() {
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let bytes = metadata.serialize();
-    target.calculate_ref_to_target(bytes.len());
+    // let bytes = metadata.serialize();
+    target.calculate_ref_to_target();
     target.apply_relocation(metadata.address_alignment);
 
     // bytes.extend(target.commands.clone());

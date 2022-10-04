@@ -11,8 +11,9 @@ use crate::shared::token::operator::RelationOperator;
 /// ### Return value
 /// - Index `0`: An uncompleted relocation descriptor
 /// - Index `1`: The relocation target to be jumped when expression result could be True
+/// - Index `2`: The length of the bare jump command
 ///
-pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (bool, bool, bool)) {
+pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (bool, bool, bool), usize) {
     let mut result = RelocatableCommandList::new();
 
     // Evaluate expressions
@@ -32,33 +33,35 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     // |   right - left   |
     // |      other       |
 
-    result.append_commands(vec![combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ByStackTop.to_opcode())]);
-
     // Pre-save relocation target
     // Add descriptors
+    let placeholder = jump_command_address_placeholder(metadata);
     result.descriptors.targets.extend(vec![
         RelocationTarget {
             relocation_type: RelocationTargetType::Undefined,
             command_array_position: result.commands.len(),
-            offset: 0,
+            offset: 1,
             relocated_address: 0,
         },
         RelocationTarget {
             relocation_type: RelocationTargetType::Undefined,
-            command_array_position: metadata.address_alignment as usize + result.commands.len(),
-            offset: 0,
+            command_array_position: result.commands.len(),
+            offset: 1 + placeholder.len() as i32,
             relocated_address: 0,
         },
         RelocationTarget {
             relocation_type: RelocationTargetType::Undefined,
-            command_array_position: (metadata.address_alignment as usize) * 2 + result.commands.len(),
-            offset: 0,
+            command_array_position: result.commands.len(),
+            offset: 1 + placeholder.len() as i32 * 2,
             relocated_address: 0,
         },
     ]);
 
+    // Place conditional jump command
+    result.append_commands(vec![combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ByStackTop.to_opcode())]);
+
     // Push placeholder
-    result.append_commands(vec![0; metadata.data_alignment as usize * 3]);
+    result.append_commands(vec![0; placeholder.repeat(3).len()]);
 
     // Command scheme: `0xD2 <PositiveLocation(0)> <NegativePosition(1)> <ZeroPosition(2)>`
     let mut true_pos = (false, false, false);
@@ -93,7 +96,7 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
         _ => panic!("Illegal operator")
     };
 
-    return (result, true_pos);
+    return (result, true_pos, 1 + placeholder.len() * 3);
 }
 
 pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &PackageMetadata) -> RelocatableCommandList {
@@ -107,8 +110,8 @@ pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &Pack
         descriptors: RelocationCredential {
             targets: vec![RelocationTarget {
                 relocation_type: r_type,
-                command_array_position: 1,
-                offset: 0,
+                command_array_position: 0,
+                offset: 1,
                 relocated_address: 0,
             }],
             references: vec![],

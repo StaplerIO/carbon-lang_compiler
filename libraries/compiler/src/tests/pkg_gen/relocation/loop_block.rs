@@ -20,7 +20,7 @@ fn simple_while_test() {
 
     let mut result = while_command_builder(&while_action_builder(&decorate_token(tokens).0).unwrap().0.get_while_block().unwrap(), &vec![], &metadata);
 
-    result.calculate_ref_to_target(0);
+    result.calculate_ref_to_target();
     result.apply_relocation(metadata.address_alignment);
 
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();

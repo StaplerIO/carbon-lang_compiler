@@ -33,13 +33,25 @@ pub enum RelocationTargetType {
     Undefined
 }
 
+/// Properties in `RelocationTarget` you should aware
+///
+/// # Fields
+///
+/// **`command_array_position`**
+///
+/// The position of the head of the command
+///
+/// **`offset`**
+///
+/// The offset of the reserved address fields to the head of the command
+///
 #[derive(Clone, Debug)]
 pub struct RelocationTarget {
     pub relocation_type: RelocationTargetType,
     pub command_array_position: usize,
     pub offset: i32,
 
-    pub relocated_address: usize,
+    pub relocated_address: i32,
 }
 
 #[derive(Clone, Debug)]
