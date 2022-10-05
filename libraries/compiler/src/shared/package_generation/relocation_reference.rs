@@ -21,7 +21,7 @@ pub struct RelocationCredential {
 /// ### `EnterFunction`
 /// Save the identifier of target function in it
 #[derive(Clone, Debug)]
-pub enum RelocationTargetType {
+pub enum RelocationTargetElement {
     Relative(i32),
     IterationHead,
     BreakIteration,
@@ -47,7 +47,7 @@ pub enum RelocationTargetType {
 ///
 #[derive(Clone, Debug)]
 pub struct RelocationTarget {
-    pub relocation_type: RelocationTargetType,
+    pub relocation_elements: Vec<RelocationTargetElement>,
     pub command_array_position: usize,
     pub offset: i32,
 

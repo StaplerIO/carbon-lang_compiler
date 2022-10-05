@@ -5,7 +5,7 @@ use crate::shared::ast::blocks::expression::RelationExpression;
 use crate::shared::command_map::{JumpCommand, RootCommand};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationTarget, RelocationTargetType};
+use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationTarget, RelocationTargetElement};
 use crate::shared::token::operator::RelationOperator;
 
 /// ### Return value
@@ -38,19 +38,19 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     let placeholder = jump_command_address_placeholder(metadata);
     result.descriptors.targets.extend(vec![
         RelocationTarget {
-            relocation_type: RelocationTargetType::Undefined,
+            relocation_elements: vec![RelocationTargetElement::Undefined],
             command_array_position: result.commands.len(),
             offset: 1,
             relocated_address: 0,
         },
         RelocationTarget {
-            relocation_type: RelocationTargetType::Undefined,
+            relocation_elements: vec![RelocationTargetElement::Undefined],
             command_array_position: result.commands.len(),
             offset: 1 + placeholder.len() as i32,
             relocated_address: 0,
         },
         RelocationTarget {
-            relocation_type: RelocationTargetType::Undefined,
+            relocation_elements: vec![RelocationTargetElement::Undefined],
             command_array_position: result.commands.len(),
             offset: 1 + placeholder.len() as i32 * 2,
             relocated_address: 0,
@@ -99,17 +99,17 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     return (result, true_pos, 1 + placeholder.len() * 3);
 }
 
-pub fn direct_jump_command_builder(r_type: RelocationTargetType, metadata: &PackageMetadata) -> RelocatableCommandList {
+pub fn direct_jump_command_builder(r_type: RelocationTargetElement, metadata: &PackageMetadata) -> RelocatableCommandList {
     let mut cmd_arr = vec![];
 
-    cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToAbsolute.to_opcode()));
+    cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToRelative.to_opcode()));
     cmd_arr.extend(jump_command_address_placeholder(metadata));
 
     return RelocatableCommandList {
         commands: cmd_arr,
         descriptors: RelocationCredential {
             targets: vec![RelocationTarget {
-                relocation_type: r_type,
+                relocation_elements: vec![r_type],
                 command_array_position: 0,
                 offset: 1,
                 relocated_address: 0,

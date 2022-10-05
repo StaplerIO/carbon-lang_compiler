@@ -26,11 +26,11 @@ fn no_function_relocation() {
                    } else {
                        foo = foo + 2;
                    }",
-        true).unwrap();
+        true,
+    )
+    .unwrap();
 
-    let actions = action_block_builder(
-        decorate_token(tokens).0,
-    ).unwrap();
+    let actions = action_block_builder(decorate_token(tokens).0).unwrap();
 
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
@@ -41,7 +41,8 @@ fn no_function_relocation() {
         address_alignment: 4,
     };
 
-    let mut target = action_block_command_builder(&ActionBlock { actions },  false, &vec![], &metadata);
+    let mut target =
+        action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
@@ -53,5 +54,8 @@ fn no_function_relocation() {
     // bytes.extend(target.commands.clone());
     // file.write_all(bytes.as_slice()).unwrap();
 
-    println!("{}", itertools::Itertools::join(&mut target.commands.iter(), ", "));
+    println!(
+        "{}",
+        itertools::Itertools::join(&mut target.commands.iter(), ", ")
+    );
 }

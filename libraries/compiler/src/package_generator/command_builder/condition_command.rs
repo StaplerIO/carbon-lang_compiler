@@ -4,7 +4,7 @@ use crate::package_generator::command_builder::templates::jump_command::direct_j
 use crate::shared::ast::action::{IfAction, WhileBlock};
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetType};
+use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetElement};
 
 pub fn if_command_builder(action: &IfAction,
                           defined_data: &Vec<DataDeclarator>,
@@ -23,14 +23,14 @@ pub fn if_command_builder(action: &IfAction,
     // Check if there are Elif and Else blocks
     if remaining_domain_count > 0 {
         // Jump out of IfBlock if there are
-        result.combine(direct_jump_command_builder(RelocationTargetType::IgnoreDomain(remaining_domain_count), metadata));
+        result.combine(direct_jump_command_builder(RelocationTargetElement::IgnoreDomain(remaining_domain_count), metadata));
     }
 
     // Build ElifBlock
     for elif_block in &action.elif_collection {
         result.combine(condition_block_builder(elif_block, ConditionBlockType::ElifBlock, remaining_domain_count, defined_data, metadata));
         remaining_domain_count -= 1;
-        result.combine(direct_jump_command_builder(RelocationTargetType::IgnoreDomain(remaining_domain_count), metadata));
+        result.combine(direct_jump_command_builder(RelocationTargetElement::IgnoreDomain(remaining_domain_count), metadata));
     }
 
     if action.else_action.is_some() {
@@ -48,23 +48,7 @@ pub fn while_command_builder(action: &WhileBlock,
                              metadata: &PackageMetadata,
 ) -> RelocatableCommandList {
     let mut result = condition_block_builder(action, ConditionBlockType::WhileBlock, 0, defined_data, metadata);
-    result.combine(direct_jump_command_builder(RelocationTargetType::Relative(0 - result.commands.len() as i32), metadata));
-
-    // Make a copy first
-    let mut targets_copy = result.descriptors.targets.clone();
-
-    // Ignore the back-to-entrance jump command when condition is already unsatisfied
-    for (index, item) in result.descriptors.targets.iter().enumerate() {
-        match item.relocation_type {
-            RelocationTargetType::IgnoreDomain(_) => {
-                targets_copy[index].offset = 1 + metadata.address_alignment as i32;
-            }
-            _ => {}
-        }
-    }
-
-    // Paste it back
-    result.descriptors.targets = targets_copy;
+    result.combine(direct_jump_command_builder(RelocationTargetElement::Relative(0 - result.commands.len() as i32), metadata));
 
     return result;
 }

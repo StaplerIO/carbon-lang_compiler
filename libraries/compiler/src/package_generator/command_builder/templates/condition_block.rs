@@ -3,7 +3,7 @@ use crate::package_generator::command_builder::templates::jump_command::jump_by_
 use crate::shared::ast::action::ConditionBlock;
 use crate::shared::package_generation::data_descriptor::DataDeclarator;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetType};
+use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType, RelocationTargetElement};
 
 #[allow(dead_code)]
 pub enum ConditionBlockType {
@@ -41,21 +41,21 @@ pub fn condition_block_builder(block: &ConditionBlock,
     // Update relocation target by what we required
     let args = jump_command.1;
     if args.0 {
-        reloc_list.descriptors.targets[0].relocation_elements = RelocationTargetElement::Relative(jump_command.2 as i32);
+        reloc_list.descriptors.targets[0].relocation_elements = vec![RelocationTargetElement::Relative(jump_command.2 as i32)];
     } else {
-        reloc_list.descriptors.targets[0].relocation_elements = RelocationTargetElement::IgnoreDomain(remaining_domain_count);
+        reloc_list.descriptors.targets[0].relocation_elements = vec![RelocationTargetElement::IgnoreDomain(remaining_domain_count)];
     }
 
     if args.1 {
-        reloc_list.descriptors.targets[1].relocation_elements = RelocationTargetElement::Relative(jump_command.2 as i32);
+        reloc_list.descriptors.targets[1].relocation_elements = vec![RelocationTargetElement::Relative(jump_command.2 as i32)];
     } else {
-        reloc_list.descriptors.targets[1].relocation_elements = RelocationTargetElement::IgnoreDomain(remaining_domain_count);
+        reloc_list.descriptors.targets[1].relocation_elements = vec![RelocationTargetElement::IgnoreDomain(remaining_domain_count)];
     }
 
     if args.2 {
-        reloc_list.descriptors.targets[2].relocation_elements = RelocationTargetElement::Relative(jump_command.2 as i32);
+        reloc_list.descriptors.targets[2].relocation_elements = vec![RelocationTargetElement::Relative(jump_command.2 as i32)];
     } else {
-        reloc_list.descriptors.targets[2].relocation_elements = RelocationTargetElement::IgnoreDomain(remaining_domain_count);
+        reloc_list.descriptors.targets[2].relocation_elements = vec![RelocationTargetElement::IgnoreDomain(remaining_domain_count)];
     }
 
     reloc_list.combine(action_block_command_builder(&block.body, true, defined_data, metadata));
