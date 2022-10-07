@@ -13,7 +13,7 @@ use crate::shared::token::operator::RelationOperator;
 /// - Index `1`: The relocation target to be jumped when expression result could be True
 /// - Index `2`: The length of the bare jump command
 ///
-pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (bool, bool, bool), usize) {
+pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, defined_data: &Vec<DataDeclarator>, metadata: &PackageMetadata) -> (RelocatableCommandList, (bool, bool, bool)) {
     let mut result = RelocatableCommandList::new();
 
     // Evaluate expressions
@@ -61,7 +61,7 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
     result.append_commands(vec![combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ByStackTop.to_opcode())]);
 
     // Push placeholder
-    result.append_commands(vec![0; placeholder.repeat(3).len()]);
+    result.append_commands(vec![0; placeholder.len() * 3]);
 
     // Command scheme: `0xD2 <PositiveLocation(0)> <NegativePosition(1)> <ZeroPosition(2)>`
     let mut true_pos = (false, false, false);
@@ -96,10 +96,10 @@ pub fn jump_by_stack_top_command_template_builder(expr: &RelationExpression, def
         _ => panic!("Illegal operator")
     };
 
-    return (result, true_pos, 1 + placeholder.len() * 3);
+    return (result, true_pos);
 }
 
-pub fn direct_jump_command_builder(r_type: RelocationTargetElement, metadata: &PackageMetadata) -> RelocatableCommandList {
+pub fn direct_jump_command_builder(elements: Vec<RelocationTargetElement>, metadata: &PackageMetadata) -> RelocatableCommandList {
     let mut cmd_arr = vec![];
 
     cmd_arr.push(combine_command(RootCommand::Jump.to_opcode(), JumpCommand::ToRelative.to_opcode()));
@@ -109,7 +109,7 @@ pub fn direct_jump_command_builder(r_type: RelocationTargetElement, metadata: &P
         commands: cmd_arr,
         descriptors: RelocationCredential {
             targets: vec![RelocationTarget {
-                relocation_elements: vec![r_type],
+                relocation_elements: elements,
                 command_array_position: 0,
                 offset: 1,
                 relocated_address: 0,

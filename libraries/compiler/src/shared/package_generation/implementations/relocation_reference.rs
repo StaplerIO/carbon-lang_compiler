@@ -12,7 +12,6 @@ use crate::shared::package_generation::relocation_reference::{RelocatableCommand
                                                               RelocationCredential,
                                                               RelocationReference,
                                                               RelocationReferenceType,
-                                                              RelocationTarget,
                                                               RelocationTargetElement};
 use crate::shared::utils::identifier::Identifier;
 

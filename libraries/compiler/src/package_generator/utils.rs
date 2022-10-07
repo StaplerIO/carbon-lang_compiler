@@ -135,7 +135,7 @@ pub fn string_to_hex_char(s: String) -> char {
 }
 
 pub fn jump_command_address_placeholder(metadata: &PackageMetadata) -> Vec<u8> {
-    return vec![0x00].repeat(1 + jump_command_address_placeholder_len(metadata.address_alignment));
+    return vec![0x00].repeat(jump_command_address_placeholder_len(metadata.address_alignment));
 }
 
 pub fn jump_command_address_placeholder_len(addr_len: u8) -> usize {
