@@ -2,24 +2,29 @@
 
 # carbon-lang_compiler
 
-## About current branch
+## Current status
 
-### ⛏🚧 This branch is set up to renew the Relocation process.
+Working with `Group`, a user-defined simple type system.
 
-### Issue content
+Everything remains untested;
 
-#### Present situation
+## Components
 
-We are using absolute address when relocating jumps.
+The compiler has 4 parts
 
-#### What problems it could lead to
+- Lexer
+- Parser
+- Optimizer
+- Package generator
 
-We need to relocate every single jumps when combining multiple compiled packages. Also, it's hard to locate the problem when debugging the compiler itself.
+Lexer and Parser has already completed in *Project Loop 1*
 
-#### Solution
+## Project Map
 
-Use relative address when relocating the target jumps.
+![carbon-lang](readme_assets/carbon-lang.svg)
 
-## Changelog
 
-There's no changelog so far.
+
+## Project activity
+
+![Alt](https://repobeats.axiom.co/api/embed/44a98cdc277f6260cc7c0840596fd632c7d37364.svg "Repobeats analytics image")
