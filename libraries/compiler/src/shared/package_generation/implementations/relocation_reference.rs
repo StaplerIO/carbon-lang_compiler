@@ -108,7 +108,7 @@ impl RelocatableCommandList {
                     }
                     RelocationTargetElement::BreakDomain(_x) => {
                         let mut refs = self.descriptors.references.clone();
-                        refs.retain(|p| is_domain_destroy_command(p));
+                        refs.retain(|p| is_domain_destroy_command(p) && p.command_array_position > iter_reloc_target.command_array_position);
 
                         iter_reloc_target.relocated_address = refs[0].command_array_position as i32 - iter_reloc_target.command_array_position as i32;
                     }
