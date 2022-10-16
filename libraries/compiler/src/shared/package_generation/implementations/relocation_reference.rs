@@ -1,6 +1,18 @@
-use crate::package_generator::utils::{align_array_width, combine_command, is_domain_create_command, is_domain_destroy_command, is_function_end_command, is_iteration_head_command, is_iteration_interrupt_command};
+use crate::package_generator::utils::{align_array_width,
+                                      combine_command,
+                                      is_domain_create_command,
+                                      is_domain_destroy_command,
+                                      is_function_end_command,
+                                      is_iteration_end_command,
+                                      is_iteration_head_command,
+                                      jump_command_address_placeholder_len,
+                                      pair_container_action};
 use crate::shared::command_map::{DomainCommand, RootCommand};
-use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationCredential, RelocationReference, RelocationReferenceType, RelocationTarget, RelocationTargetType};
+use crate::shared::package_generation::relocation_reference::{RelocatableCommandList,
+                                                              RelocationCredential,
+                                                              RelocationReference,
+                                                              RelocationReferenceType,
+                                                              RelocationTargetElement};
 use crate::shared::utils::identifier::Identifier;
 
 impl RelocatableCommandList {
@@ -8,26 +20,9 @@ impl RelocatableCommandList {
         let cred = model.descriptors;
 
         let base_pos = self.commands.len();
-        for item in cred.targets {
-            match item.relocation_type {
-                // Accumulate relative position
-                RelocationTargetType::Relative(x) => {
-                    self.descriptors.targets.push(RelocationTarget {
-                        relocation_type: RelocationTargetType::Relative(x + base_pos as i32),
-                        command_array_position: item.command_array_position + base_pos,
-                        offset: item.offset,
-                        relocated_address: item.relocated_address,
-                    });
-                }
-                _ => {
-                    self.descriptors.targets.push(RelocationTarget {
-                        relocation_type: item.relocation_type,
-                        command_array_position: item.command_array_position + base_pos,
-                        offset: item.offset,
-                        relocated_address: item.relocated_address,
-                    });
-                }
-            }
+        for mut reloc_target in cred.targets {
+            reloc_target.command_array_position = reloc_target.command_array_position + base_pos;
+            self.descriptors.targets.push(reloc_target);
         }
 
         for item in cred.references {
@@ -55,6 +50,7 @@ impl RelocatableCommandList {
             command_entries: vec![],
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
+            function_table: vec![],
         }
     }
 
@@ -64,10 +60,14 @@ impl RelocatableCommandList {
             command_entries: vec![],
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
+            function_table: vec![],
         };
     }
 
-    pub fn calculate_ref_to_target(&mut self, base_offset: usize) {
+    pub fn calculate_ref_to_target(&mut self) {
+        self.descriptors.references.sort_by(|a, b| a.command_array_position.cmp(&b.command_array_position));
+        self.descriptors.targets.sort_by(|a, b| a.command_array_position.cmp(&b.command_array_position));
+
         let domain_create_command = combine_command(
             RootCommand::Domain.to_opcode(),
             DomainCommand::Create.to_opcode(),
@@ -78,135 +78,146 @@ impl RelocatableCommandList {
             DomainCommand::Destroy.to_opcode(),
         );
 
-        let mut targets = self.descriptors.targets.clone();
+        for (_, iter_reloc_target) in self.descriptors.targets.iter_mut().enumerate() {
+            for element in &iter_reloc_target.relocation_elements {
+                match element {
+                    RelocationTargetElement::Relative(x) => {
+                        // Up to now, `Relative` is just sign because it updates every time when merging into main `RelocatableCommandList`
+                        iter_reloc_target.relocated_address += *x;
+                    }
+                    RelocationTargetElement::DomainHead => {
+                        // Search for domain flags
+                        let mut domain_refs = self.descriptors.references.clone();
+                        domain_refs.retain(|r| r.command_array_position >= iter_reloc_target.command_array_position
+                            && (is_domain_create_command(r) || is_domain_destroy_command(r)));
 
-        for (iter_target_index, iter_reloc_target) in self.descriptors.targets.iter().enumerate() {
-            match &iter_reloc_target.relocation_type {
-                RelocationTargetType::Relative(x) => {
-                    // Up to now, `Relative` is just sign because it updates every time when merging into main `RelocatableCommandList`
-                    targets[iter_target_index].relocated_address = (x + base_offset as i32 + iter_reloc_target.offset) as usize;
-                }
-                RelocationTargetType::DomainHead => {
-                    // Search for domain flags
-                    let mut domain_refs = self.descriptors.references.clone();
-                    domain_refs.retain(|r| r.command_array_position >= iter_reloc_target.command_array_position
-                        && (is_domain_create_command(r) || is_domain_destroy_command(r)));
+                        // Maybe there are some inner-domains
+                        let mut domain_layer: usize = 0;
+                        for item in domain_refs {
+                            if self.commands[item.command_array_position] == domain_destroy_command {
+                                domain_layer += 1;
+                            } else if self.commands[item.command_array_position] == domain_create_command {
+                                domain_layer -= 1;
+                            }
 
-                    // Maybe there are some inner-domains
-                    let mut domain_layer: usize = 0;
-                    for item in domain_refs {
-                        if self.commands[item.command_array_position] == domain_destroy_command {
-                            domain_layer += 1;
-                        } else if self.commands[item.command_array_position] == domain_create_command {
-                            domain_layer -= 1;
+                            // Which means we have got out from all sub-domains
+                            if domain_layer == 0 {
+                                iter_reloc_target.relocated_address += item.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                                break;
+                            }
                         }
 
-                        // Which means we have got out from all sub-domains
-                        if domain_layer == 0 {
-                            targets[iter_target_index].relocated_address = (item.command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
-                            break;
+                        // panic!("Unexpected error! Couldn't find the only DomainCreate command")
+                    }
+                    RelocationTargetElement::BreakDomain(_x) => {
+                        let mut refs = self.descriptors.references.clone();
+                        refs.retain(|p| is_domain_destroy_command(p) && p.command_array_position > iter_reloc_target.command_array_position);
+
+                        iter_reloc_target.relocated_address = refs[0].command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                    }
+                    RelocationTargetElement::IgnoreDomain(x) => {
+                        // Search for domain flags
+                        let mut domain_refs = self.descriptors.references.clone();
+                        domain_refs.retain(|r| r.command_array_position > iter_reloc_target.command_array_position
+                            && (is_domain_create_command(r) || is_domain_destroy_command(r)));
+
+                        let mut current_index = 0;
+                        for _ in 0..*x {
+                            let pair_result = pair_container_action(&domain_refs[current_index..]);
+                            // Locate the next container entrance
+                            current_index = pair_result.1 + 1;
+                        }
+
+                        // Restore to end container
+                        current_index -= 1;
+
+                        let target_ref = &domain_refs[current_index];
+                        iter_reloc_target.relocated_address += target_ref.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+
+                        // panic!("Unexpected error! Couldn't find the only DomainCreate command")
+                    }
+                    RelocationTargetElement::EnterFunction(_) => {}
+                    RelocationTargetElement::BreakIteration => {
+                        // Find the first valid reference
+                        let end_ref = self.descriptors.references.iter()
+                                          .find(|r| r.command_array_position > iter_reloc_target.command_array_position
+                                              && is_iteration_end_command(r))
+                                          .unwrap()
+                                          .clone();
+
+                        let default = RelocationReference { ref_type: RelocationReferenceType::FunctionEntrance(Identifier::empty()), command_array_position: usize::MAX };
+                        let nearest_function_end = self.descriptors
+                                                       .references
+                                                       .iter()
+                                                       .find(|r| is_function_end_command(r) && r.command_array_position > iter_reloc_target.command_array_position)
+                                                       .unwrap_or(&default)
+                                                       .clone();
+
+
+                        if end_ref.command_array_position <= nearest_function_end.command_array_position {
+                            iter_reloc_target.relocated_address += end_ref.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                        } else {
+                            panic!("Invalid instruction");
                         }
                     }
+                    RelocationTargetElement::IterationHead => {
+                        // Find the first valid reference
+                        let head_ref = self.descriptors.references.iter().find(|r| r.command_array_position < iter_reloc_target.command_array_position
+                            && is_iteration_head_command(r))
+                                           .unwrap()
+                                           .clone();
 
-                    // panic!("Unexpected error! Couldn't find the only DomainCreate command")
-                }
-                RelocationTargetType::BreakDomain(_x) => {
-                    let mut refs = self.descriptors.references.clone();
-                    refs.retain(|p| is_domain_destroy_command(p));
+                        let default = RelocationReference { ref_type: RelocationReferenceType::FunctionEntrance(Identifier::empty()), command_array_position: usize::MIN };
+                        let nearest_function_begin = self.descriptors
+                                                         .references
+                                                         .iter()
+                                                         .find(|r| is_function_end_command(r))
+                                                         .unwrap_or(&default)
+                                                         .clone();
 
-                    targets[iter_target_index].relocated_address = (refs[0].command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
-                }
-                RelocationTargetType::IgnoreDomain(x) => {
-                    // Search for domain flags
-                    let mut domain_refs = self.descriptors.references.clone();
-                    domain_refs.retain(|r| r.command_array_position >= iter_reloc_target.command_array_position
-                        && (is_domain_create_command(r) || is_domain_destroy_command(r)));
-
-                    // Maybe there are some inner-domains
-                    let mut domain_layer: usize = 0;
-                    let mut current_ignored: usize = 0;
-                    for item in &domain_refs {
-                        if is_domain_destroy_command(item) {
-                            domain_layer -= 1;
-                        } else if is_domain_create_command(item) {
-                            domain_layer += 1;
-                        }
-
-                        if domain_layer == 0 {
-                            current_ignored += 1;
-                        }
-
-                        // Which means we have got out from all sub-domains
-                        if current_ignored == *x {
-                            targets[iter_target_index].relocated_address = (item.command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
-                            break;
+                        if head_ref.command_array_position >= nearest_function_begin.command_array_position {
+                            iter_reloc_target.relocated_address += head_ref.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                        } else {
+                            panic!("Invalid instruction");
                         }
                     }
-
-                    // panic!("Unexpected error! Couldn't find the only DomainCreate command")
-                }
-                RelocationTargetType::EnterFunction(x) => {
-                    targets[iter_target_index].relocated_address = self.descriptors.references
-                                                                       .iter()
-                                                                       .find(|&f| f.ref_type == RelocationReferenceType::FunctionEntrance(x.clone()))
-                                                                       .unwrap()
-                                                                       .command_array_position;
-                }
-                RelocationTargetType::BreakIteration => {
-                    // Find the first valid reference
-                    let end_ref = self.descriptors.references.iter().find(|r| r.command_array_position >= iter_reloc_target.command_array_position
-                        && is_iteration_interrupt_command(r));
-
-                    let default = RelocationReference { ref_type: RelocationReferenceType::FunctionEntrance(Identifier::empty()), command_array_position: usize::MAX };
-                    let nearest_function_end = self.descriptors
-                                                   .references
-                                                   .iter()
-                                                   .find(|r| is_function_end_command(r))
-                                                   .unwrap_or(&default);
-
-
-                    if end_ref.unwrap().command_array_position < nearest_function_end.command_array_position {
-                        targets[iter_target_index].relocated_address = (end_ref.unwrap().command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
-                    } else {
-                        panic!("Invalid instruction");
+                    RelocationTargetElement::Undefined => {
+                        panic!("Encountered undefined relocation target!");
                     }
-                }
-                RelocationTargetType::IterationHead => {
-                    // Find the first valid reference
-                    let head_ref = self.descriptors.references.iter().find(|r| r.command_array_position <= iter_reloc_target.command_array_position
-                        && is_iteration_head_command(r));
-
-                    let default = RelocationReference { ref_type: RelocationReferenceType::FunctionEntrance(Identifier::empty()), command_array_position: usize::MIN };
-                    let nearest_function_begin = self.descriptors
-                                                     .references
-                                                     .iter()
-                                                     .find(|r| is_function_end_command(r))
-                                                     .unwrap_or(&default);
-
-                    if head_ref.unwrap().command_array_position > nearest_function_begin.command_array_position {
-                        targets[iter_target_index].relocated_address = (head_ref.unwrap().command_array_position as i32 + base_offset as i32 + iter_reloc_target.offset) as usize;
-                    } else {
-                        panic!("Invalid instruction");
-                    }
-                }
-                RelocationTargetType::Undefined => {
-                    panic!("Encountered undefined relocation target!");
                 }
             }
         }
-
-        // Update to relocated targets
-        self.descriptors.targets = targets;
     }
 
     pub fn apply_relocation(&mut self, addr_len: u8) {
+        let placeholder_len = jump_command_address_placeholder_len(addr_len);
         for desc in &self.descriptors.targets {
-            let mut addr_bytes = desc.relocated_address.to_be_bytes().to_vec();
-            while addr_bytes[0] == 0x00 && addr_bytes.len() > 1 {
-                addr_bytes.remove(0);
+            let mut addr_bytes;
+
+            match &desc.relocation_elements[0] {
+                RelocationTargetElement::EnterFunction(id) => {
+                    let target_function = self.function_table
+                                              .iter()
+                                              .find(|f| f.name == *id)
+                                              .unwrap();
+
+                    addr_bytes = align_array_width(&target_function.slot.to_be_bytes().to_vec(), addr_len);
+                    addr_bytes.insert(0, 0x00);
+                }
+                _ => {
+                    let addr = desc.relocated_address;
+                    addr_bytes = align_array_width(&addr.abs().to_be_bytes().to_vec(), addr_len);
+
+                    if addr < 0 {
+                        addr_bytes.insert(0, 0x0B);
+                    } else {
+                        addr_bytes.insert(0, 0x0F);
+                    }
+                }
             }
-            let addr_u8_vec = align_array_width(&addr_bytes, addr_len);
-            self.commands.splice(desc.command_array_position..(desc.command_array_position + addr_len as usize), addr_u8_vec);
+
+            let begin_pos = desc.command_array_position + desc.offset as usize;
+            self.commands.splice(begin_pos..(begin_pos + placeholder_len), addr_bytes);
         }
     }
 

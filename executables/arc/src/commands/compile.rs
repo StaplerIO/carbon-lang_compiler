@@ -82,7 +82,7 @@ pub fn compile_package(args: CompileCommandArgs) {
                     output.combine(build_function_command(func, &metadata));
                 }
 
-                output.calculate_ref_to_target(output.commands.len());
+                output.calculate_ref_to_target();
                 output.apply_relocation(metadata.address_alignment);
 
                 // Place entry_point

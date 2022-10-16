@@ -32,8 +32,8 @@ fn single_function() {
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let bytes = metadata.serialize();
-    target.calculate_ref_to_target(bytes.len());
+    // let bytes = metadata.serialize();
+    target.calculate_ref_to_target();
     target.apply_relocation(metadata.address_alignment);
 
     // bytes.extend(target.commands.clone());
@@ -76,6 +76,8 @@ fn multiple_functions() {
     };
 
     let mut target = RelocatableCommandList::new();
+
+    target.function_table = tree.export_function_table();
     for func in &tree.functions {
         target.combine(build_function_command(func, &metadata));
     }
@@ -83,9 +85,9 @@ fn multiple_functions() {
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let bytes = metadata.serialize();
-    target.calculate_ref_to_target(bytes.len());
-    // target.apply_relocation(metadata.address_alignment);
+    // let bytes = metadata.serialize();
+    target.calculate_ref_to_target();
+    target.apply_relocation(metadata.address_alignment);
 
     // bytes.extend(target.commands.clone());
     // file.write_all(bytes.as_slice()).unwrap();

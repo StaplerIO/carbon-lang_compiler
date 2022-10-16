@@ -1,5 +1,8 @@
 use crate::shared::package_generation::data_descriptor::StringConstant;
+use crate::shared::package_generation::func_table::FunctionTable;
 use crate::shared::utils::identifier::Identifier;
+
+pub type StringPool = Vec<StringConstant>;
 
 #[derive(Clone, Debug)]
 pub struct RelocationCredential {
@@ -18,7 +21,7 @@ pub struct RelocationCredential {
 /// ### `EnterFunction`
 /// Save the identifier of target function in it
 #[derive(Clone, Debug)]
-pub enum RelocationTargetType {
+pub enum RelocationTargetElement {
     Relative(i32),
     IterationHead,
     BreakIteration,
@@ -30,13 +33,25 @@ pub enum RelocationTargetType {
     Undefined
 }
 
+/// Properties in `RelocationTarget` you should aware
+///
+/// # Fields
+///
+/// **`command_array_position`**
+///
+/// The position of the head of the command
+///
+/// **`offset`**
+///
+/// The offset of the reserved address fields to the head of the command
+///
 #[derive(Clone, Debug)]
 pub struct RelocationTarget {
-    pub relocation_type: RelocationTargetType,
+    pub relocation_elements: Vec<RelocationTargetElement>,
     pub command_array_position: usize,
     pub offset: i32,
 
-    pub relocated_address: usize,
+    pub relocated_address: i32,
 }
 
 #[derive(Clone, Debug)]
@@ -44,7 +59,8 @@ pub struct RelocatableCommandList {
     pub commands: Vec<u8>,
     pub command_entries: Vec<usize>,
     pub descriptors: RelocationCredential,
-    pub string_pool: Vec<StringConstant>,
+    pub string_pool: StringPool,
+    pub function_table: FunctionTable,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

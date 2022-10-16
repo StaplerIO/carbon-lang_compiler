@@ -46,7 +46,7 @@ pub enum DomainCommand {
 
 #[derive(Clone, Hash, Eq, PartialEq)]
 pub enum JumpCommand {
-    ToAbsolute,
+    ToRelative,
     ByStackTop,
 }
 

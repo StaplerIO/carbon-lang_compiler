@@ -135,7 +135,11 @@ pub fn string_to_hex_char(s: String) -> char {
 }
 
 pub fn jump_command_address_placeholder(metadata: &PackageMetadata) -> Vec<u8> {
-    return vec![0x00].repeat(metadata.address_alignment as usize);
+    return vec![0x00].repeat(jump_command_address_placeholder_len(metadata.address_alignment));
+}
+
+pub fn jump_command_address_placeholder_len(addr_len: u8) -> usize {
+    return addr_len as usize + 1;
 }
 
 pub fn is_domain_create_command(reloc_ref: &RelocationReference) -> bool {
@@ -162,7 +166,7 @@ pub fn is_domain_destroy_command(reloc_ref: &RelocationReference) -> bool {
     };
 }
 
-pub fn is_iteration_interrupt_command(reloc_ref: &RelocationReference) -> bool {
+pub fn is_iteration_end_command(reloc_ref: &RelocationReference) -> bool {
     return match reloc_ref.ref_type {
         RelocationReferenceType::EndWhile => true,
         RelocationReferenceType::EndLoop => true,
@@ -190,4 +194,31 @@ pub fn is_function_begin_command(reloc_ref: &RelocationReference) -> bool {
         RelocationReferenceType::FunctionEntrance(_) => true,
         _ => false,
     }
+}
+
+pub fn pair_container_action(references: &[RelocationReference]) -> (&RelocationReference, usize)  {
+    let reloc_type = &references[0].ref_type;
+    let opp_reloc_type = match reloc_type{
+        RelocationReferenceType::IfEntrance => RelocationReferenceType::EndIf,
+        RelocationReferenceType::ElifEntrance => RelocationReferenceType::EndElif,
+        RelocationReferenceType::ElseEntrance => RelocationReferenceType::EndElse,
+        RelocationReferenceType::WhileEntrance => RelocationReferenceType::EndWhile,
+        RelocationReferenceType::LoopEntrance => RelocationReferenceType::EndLoop,
+        _ => panic!("Invalid container pair type")
+    };
+
+    let mut layer: usize = 0;
+    for (idx, reference) in references.iter().enumerate() {
+        if reference.ref_type == *reloc_type {
+            layer += 1;
+        } else if reference.ref_type == opp_reloc_type {
+            layer -= 1;
+        }
+
+        if layer == 0 {
+            return (reference, idx);
+        }
+    }
+
+    return (&references[0], 0);
 }

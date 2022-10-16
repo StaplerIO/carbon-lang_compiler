@@ -10,24 +10,27 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 #[test]
 fn no_function_relocation() {
     let tokens = tokenize(
-        "decl var number foo;\
-                   decl var number bar;\
-                   foo = 0;\
-                   bar = 2 + 4;\
-                   while (foo < bar) {\
-                       foo = foo + 1;\
+        "decl var number foo;
+                   decl var number bar;
+                   foo = 0;
+                   bar = 2 + 4;
+                   while (foo < bar) {
+                       foo = foo + 1;
                    }
+                   
                    foo = 4;
                    if (foo > 1202) {
-                        foo = foo + 1;
+                       foo = foo + 1;
+                   } elif (432 > 212) {
+                       foo = foo + 5;
                    } else {
-                        foo = foo + 2;
+                       foo = foo + 2;
                    }",
-        true).unwrap();
+        true,
+    )
+    .unwrap();
 
-    let actions = action_block_builder(
-        decorate_token(tokens).0,
-    ).unwrap();
+    let actions = action_block_builder(decorate_token(tokens).0).unwrap();
 
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
@@ -38,17 +41,21 @@ fn no_function_relocation() {
         address_alignment: 4,
     };
 
-    let mut target = action_block_command_builder(&ActionBlock { actions },  false, &vec![], &metadata);
+    let mut target =
+        action_block_command_builder(&ActionBlock { actions }, false, &vec![], &metadata);
 
     // Write file
     // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
 
-    let bytes = metadata.serialize();
-    target.calculate_ref_to_target(bytes.len());
-    target.apply_relocation(metadata.address_alignment);
+    // let mut bytes = metadata.serialize();
+    target.calculate_ref_to_target();
+    // target.apply_relocation(metadata.address_alignment);
 
     // bytes.extend(target.commands.clone());
     // file.write_all(bytes.as_slice()).unwrap();
 
-    // println!("{}", itertools::Itertools::join(&mut target.commands.iter(), ", "));
+    println!(
+        "{}",
+        itertools::Itertools::join(&mut target.commands.iter(), ", ")
+    );
 }

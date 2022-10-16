@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 
 use lazy_static::lazy_static;
+use crate::package_generator::utils::jump_command_address_placeholder_len;
 
 use crate::shared::command_map::{
     DomainCommand, FunctionCommand, JumpCommand, MathCalcCommand, MathCommand, MathLogicalCommand,
@@ -39,7 +40,7 @@ lazy_static! {
             .cloned()
             .collect();
     pub static ref JUMP_COMMAND_OPCODE: HashMap<JumpCommand, u8> =
-        [(JumpCommand::ToAbsolute, 0x1), (JumpCommand::ByStackTop, 0x2),]
+        [(JumpCommand::ToRelative, 0x1), (JumpCommand::ByStackTop, 0x2),]
             .iter()
             .cloned()
             .collect();
@@ -87,11 +88,27 @@ impl ObjectCommand {
     pub fn to_opcode(&self) -> u8 {
         return OBJECT_COMMAND_OPCODE[self];
     }
+
+    pub fn get_len(&self, slot_algn: u8) -> usize {
+        return match self {
+            ObjectCommand::Create => 2,
+            ObjectCommand::Destroy => 2 + slot_algn as usize
+        }
+    }
 }
 
 impl StackCommand {
     pub fn to_opcode(&self) -> u8 {
         return STACK_COMMAND_OPCODE[self];
+    }
+
+    pub fn get_len(&self, data_slot_algn: u8, data_algn: u8) -> usize {
+        return match self {
+            StackCommand::Push => 1 + data_algn as usize,
+            StackCommand::PushFromObject => 1 + 1 + data_slot_algn as usize,
+            StackCommand::Pop => 1 + data_algn as usize,
+            StackCommand::PopToObject => 1 + 1 + data_slot_algn as usize,
+        }
     }
 }
 
@@ -99,17 +116,34 @@ impl DomainCommand {
     pub fn to_opcode(&self) -> u8 {
         return DOMAIN_COMMAND_OPCODE[self];
     }
+
+    pub fn get_len(&self) -> usize { 1 }
 }
 
 impl JumpCommand {
     pub fn to_opcode(&self) -> u8 {
         return JUMP_COMMAND_OPCODE[self];
     }
+
+    pub fn get_len(&self, addr_algn: u8) -> usize {
+        return match self {
+            JumpCommand::ToRelative => 1 + jump_command_address_placeholder_len(addr_algn),
+            JumpCommand::ByStackTop => 1 + jump_command_address_placeholder_len(addr_algn) * 3
+        }
+    }
 }
 
 impl FunctionCommand {
     pub fn to_opcode(&self) -> u8 {
         return FUNCTION_COMMAND_OPCODE[self];
+    }
+
+    pub fn get_len(&self, addr_algn: u8) -> usize {
+        return match self {
+            FunctionCommand::Enter => 1 + addr_algn as usize + 1,
+            FunctionCommand::LeaveWithoutValue => 1,
+            FunctionCommand::LeaveWithValue => 2
+        }
     }
 }
 
@@ -123,10 +157,14 @@ impl MathCalcCommand {
     pub fn to_opcode(&self) -> u8 {
         return MATH_CALC_COMMAND_OPCODE[self];
     }
+
+    pub fn get_len(&self) -> usize { 2 }
 }
 
 impl MathLogicalCommand {
     pub fn to_opcode(&self) -> u8 {
         return MATH_LOGICAL_OPCODE[self];
     }
+
+    pub fn get_len(&self) -> usize { 2 }
 }
