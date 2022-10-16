@@ -54,8 +54,5 @@ fn no_function_relocation() {
     // bytes.extend(target.commands.clone());
     // file.write_all(bytes.as_slice()).unwrap();
 
-    println!(
-        "{}",
-        itertools::Itertools::join(&mut target.commands.iter(), ", ")
-    );
+    // println!("{}", itertools::Itertools::join(&mut target.commands.iter(), ", "));
 }
