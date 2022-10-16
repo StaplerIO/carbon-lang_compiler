@@ -63,6 +63,7 @@ pub fn compile_package(args: CompileCommandArgs) {
 
                 let mut output = RelocatableCommandList::new();
                 output.string_pool = string_pool;
+                output.function_table = tree.export_function_table();
                 // Place metadata
                 let serialized_metadata = metadata.serialize();
                 output.append_commands(serialized_metadata);
