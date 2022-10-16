@@ -3,8 +3,8 @@ use crate::package_generator::utils::{align_array_width,
                                       is_domain_create_command,
                                       is_domain_destroy_command,
                                       is_function_end_command,
+                                      is_iteration_end_command,
                                       is_iteration_head_command,
-                                      is_iteration_interrupt_command,
                                       jump_command_address_placeholder_len,
                                       pair_container_action};
 use crate::shared::command_map::{DomainCommand, RootCommand};
@@ -65,6 +65,9 @@ impl RelocatableCommandList {
     }
 
     pub fn calculate_ref_to_target(&mut self) {
+        self.descriptors.references.sort_by(|a, b| a.command_array_position.cmp(&b.command_array_position));
+        self.descriptors.targets.sort_by(|a, b| a.command_array_position.cmp(&b.command_array_position));
+
         let domain_create_command = combine_command(
             RootCommand::Domain.to_opcode(),
             DomainCommand::Create.to_opcode(),
@@ -137,18 +140,22 @@ impl RelocatableCommandList {
                     RelocationTargetElement::BreakIteration => {
                         // Find the first valid reference
                         let end_ref = self.descriptors.references.iter()
-                                          .find(|r| r.command_array_position > iter_reloc_target.command_array_position && is_iteration_interrupt_command(r));
+                                          .find(|r| r.command_array_position > iter_reloc_target.command_array_position
+                                              && is_iteration_end_command(r))
+                                          .unwrap()
+                                          .clone();
 
                         let default = RelocationReference { ref_type: RelocationReferenceType::FunctionEntrance(Identifier::empty()), command_array_position: usize::MAX };
                         let nearest_function_end = self.descriptors
                                                        .references
                                                        .iter()
-                                                       .find(|r| is_function_end_command(r))
-                                                       .unwrap_or(&default);
+                                                       .find(|r| is_function_end_command(r) && r.command_array_position > iter_reloc_target.command_array_position)
+                                                       .unwrap_or(&default)
+                                                       .clone();
 
 
-                        if end_ref.unwrap().command_array_position < nearest_function_end.command_array_position {
-                            iter_reloc_target.relocated_address += end_ref.unwrap().command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                        if end_ref.command_array_position <= nearest_function_end.command_array_position {
+                            iter_reloc_target.relocated_address += end_ref.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
                         } else {
                             panic!("Invalid instruction");
                         }
@@ -156,17 +163,20 @@ impl RelocatableCommandList {
                     RelocationTargetElement::IterationHead => {
                         // Find the first valid reference
                         let head_ref = self.descriptors.references.iter().find(|r| r.command_array_position < iter_reloc_target.command_array_position
-                            && is_iteration_head_command(r));
+                            && is_iteration_head_command(r))
+                                           .unwrap()
+                                           .clone();
 
                         let default = RelocationReference { ref_type: RelocationReferenceType::FunctionEntrance(Identifier::empty()), command_array_position: usize::MIN };
                         let nearest_function_begin = self.descriptors
                                                          .references
                                                          .iter()
                                                          .find(|r| is_function_end_command(r))
-                                                         .unwrap_or(&default);
+                                                         .unwrap_or(&default)
+                                                         .clone();
 
-                        if head_ref.unwrap().command_array_position > nearest_function_begin.command_array_position {
-                            iter_reloc_target.relocated_address += head_ref.unwrap().command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                        if head_ref.command_array_position >= nearest_function_begin.command_array_position {
+                            iter_reloc_target.relocated_address += head_ref.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
                         } else {
                             panic!("Invalid instruction");
                         }

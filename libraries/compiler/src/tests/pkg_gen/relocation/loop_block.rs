@@ -7,7 +7,7 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 
 #[test]
 fn simple_while_test() {
-    let tokens = tokenize("while (234 > 123) { if (234 > 245) { break; } else { continue; } }", true).unwrap();
+    let tokens = tokenize("while (100 > 123) { if (234 > 245) { break; } else { continue; } }", true).unwrap();
 
     let metadata = PackageMetadata {
         data_slot_alignment: 2,
