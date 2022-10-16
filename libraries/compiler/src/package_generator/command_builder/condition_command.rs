@@ -155,16 +155,7 @@ pub fn while_command_builder(action: &WhileBlock,
     // Evaluate the expression first
     let mut eval_jump = jump_by_stack_top_command_template_builder(&action.condition, defined_data, metadata);
     // Generate body commands
-    let mut while_body = action_block_command_builder(&action.body, true, defined_data, metadata);
-    while_body.descriptors.references.push(RelocationReference {
-        ref_type: RelocationReferenceType::WhileEntrance,
-        command_array_position: 0,
-    });
-    while_body.descriptors.references.push(RelocationReference {
-        ref_type: RelocationReferenceType::EndWhile,
-        command_array_position: while_body.commands.len(),
-    });
-
+    let while_body = action_block_command_builder(&action.body, true, defined_data, metadata);
     // Jump back to re-evaluate the expression, judge if the condition is still satisfied
     let back_jump = direct_jump_command_builder(vec![RelocationTargetElement::Relative(-((eval_jump.0.commands.len() + while_body.commands.len()) as i32))], metadata);
 
@@ -175,22 +166,19 @@ pub fn while_command_builder(action: &WhileBlock,
         eval_jump.0.descriptors.targets[0].relocation_elements = vec![RelocationTargetElement::Relative(JumpCommand::ByStackTop.get_len(metadata.address_alignment) as i32)];
     } else {
         // Jump out of the whole statement
-        eval_jump.0.descriptors.targets[0].relocation_elements = vec![RelocationTargetElement::IgnoreDomain(1),
-                                                                      RelocationTargetElement::Relative(JumpCommand::ToRelative.get_len(metadata.address_alignment) as i32)];
+        eval_jump.0.descriptors.targets[0].relocation_elements = vec![RelocationTargetElement::BreakIteration];
     }
 
     if args.1 {
         eval_jump.0.descriptors.targets[1].relocation_elements = vec![RelocationTargetElement::Relative(JumpCommand::ByStackTop.get_len(metadata.address_alignment) as i32)];
     } else {
-        eval_jump.0.descriptors.targets[1].relocation_elements = vec![RelocationTargetElement::IgnoreDomain(1),
-                                                                      RelocationTargetElement::Relative(JumpCommand::ToRelative.get_len(metadata.address_alignment) as i32)];
+        eval_jump.0.descriptors.targets[1].relocation_elements = vec![RelocationTargetElement::BreakIteration];
     }
 
     if args.2 {
         eval_jump.0.descriptors.targets[2].relocation_elements = vec![RelocationTargetElement::Relative(JumpCommand::ByStackTop.get_len(metadata.address_alignment) as i32)];
     } else {
-        eval_jump.0.descriptors.targets[2].relocation_elements = vec![RelocationTargetElement::IgnoreDomain(1),
-                                                                      RelocationTargetElement::Relative(JumpCommand::ToRelative.get_len(metadata.address_alignment) as i32)];
+        eval_jump.0.descriptors.targets[2].relocation_elements = vec![RelocationTargetElement::BreakIteration];
     }
 
     // Combine command sections
@@ -198,6 +186,22 @@ pub fn while_command_builder(action: &WhileBlock,
     result.combine(eval_jump.0);
     result.combine(while_body);
     result.combine(back_jump);
+
+    // Generate references
+    // Layout:
+    // [while entrance]
+    // <expression evaluation>
+    // <while body>
+    // <jump to entrance>
+    // [while end]
+    result.descriptors.references.push(RelocationReference {
+        ref_type: RelocationReferenceType::WhileEntrance,
+        command_array_position: 0,
+    });
+    result.descriptors.references.push(RelocationReference {
+        ref_type: RelocationReferenceType::EndWhile,
+        command_array_position: result.commands.len(),
+    });
 
     return result;
 }
