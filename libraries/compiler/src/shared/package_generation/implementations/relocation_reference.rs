@@ -1,5 +1,4 @@
 use crate::package_generator::utils::{align_array_width,
-                                      combine_command,
                                       is_domain_create_command,
                                       is_domain_destroy_command,
                                       is_function_end_command,
@@ -7,7 +6,6 @@ use crate::package_generator::utils::{align_array_width,
                                       is_iteration_head_command,
                                       jump_command_address_placeholder_len,
                                       pair_container_action};
-use crate::shared::command_map::{DomainCommand, RootCommand};
 use crate::shared::package_generation::relocation_reference::{RelocatableCommandList,
                                                               RelocationCredential,
                                                               RelocationReference,
@@ -68,16 +66,6 @@ impl RelocatableCommandList {
         self.descriptors.references.sort_by(|a, b| a.command_array_position.cmp(&b.command_array_position));
         self.descriptors.targets.sort_by(|a, b| a.command_array_position.cmp(&b.command_array_position));
 
-        let domain_create_command = combine_command(
-            RootCommand::Domain.to_opcode(),
-            DomainCommand::Create.to_opcode(),
-        );
-
-        let domain_destroy_command = combine_command(
-            RootCommand::Domain.to_opcode(),
-            DomainCommand::Destroy.to_opcode(),
-        );
-
         for (_, iter_reloc_target) in self.descriptors.targets.iter_mut().enumerate() {
             for element in &iter_reloc_target.relocation_elements {
                 match element {
@@ -93,10 +81,10 @@ impl RelocatableCommandList {
 
                         // Maybe there are some inner-domains
                         let mut domain_layer: usize = 0;
-                        for item in domain_refs {
-                            if self.commands[item.command_array_position] == domain_destroy_command {
+                        for item in &domain_refs {
+                            if is_domain_destroy_command(item) {
                                 domain_layer += 1;
-                            } else if self.commands[item.command_array_position] == domain_create_command {
+                            } else if is_domain_create_command(item) {
                                 domain_layer -= 1;
                             }
 
