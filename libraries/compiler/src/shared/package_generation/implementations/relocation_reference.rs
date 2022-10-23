@@ -231,6 +231,16 @@ impl RelocatableCommandList {
 
         return result;
     }
+
+    pub fn generate_function_table(&self, addr_len: u8) -> Vec<u8> {
+        let mut result = vec![];
+        for func in &self.function_table {
+            result.extend(align_array_width(&func.slot.to_be_bytes().to_vec(), addr_len));
+            result.extend(align_array_width(&func.relocated_entry_address.to_be_bytes().to_vec(), addr_len));
+        }
+
+        return result;
+    }
 }
 
 impl RelocationCredential {

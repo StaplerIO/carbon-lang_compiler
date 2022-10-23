@@ -78,10 +78,21 @@ pub fn compile_package(args: CompileCommandArgs) {
                 let string_pool_command = output.generate_string_pool(metadata.data_slot_alignment);
                 output.append_commands(string_pool_command);
 
-                // Place functions
+                // Generate function commands
+                let mut func_commands_staging = RelocatableCommandList::new();
                 for func in &tree.functions {
-                    output.combine(build_function_command(func, &metadata));
+                    // Set function entry point address in command section
+                    let table_target = output.function_table.iter_mut().find(|f| f.name == func.declarator.identifier).unwrap();
+                    table_target.relocated_entry_address = func_commands_staging.commands.len();
+
+                    func_commands_staging.combine(build_function_command(func, &metadata));
                 }
+
+                // Place function table
+                let function_table_command = output.generate_function_table(metadata.address_alignment);
+                output.append_commands(function_table_command);
+
+                output.combine(func_commands_staging);
 
                 output.calculate_ref_to_target();
                 output.apply_relocation(metadata.address_alignment);
