@@ -150,6 +150,7 @@ pub fn is_domain_create_command(reloc_ref: &RelocationReference) -> bool {
         RelocationReferenceType::ElseEntrance => true,
         RelocationReferenceType::WhileEntrance => true,
         RelocationReferenceType::LoopEntrance => true,
+        RelocationReferenceType::DomainEntrance => true,
         _ => false,
     };
 }
@@ -162,6 +163,7 @@ pub fn is_domain_destroy_command(reloc_ref: &RelocationReference) -> bool {
         RelocationReferenceType::EndElse => true,
         RelocationReferenceType::EndWhile => true,
         RelocationReferenceType::EndLoop => true,
+        RelocationReferenceType::EndDomain => true,
         _ => false,
     };
 }
@@ -204,6 +206,7 @@ pub fn pair_container_action(references: &[RelocationReference]) -> (&Relocation
         RelocationReferenceType::ElseEntrance => RelocationReferenceType::EndElse,
         RelocationReferenceType::WhileEntrance => RelocationReferenceType::EndWhile,
         RelocationReferenceType::LoopEntrance => RelocationReferenceType::EndLoop,
+        RelocationReferenceType::DomainEntrance => RelocationReferenceType::EndDomain,
         _ => panic!("Invalid container pair type")
     };
 

@@ -7,7 +7,7 @@ pub type StringPool = Vec<StringConstant>;
 #[derive(Clone, Debug)]
 pub struct RelocationCredential {
     pub targets: Vec<RelocationTarget>,
-    pub references: Vec<RelocationReference>
+    pub references: Vec<RelocationReference>,
 }
 
 /// ## RelocationType with value
@@ -30,7 +30,7 @@ pub enum RelocationTargetElement {
     BreakDomain(usize),
     IgnoreDomain(usize),
     EnterFunction(Identifier),
-    Undefined
+    Undefined,
 }
 
 /// Properties in `RelocationTarget` you should aware
@@ -78,6 +78,8 @@ pub enum RelocationReferenceType {
     EndWhile,
     LoopEntrance,
     EndLoop,
+    DomainEntrance,
+    EndDomain,
 }
 
 #[derive(Clone, Debug)]

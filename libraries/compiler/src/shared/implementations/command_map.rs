@@ -4,7 +4,7 @@ use lazy_static::lazy_static;
 use crate::package_generator::utils::jump_command_address_placeholder_len;
 
 use crate::shared::command_map::{
-    DomainCommand, FunctionCommand, JumpCommand, MathCalcCommand, MathCommand, MathLogicalCommand,
+    FunctionCommand, JumpCommand, MathCalcCommand, MathCommand, MathLogicalCommand,
     ObjectCommand, RootCommand, StackCommand,
 };
 
@@ -34,11 +34,6 @@ lazy_static! {
     .iter()
     .cloned()
     .collect();
-    pub static ref DOMAIN_COMMAND_OPCODE: HashMap<DomainCommand, u8> =
-        [(DomainCommand::Create, 0x1), (DomainCommand::Destroy, 0x2),]
-            .iter()
-            .cloned()
-            .collect();
     pub static ref JUMP_COMMAND_OPCODE: HashMap<JumpCommand, u8> =
         [(JumpCommand::ToRelative, 0x1), (JumpCommand::ByStackTop, 0x2),]
             .iter()
@@ -110,14 +105,6 @@ impl StackCommand {
             StackCommand::PopToObject => 1 + 1 + data_slot_algn as usize,
         }
     }
-}
-
-impl DomainCommand {
-    pub fn to_opcode(&self) -> u8 {
-        return DOMAIN_COMMAND_OPCODE[self];
-    }
-
-    pub fn get_len(&self) -> usize { 1 }
 }
 
 impl JumpCommand {

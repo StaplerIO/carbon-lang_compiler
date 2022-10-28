@@ -8,12 +8,10 @@ use crate::package_generator::command_builder::loop_interception::{
     break_action_command_builder, continue_action_command_builder,
 };
 use crate::package_generator::command_builder::return_from_function::return_command_builder;
-use crate::package_generator::utils::combine_command;
 use crate::shared::ast::action::{ActionBlock, ActionContent};
-use crate::shared::command_map::{DomainCommand, RootCommand};
 use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
-use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
+use crate::shared::package_generation::relocation_reference::{RelocatableCommandList, RelocationReference, RelocationReferenceType};
 
 pub fn action_block_command_builder(
     block: &ActionBlock,
@@ -27,11 +25,10 @@ pub fn action_block_command_builder(
 
     // Create a new domain if necessary
     if surround_domain {
-        result.command_entries.push(result.commands.len());
-        result.append_commands(vec![combine_command(
-            RootCommand::Domain.to_opcode(),
-            DomainCommand::Create.to_opcode(),
-        )]);
+        result.descriptors.references.push(RelocationReference {
+            ref_type: RelocationReferenceType::DomainEntrance,
+            command_array_position: 0,
+        })
     }
 
     for action in &block.actions {
@@ -88,11 +85,10 @@ pub fn action_block_command_builder(
 
     // Destroy the domain if created
     if surround_domain {
-        result.command_entries.push(result.commands.len());
-        result.append_commands(vec![combine_command(
-            RootCommand::Domain.to_opcode(),
-            DomainCommand::Destroy.to_opcode(),
-        )]);
+        result.descriptors.references.push(RelocationReference {
+            ref_type: RelocationReferenceType::EndDomain,
+            command_array_position: result.commands.len(),
+        })
     }
 
     return result;

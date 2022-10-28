@@ -39,12 +39,6 @@ pub enum StackCommand {
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
-pub enum DomainCommand {
-    Create,
-    Destroy,
-}
-
-#[derive(Clone, Hash, Eq, PartialEq)]
 pub enum JumpCommand {
     ToRelative,
     ByStackTop,

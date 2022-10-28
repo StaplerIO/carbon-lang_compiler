@@ -81,16 +81,16 @@ impl RelocatableCommandList {
 
                         // Maybe there are some inner-domains
                         let mut domain_layer: usize = 0;
-                        for item in &domain_refs {
-                            if is_domain_destroy_command(item) {
+                        for domain_ref in &domain_refs {
+                            if is_domain_destroy_command(domain_ref) {
                                 domain_layer += 1;
-                            } else if is_domain_create_command(item) {
+                            } else if is_domain_create_command(domain_ref) {
                                 domain_layer -= 1;
                             }
 
                             // Which means we have got out from all sub-domains
                             if domain_layer == 0 {
-                                iter_reloc_target.relocated_address += item.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
+                                iter_reloc_target.relocated_address += domain_ref.command_array_position as i32 - iter_reloc_target.command_array_position as i32;
                                 break;
                             }
                         }
