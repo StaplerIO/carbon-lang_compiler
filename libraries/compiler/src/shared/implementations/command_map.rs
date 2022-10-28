@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 use lazy_static::lazy_static;
-use crate::package_generator::utils::jump_command_address_placeholder_len;
 
+use crate::package_generator::utils::jump_command_address_placeholder_len;
 use crate::shared::command_map::{
     FunctionCommand, JumpCommand, MathCalcCommand, MathCommand, MathLogicalCommand,
     ObjectCommand, RootCommand, StackCommand,
@@ -43,6 +43,7 @@ lazy_static! {
         (FunctionCommand::Enter, 0x1),
         (FunctionCommand::LeaveWithoutValue, 0x2),
         (FunctionCommand::LeaveWithValue, 0x3),
+        (FunctionCommand::FunctionEndFlag, 0xF),
     ]
     .iter()
     .cloned()
@@ -88,7 +89,7 @@ impl ObjectCommand {
         return match self {
             ObjectCommand::Create => 2,
             ObjectCommand::Destroy => 2 + slot_algn as usize
-        }
+        };
     }
 }
 
@@ -103,7 +104,7 @@ impl StackCommand {
             StackCommand::PushFromObject => 1 + 1 + data_slot_algn as usize,
             StackCommand::Pop => 1 + data_algn as usize,
             StackCommand::PopToObject => 1 + 1 + data_slot_algn as usize,
-        }
+        };
     }
 }
 
@@ -116,7 +117,7 @@ impl JumpCommand {
         return match self {
             JumpCommand::ToRelative => 1 + jump_command_address_placeholder_len(addr_algn),
             JumpCommand::ByStackTop => 1 + jump_command_address_placeholder_len(addr_algn) * 3
-        }
+        };
     }
 }
 
@@ -129,8 +130,9 @@ impl FunctionCommand {
         return match self {
             FunctionCommand::Enter => 1 + addr_algn as usize + 1,
             FunctionCommand::LeaveWithoutValue => 1,
-            FunctionCommand::LeaveWithValue => 2
-        }
+            FunctionCommand::LeaveWithValue => 2,
+            FunctionCommand::FunctionEndFlag => 1,
+        };
     }
 }
 
