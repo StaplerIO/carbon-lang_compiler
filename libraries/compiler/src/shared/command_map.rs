@@ -49,6 +49,7 @@ pub enum FunctionCommand {
     Enter,
     LeaveWithoutValue,
     LeaveWithValue,
+    FunctionEndFlag,
 }
 
 #[derive(Clone, Hash, Eq, PartialEq)]
