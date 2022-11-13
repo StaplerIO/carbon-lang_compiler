@@ -1,5 +1,6 @@
 use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::package_generation::func_table::FunctionTable;
+use crate::shared::package_generation::group_context::GroupTable;
 use crate::shared::utils::identifier::Identifier;
 
 pub type StringPool = Vec<StringConstant>;
@@ -61,6 +62,7 @@ pub struct RelocatableCommandList {
     pub descriptors: RelocationCredential,
     pub string_pool: StringPool,
     pub function_table: FunctionTable,
+    pub group_table: GroupTable,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

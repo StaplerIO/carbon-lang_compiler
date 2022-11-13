@@ -118,6 +118,7 @@ pub fn direct_jump_command_builder(elements: Vec<RelocationTargetElement>, metad
         },
         command_entries: vec![0],
         string_pool: vec![],
-        function_table: vec![]
+        function_table: vec![],
+        group_table: vec![]
     };
 }

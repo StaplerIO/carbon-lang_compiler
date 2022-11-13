@@ -1,4 +1,4 @@
-// use std::io::Write;
+use std::io::Write;
 use lazy_static::lazy_static;
 
 use crate::lexer::tokenize::tokenize;
@@ -108,9 +108,9 @@ fn code_file() {
     result.calculate_ref_to_target();
     result.apply_relocation(metadata.address_alignment);
 
-    // let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
-    // file.write_all(metadata.serialize().as_slice()).unwrap();
-    // file.write_all(result.commands.as_slice()).unwrap();
+    let mut file = std::fs::File::create("F:\\test.cbp").unwrap();
+    file.write_all(metadata.serialize().as_slice()).unwrap();
+    file.write_all(result.commands.as_slice()).unwrap();
 
     // println!("{}", itertools::Itertools::join(&mut result.commands.iter(), ", "));
 }

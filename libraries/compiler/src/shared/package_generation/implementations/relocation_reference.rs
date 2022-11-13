@@ -49,6 +49,7 @@ impl RelocatableCommandList {
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
             function_table: vec![],
+            group_table: vec![]
         }
     }
 
@@ -59,6 +60,7 @@ impl RelocatableCommandList {
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
             function_table: vec![],
+            group_table: vec![]
         };
     }
 
