@@ -3,7 +3,6 @@ use crate::shared::utils::identifier::Identifier;
 
 pub type MethodDeclarator = FunctionDeclarator;
 
-
 #[derive(Clone, Debug, PartialEq)]
 pub struct Field {
     pub identifier: Identifier,

@@ -19,6 +19,7 @@ pub struct GroupImplementationBlock {
 #[derive(Debug, Clone)]
 pub struct FieldImplementation {
     pub identifier: Identifier,
+    pub slot: usize,
 
     pub get_block: Option<FieldGS>,
     pub set_block: Option<FieldGS>,

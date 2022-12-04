@@ -6,13 +6,13 @@ use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::RelocatableCommandList;
 use crate::shared::utils::identifier::Identifier;
 
-pub fn group_declarator_builder(decl: GroupDeclarationBlock, generated_groups: &Vec<GeneratedGroup>, metadata: &PackageMetadata) -> Result<RelocatableCommandList, Vec<Identifier>> {
+pub fn group_declarator_builder(decl_block: GroupDeclarationBlock, generated_groups: &Vec<GeneratedGroup>, metadata: &PackageMetadata) -> Result<RelocatableCommandList, Vec<Identifier>> {
     let mut result = RelocatableCommandList::new();
     let mut dependency = vec![];
 
     // Generate fields
-    result.commands.extend(align_array_width(&decl.fields.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
-    for field in decl.fields.iter() {
+    result.commands.extend(align_array_width(&decl_block.fields.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
+    for field in decl_block.fields.iter() {
         let source = generated_groups.iter()
                                      .find(|g| g.identifier == field.data_type);
 
@@ -24,8 +24,8 @@ pub fn group_declarator_builder(decl: GroupDeclarationBlock, generated_groups: &
     }
 
     // Generate methods
-    result.commands.extend(align_array_width(&decl.methods.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
-    for method in decl.methods.iter() {
+    result.commands.extend(align_array_width(&decl_block.methods.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
+    for method in decl_block.methods.iter() {
         let declarator = separated_function_declarator_builder(method, generated_groups, metadata);
         if declarator.is_ok() {
             result.combine(declarator.unwrap());
@@ -35,8 +35,8 @@ pub fn group_declarator_builder(decl: GroupDeclarationBlock, generated_groups: &
     }
 
     // Generate functions
-    result.commands.extend(align_array_width(&decl.functions.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
-    for function in decl.functions.iter() {
+    result.commands.extend(align_array_width(&decl_block.functions.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
+    for function in decl_block.functions.iter() {
         let declarator = separated_function_declarator_builder(function, generated_groups, metadata);
         if declarator.is_ok() {
             result.combine(declarator.unwrap());

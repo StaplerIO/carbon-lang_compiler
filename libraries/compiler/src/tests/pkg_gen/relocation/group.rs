@@ -34,7 +34,7 @@ lazy_static! {
 #[test]
 fn simple_group() {
     let tokens = decorate_token(tokenize(&CONTENT, true).unwrap()).0;
-    let structure = build_whole_file(tokens, Identifier::single("main"))
+    let _structure = build_whole_file(tokens, Identifier::single("main"))
         .ok()
         .unwrap();
 }
