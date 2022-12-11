@@ -149,6 +149,7 @@ fn group_field_gs_builder_no_check(tokens: &Vec<DecoratedToken>, defined_fields:
             let source = defined_fields.iter().find(|&f| f.identifier == *id).unwrap();
             let mut result = FieldImplementation {
                 identifier: id.clone(),
+                slot: 0,
                 get_block: None,
                 set_block: None,
                 default_value: SimpleExpression { postfix_expr: vec![], output_type: Identifier::empty() },

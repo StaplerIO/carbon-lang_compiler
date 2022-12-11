@@ -12,9 +12,10 @@ impl GroupImplementationBlock {
             functions: vec![]
         };
 
-        for field in &decl.fields {
+        for (idx, field) in decl.fields.iter().enumerate() {
             result.fields.push(FieldImplementation{
                 identifier: field.identifier.clone(),
+                slot: idx,
                 get_block: None,
                 set_block: None,
                 default_value: SimpleExpression { postfix_expr: vec![], output_type: Identifier::empty() }

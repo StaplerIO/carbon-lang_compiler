@@ -49,7 +49,7 @@ impl RelocatableCommandList {
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
             function_table: vec![],
-            group_table: vec![]
+            group_table: vec![],
         }
     }
 
@@ -60,7 +60,7 @@ impl RelocatableCommandList {
             descriptors: RelocationCredential::new(),
             string_pool: vec![],
             function_table: vec![],
-            group_table: vec![]
+            group_table: vec![],
         };
     }
 
@@ -213,7 +213,11 @@ impl RelocatableCommandList {
 
     pub fn generate_string_pool(&mut self, addr_len: u8) -> Vec<u8> {
         let mut result = vec![];
-        for string in &self.string_pool {
+
+        // Push pool size
+        result.extend(align_array_width(&self.string_pool.len().to_be_bytes().to_vec(), addr_len));
+
+        for string in self.string_pool.iter() {
             let len = align_array_width(&string.value.len().to_be_bytes().to_vec(), addr_len);
             result.extend(len);
             result.extend(string.value.as_bytes().to_vec());
@@ -224,7 +228,11 @@ impl RelocatableCommandList {
 
     pub fn generate_function_table(&self, addr_len: u8) -> Vec<u8> {
         let mut result = vec![];
-        for func in &self.function_table {
+
+        // Push table size
+        result.extend(align_array_width(&self.function_table.len().to_be_bytes().to_vec(), addr_len));
+
+        for func in self.function_table.iter() {
             result.extend(align_array_width(&func.slot.to_be_bytes().to_vec(), addr_len));
             result.extend(align_array_width(&func.relocated_entry_address.to_be_bytes().to_vec(), addr_len));
         }
