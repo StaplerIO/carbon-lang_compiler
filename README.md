@@ -2,29 +2,24 @@
 
 # carbon-lang_compiler
 
-## Current status
+## About current branch
 
-Working with `Group`, a user-defined simple type system.
+### ⛏🚧 This branch is set up to add support for arrays.
 
-Everything remains untested;
+### Issue content
 
-## Components
+#### Present situation
 
-The compiler has 4 parts
+There are no array features available.
 
-- Lexer
-- Parser
-- Optimizer
-- Package generator
+#### What problems it could lead to
 
-Lexer and Parser has already completed in *Project Loop 1*
+Critical problem.
 
-## Project Map
+#### Solution
 
-![carbon-lang](readme_assets/carbon-lang.svg)
+Add it.
 
+## Changelog
 
-
-## Project activity
-
-![Alt](https://repobeats.axiom.co/api/embed/44a98cdc277f6260cc7c0840596fd632c7d37364.svg "Repobeats analytics image")
+There's no changelog so far.
