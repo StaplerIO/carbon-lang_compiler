@@ -2,6 +2,7 @@ use crate::parser::builder::blocks::action_block::action_block_builder;
 use crate::parser::builder::expression_builder::{expression_term_decorator, relation_expression_builder};
 use crate::parser::utils::pair_container;
 use crate::shared::ast::action::{ActionBlock, ConditionBlock};
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
@@ -22,9 +23,21 @@ pub fn condition_block_builder(
         if *tokens[0].content.get_decorated_keyword().unwrap() == leading_keyword {
             let mut result = ConditionBlock {
                 condition: RelationExpression {
-                    left: SimpleExpression { postfix_expr: vec![], output_type: Identifier::empty() },
-                    right: SimpleExpression { postfix_expr: vec![], output_type: Identifier::empty() },
-                    expected_relation: RelationOperator::Invalid
+                    left: SimpleExpression {
+                        postfix_expr: vec![],
+                        output_type: DataType {
+                            data_type_id: Identifier::empty(),
+                            is_array: false,
+                        },
+                    },
+                    right: SimpleExpression {
+                        postfix_expr: vec![],
+                        output_type: DataType {
+                            data_type_id: Identifier::empty(),
+                            is_array: false,
+                        },
+                    },
+                    expected_relation: RelationOperator::Invalid,
                 },
                 body: ActionBlock { actions: vec![] },
             };

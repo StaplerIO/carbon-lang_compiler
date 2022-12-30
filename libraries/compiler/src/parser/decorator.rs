@@ -1,3 +1,4 @@
+use crate::shared::ast::blocks::data::DataAccessor;
 use crate::shared::ast::decorated_token::{
     DataToken, DecoratedToken, DecoratedTokenContent,
 };
@@ -16,7 +17,7 @@ pub fn decorate_token(tokens: Vec<Token>) -> (Vec<DecoratedToken>, Vec<StringCon
             TokenContent::Identifier(x) => {
                 // TODO: Check if this is a type name
                 result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single(x.as_str()))),
+                    content: DecoratedTokenContent::Data(DataToken::DataAccess(DataAccessor::Singleton(Identifier::single(x.as_str())))),
                     original_token: token.clone(),
                 });
             }
@@ -45,15 +46,15 @@ pub fn decorate_token(tokens: Vec<Token>) -> (Vec<DecoratedToken>, Vec<StringCon
             }),
             TokenContent::Keyword(x) => match x {
                 KeywordType::KwNumber => result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single("number"))),
+                    content: DecoratedTokenContent::Data(DataToken::DataAccess(DataAccessor::Singleton(Identifier::single("number")))),
                     original_token: token.clone(),
                 }),
                 KeywordType::KwChar => result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single("char"))),
+                    content: DecoratedTokenContent::Data(DataToken::DataAccess(DataAccessor::Singleton(Identifier::single("char")))),
                     original_token: token.clone(),
                 }),
                 KeywordType::KwStr => result.push(DecoratedToken {
-                    content: DecoratedTokenContent::Data(DataToken::Identifier(Identifier::single("str"))),
+                    content: DecoratedTokenContent::Data(DataToken::DataAccess(DataAccessor::Singleton(Identifier::single("str")))),
                     original_token: token.clone(),
                 }),
                 _ => result.push(DecoratedToken {
@@ -89,9 +90,9 @@ fn post_combine_identifier(tokens: &Vec<DecoratedToken>) -> Vec<DecoratedToken> 
                 result[result.len() - 1].content.is_valid_identifier() {
                 // Update current identifier
                 let result_len = result.len();
-                let mut id = result[result_len - 1].content.get_data().unwrap().get_identifier().unwrap().clone();
-                id.append(tokens[index + 1].content.get_data().unwrap().get_identifier().unwrap().name.as_str());
-                result[result_len - 1].content = DecoratedTokenContent::Data(DataToken::Identifier(id));
+                let mut id = result[result_len - 1].content.get_data().unwrap().get_data_accessor().unwrap().clone();
+                id.get_identifier_mut().append(tokens[index + 1].content.get_data().unwrap().get_data_accessor().unwrap().get_identifier().name.as_str());
+                result[result_len - 1].content = DecoratedTokenContent::Data(DataToken::DataAccess(id));
                 // Update index
                 index += 2;
                 continue;

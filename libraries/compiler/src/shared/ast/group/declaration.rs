@@ -1,3 +1,4 @@
+use crate::shared::ast::blocks::data::DataDeclarator;
 use crate::shared::ast::blocks::function::FunctionDeclarator;
 use crate::shared::utils::identifier::Identifier;
 
@@ -5,8 +6,7 @@ pub type MethodDeclarator = FunctionDeclarator;
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Field {
-    pub identifier: Identifier,
-    pub data_type: Identifier,
+    pub declarator: DataDeclarator,
 
     pub has_get: bool,
     pub has_set: bool,

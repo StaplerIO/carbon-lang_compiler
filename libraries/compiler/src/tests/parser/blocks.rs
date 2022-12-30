@@ -21,9 +21,9 @@ fn assignment() {
     let result = raw.clone().ok().unwrap().0.get_assignment_action().unwrap().clone();
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
-    assert_eq!(result.identifier, Identifier::single("a"));
+    assert_eq!(result.lhs_accessor, Identifier::single("a"));
 
-    let expr = &result.eval_expression.postfix_expr;
+    let expr = &result.rhs_eval_expression.postfix_expr;
     assert_eq!(expr.len(), 3);
     assert_eq!(
         *expr[0].content.get_data_term().unwrap().get_number().unwrap(),
@@ -48,7 +48,7 @@ fn variable_declaration() {
     assert_eq!(raw.ok().unwrap().1, tokens.len());
 
     assert_eq!(result.identifier, Identifier::single("foo"));
-    assert_eq!(result.data_type, Identifier::single("number"));
+    assert_eq!(result.data_type.data_type_id, Identifier::single("number"));
     assert_eq!(result.is_variable, true);
 }
 
@@ -70,7 +70,9 @@ fn function_call() {
             .content
             .get_data_term()
             .unwrap()
-            .get_identifier()
+            .get_data_accessor()
+            .unwrap()
+            .get_singleton()
             .unwrap(),
         Identifier::single("var1")
     );

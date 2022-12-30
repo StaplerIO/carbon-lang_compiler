@@ -14,8 +14,16 @@ pub enum DataAccessor {
     ArrayElement(ArrayElementAccessor),
 }
 
+type ArrayAllocParam = ArrayElementAccessor;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct ArrayElementAccessor {
     pub identifier: Identifier,
     pub index_eval_expr: SimpleExpression,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DataType {
+    pub data_type_id: Identifier,
+    pub is_array: bool,
 }

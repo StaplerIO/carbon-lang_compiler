@@ -1,5 +1,6 @@
 use crate::parser::builder::function_builder::bare_function_declarator_builder;
-use crate::parser::utils::pair_container;
+use crate::parser::utils::{pair_container, parameter_builder_exact};
+use crate::shared::ast::blocks::data::DataDeclarator;
 use crate::shared::ast::blocks::function::FunctionDeclarator;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::ast::group::declaration::{Field, GroupDeclarationBlock, MethodDeclarator};
@@ -8,20 +9,33 @@ use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
 use crate::shared::token::token::TokenContent;
+use crate::shared::utils::identifier::Identifier;
 
 pub fn group_declaration_builder(tokens: &Vec<DecoratedToken>) -> Result<(GroupDeclarationBlock, usize), GeneralIssue<String>> {
     if tokens[0].original_token.content == TokenContent::Keyword(KeywordType::KwGroup)
         && tokens[1].content.is_valid_identifier() {
-        let body = pair_container(tokens[2..].to_vec());
+        let identifier_result = Identifier::from_tokens(&tokens[1..].to_vec());
+        if identifier_result.is_none() {
+            return Err(GeneralIssue {
+                issues: vec![IssueBase {
+                    level: IssueLevel::Info,
+                    position: IssuePosition::Parsing,
+                    code: "".to_string(),
+                    detail: "Invalid identifier".to_string(),
+                }]
+            });
+        }
+        let identifier = identifier_result.unwrap();
 
         let mut result = GroupDeclarationBlock {
-            identifier: tokens[1].content.get_data().unwrap().get_identifier().unwrap().clone(),
+            identifier: identifier.0,
             fields: vec![],
             methods: vec![],
-            functions: vec![]
+            functions: vec![],
         };
 
         let mut index = 1;
+        let body = pair_container(tokens[(1 + identifier.1)..].to_vec());
         while index < body.len() {
             if body[index].content.get_decorated_keyword().is_some() {
                 match body[index].content.get_decorated_keyword().unwrap() {
@@ -83,9 +97,25 @@ fn group_field_builder_no_check(tokens: &Vec<DecoratedToken>) -> Result<(Field, 
     if tokens[0].original_token.content == TokenContent::Keyword(KeywordType::KwField) {
         if tokens[1].content.is_valid_identifier() && tokens[2].content.is_valid_identifier() {
             if tokens[3].original_token.content == TokenContent::Container(ContainerType::Bracket) {
+                let declarator_result = parameter_builder_exact(&tokens[1..].to_vec());
+                if declarator_result.is_none() {
+                    return Err(GeneralIssue {
+                        issues: vec![IssueBase {
+                            level: IssueLevel::Info,
+                            position: IssuePosition::Parsing,
+                            code: "".to_string(),
+                            detail: "Invalid data declarator".to_string(),
+                        }]
+                    });
+                }
+                let declarator = declarator_result.unwrap();
+
                 let mut result = Field {
-                    identifier: tokens[2].content.get_data().unwrap().get_identifier().unwrap().clone(),
-                    data_type: tokens[1].content.get_data().unwrap().get_identifier().unwrap().clone(),
+                    declarator: DataDeclarator {
+                        data_type: declarator.type_name.data_type_id,
+                        identifier: declarator.identifier,
+                        is_array: declarator.type_name.is_array,
+                    },
                     has_get: false,
                     has_set: false,
                 };

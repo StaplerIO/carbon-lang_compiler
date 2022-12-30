@@ -15,12 +15,12 @@ pub fn build_assignment_command(
     let mut result = RelocatableCommandList::new();
     let target_data = defined_data
         .iter()
-        .find(|&x| x.name == action.identifier)
+        .find(|&x| x.name == *action.lhs_accessor.get_identifier())
         .unwrap()
         .clone();
 
     let expression_command_set =
-        build_expression_evaluation_command(&action.eval_expression, defined_data, metadata);
+        build_expression_evaluation_command(&action.rhs_eval_expression, defined_data, metadata);
     result.combine(expression_command_set);
 
     // Push stack top to target data slot
@@ -36,7 +36,7 @@ pub fn build_assignment_command(
     if dac_build_result.is_ok() {
         result.combine(dac_build_result.unwrap());
     } else {
-        panic!("Failed to build data access command for identifier: {}", action.identifier);
+        panic!("Failed to build data access command for identifier {}", action.lhs_accessor);
     }
 
     return result;

@@ -27,7 +27,7 @@ pub fn build_expression_evaluation_command(
 
             // push data to stack
             match data {
-                ExprDataTerm::Identifier(x) => {
+                ExprDataTerm::DataAccess(x) => {
                     result.command_entries.push(result.commands.len());
                     result.append_commands(vec![combine_command(
                         RootCommand::Stack.to_opcode(),
@@ -37,7 +37,7 @@ pub fn build_expression_evaluation_command(
                     // Seek existing identifiers
                     let identifier = defined_data
                         .iter()
-                        .find(|&dd| dd.name == *x)
+                        .find(|&dd| dd.name == *x.get_identifier())
                         .unwrap();
 
                     let dac_build_result = dac_builder(DataAccessDescriptor::new_identifier(identifier.clone()), metadata);

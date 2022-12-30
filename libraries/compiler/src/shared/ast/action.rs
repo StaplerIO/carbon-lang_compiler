@@ -1,4 +1,5 @@
-use crate::shared::ast::blocks::expression::{SimpleExpression, RelationExpression};
+use crate::shared::ast::blocks::data::{DataAccessor, DataDeclarator};
+use crate::shared::ast::blocks::expression::{RelationExpression, SimpleExpression};
 use crate::shared::ast::parameter::Parameter;
 use crate::shared::token::token::Token;
 use crate::shared::utils::identifier::Identifier;
@@ -26,7 +27,7 @@ pub struct Action {
     pub content: ActionContent,
 
     // Original token that can be used for error reporting
-    pub tokens: Vec<Token>
+    pub tokens: Vec<Token>,
 }
 
 pub type LoopBlock = ActionBlock;
@@ -52,14 +53,13 @@ pub struct DeclarationAction {
     // A variable or a constant
     pub is_variable: bool,
 
-    pub identifier: Identifier,
-    pub data_type: Identifier,
+    pub declarator: DataDeclarator,
 }
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct AssignmentAction {
-    pub identifier: Identifier,
-    pub eval_expression: SimpleExpression,
+    pub lhs_accessor: DataAccessor,
+    pub rhs_eval_expression: SimpleExpression,
 }
 
 #[derive(Clone, PartialEq, Debug)]

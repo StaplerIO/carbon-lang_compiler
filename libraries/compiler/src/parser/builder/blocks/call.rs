@@ -1,6 +1,7 @@
 use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::{find_next_semicolon, pair_container, split_comma_expression};
 use crate::shared::ast::action::{Action, ActionContent, CallAction};
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
@@ -46,22 +47,38 @@ pub fn bare_function_call_builder(
         if tokens[0].content.is_valid_identifier() && tokens[1].content.get_container().is_some()
         {
             if *tokens[1].content.get_container().unwrap() == ContainerType::Bracket {
-                let mut result = CallAction {
-                    function_name: tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
-                    arguments: vec![],
-                };
-
-                let parameter_zone = pair_container(tokens[1..].to_vec());
-                for param in
-                    split_comma_expression(parameter_zone[1..parameter_zone.len()].to_vec())
-                {
-                    result.arguments.push(SimpleExpression {
-                        postfix_expr: expression_infix_to_postfix(expression_term_decorator(&param)),
-                        output_type: Identifier::empty(),
+                let identifier_result = Identifier::from_tokens(&tokens);
+                if identifier_result.is_none() {
+                    return Err(GeneralIssue {
+                        issues: vec![IssueBase {
+                            level: IssueLevel::Info,
+                            position: IssuePosition::Parsing,
+                            code: "".to_string(),
+                            detail: "Invalid identifier".to_string(),
+                        }]
                     });
                 }
 
-                return Ok((result, parameter_zone.len() + 2));
+                let identifier = identifier_result.unwrap();
+                let mut result = CallAction {
+                    function_name: identifier.0,
+                    arguments: vec![],
+                };
+
+                let parameter_zone = pair_container(tokens[(identifier.1)..].to_vec());
+                for param in
+                    split_comma_expression(parameter_zone[(identifier.1)..parameter_zone.len()].to_vec())
+                {
+                    result.arguments.push(SimpleExpression {
+                        postfix_expr: expression_infix_to_postfix(expression_term_decorator(&param)),
+                        output_type: DataType {
+                            data_type_id: Identifier::empty(),
+                            is_array: false,
+                        },
+                    });
+                }
+
+                return Ok((result, identifier.1 + parameter_zone.len() + 1));
             }
         }
     }

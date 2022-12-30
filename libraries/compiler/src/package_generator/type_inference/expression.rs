@@ -1,4 +1,5 @@
 use crate::shared::ast::action::VariableDefinition;
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprTerm, SimpleExpression};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::utils::identifier::Identifier;
@@ -8,13 +9,19 @@ pub fn infer_expression_term_data_type(
     term: &ExprDataTerm,
     defined_functions: &Vec<Function>,
     defined_variables: &Vec<VariableDefinition>,
-) -> Option<Identifier> {
+) -> Option<DataType> {
     return match term {
-        ExprDataTerm::Number(_) => Some(Identifier::single("number")),
-        ExprDataTerm::String(_) => Some(Identifier::single("str")),
-        ExprDataTerm::Identifier(x) => {
+        ExprDataTerm::Number(_) => Some(DataType {
+            data_type_id: Identifier::single("number"),
+            is_array: false,
+        }),
+        ExprDataTerm::String(_) => Some(DataType {
+            data_type_id: Identifier::single("str"),
+            is_array: false,
+        }),
+        ExprDataTerm::DataAccess(x) => {
             for def_var in defined_variables {
-                if def_var.identifier == *x {
+                if def_var.identifier == *x.get_identifier() {
                     return Option::from(def_var.type_name.clone());
                 }
             }
@@ -69,7 +76,7 @@ pub fn infer_expression_output_type(
 fn is_castable_to_type(term: &ExprTerm, target_type: &Identifier) -> bool {
     // Compiler defined types
     let data = term.content.get_data_term().unwrap();
-    if data.get_identifier().unwrap() == target_type {
+    if data.get_data_accessor().unwrap().get_identifier() == target_type {
         return true;
     }
 

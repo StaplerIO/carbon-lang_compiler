@@ -9,9 +9,9 @@ pub fn check_variable_assignment(
     defined_variables: Vec<VariableDefinition>,
     defined_types: Vec<Identifier>,
 ) -> bool {
-    if check_variable_existence_by_name(&action.identifier, &defined_variables) {
-        if check_expression_sequence(action.eval_expression.clone()) {
-            if infer_expression_output_type(&action.eval_expression, &defined_types).is_some() {
+    if check_variable_existence_by_name(action.lhs_accessor.get_identifier(), &defined_variables) {
+        if check_expression_sequence(action.rhs_eval_expression.clone()) {
+            if infer_expression_output_type(&action.rhs_eval_expression, &defined_types).is_some() {
                 return true;
             }
         }

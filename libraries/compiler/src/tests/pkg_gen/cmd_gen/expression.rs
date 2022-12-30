@@ -3,6 +3,7 @@ use crate::package_generator::command_builder::expression_evaluation::build_expr
 use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::builder::expression_builder::expression_term_decorator;
 use crate::parser::decorator::decorate_token;
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::package_generation::data_descriptor::{DataDeclarator, DataLocation};
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
@@ -14,7 +15,10 @@ fn expression_with_number_only() {
     let tokens = tokenize("1 + 2 * 3", true).unwrap();
     let expression = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
-        output_type: Identifier::single("number"),
+        output_type: DataType {
+            data_type_id: Identifier::single("number"),
+            is_array: false,
+        },
     };
 
     let metadata = PackageMetadata {
@@ -23,7 +27,7 @@ fn expression_with_number_only() {
         package_type: 0,
         global_command_offset: 0,
         domain_layer_count_alignment: 0,
-        address_alignment: 0
+        address_alignment: 0,
     };
 
     // This is very abstract, needs to be validated
@@ -41,7 +45,10 @@ fn expression_with_defined_data() {
     let tokens = tokenize("a + b * 2", true).unwrap();
     let expression = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
-        output_type: Identifier::single("number"),
+        output_type: DataType {
+            data_type_id: Identifier::single("number"),
+            is_array: false,
+        },
     };
 
     let metadata = PackageMetadata {
@@ -50,7 +57,7 @@ fn expression_with_defined_data() {
         data_alignment: 8,
         global_command_offset: 0,
         domain_layer_count_alignment: 2,
-        address_alignment: 4
+        address_alignment: 4,
     };
 
     let defined_data = vec![
@@ -58,13 +65,13 @@ fn expression_with_defined_data() {
             name: Identifier::single("a"),
             slot: 0,
             location: DataLocation::Local,
-            is_string: false
+            is_string: false,
         },
         DataDeclarator {
             name: Identifier::single("b"),
             slot: 1,
             location: DataLocation::Local,
-            is_string: false
+            is_string: false,
         },
     ];
 

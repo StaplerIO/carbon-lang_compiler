@@ -1,5 +1,6 @@
 use crate::parser::builder::blocks::action_block::action_block_builder;
-use crate::parser::utils::{pair_container, split_comma_expression};
+use crate::parser::utils::{pair_container, parameter_builder_exact, split_comma_expression};
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::function::{Function, FunctionDeclarator};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::ast::parameter::Parameter;
@@ -7,7 +8,6 @@ use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, I
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::token::TokenContent;
-use crate::shared::utils::identifier::Identifier;
 
 // Minimum: decl func <name> () [<typename>] {} : 11 tokens
 // Set <typename> as "none" to return nothing
@@ -98,7 +98,7 @@ pub fn bare_function_declarator_builder(tokens: &Vec<DecoratedToken>) -> Result<
                         current_index += return_value_area.len() + 1;
 
                         return Ok((FunctionDeclarator {
-                            identifier: tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
+                            identifier: tokens[0].content.get_data().unwrap().get_data_accessor().unwrap().get_identifier().clone(),
                             return_type,
                             parameters,
                         }, current_index));
@@ -124,17 +124,12 @@ fn parameter_array_builder(tokens: Vec<DecoratedToken>) -> Vec<Parameter> {
         let list = split_comma_expression(tokens);
 
         let mut result: Vec<Parameter> = vec![];
-        for declaration in list {
-            if declaration.len() == 2 {
-                if declaration[0].content.is_valid_identifier() && declaration[1].content.is_valid_identifier() {
-                    result.push(Parameter {
-                        type_name: declaration[0].content.get_data().unwrap().get_identifier().unwrap().clone(),
-                        identifier: declaration[1].content.get_data().unwrap().get_identifier().unwrap().clone(),
-                    });
-                }
+        for declaration in list.iter() {
+            let param = parameter_builder_exact(declaration);
+            if param.is_some() {
+                result.push(param.unwrap());
             } else {
-                // Issue a compiler error
-                break;
+                panic!("Invalid parameter format")
             }
         }
 
@@ -145,13 +140,15 @@ fn parameter_array_builder(tokens: Vec<DecoratedToken>) -> Vec<Parameter> {
 }
 
 // Return the typename
-fn return_value_type_builder(tokens: Vec<DecoratedToken>) -> Identifier {
+fn return_value_type_builder(tokens: Vec<DecoratedToken>) -> DataType {
     if tokens.len() == 1 {
         if tokens[0].content.is_valid_identifier() {
-            return tokens[0].content.get_data().unwrap().get_identifier().unwrap().clone();
+            let identifier = DataType::from_tokens(&tokens[1..].to_vec());
+
+            return identifier.unwrap().0;
         } else if tokens[0].content.eq_entry(&DecoratedTokenContent::DecoratedKeyword(KeywordType::Invalid)) {
             if *tokens[0].content.get_decorated_keyword().unwrap() == KeywordType::KwNone {
-                return Identifier::empty();
+                return DataType::new_none();
             }
         }
     }

@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use lazy_static::lazy_static;
 
 use crate::parser::builder::blocks::call::bare_function_call_builder;
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, ExprTerm, RelationExpression, SimpleExpression, TermContent};
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
 use crate::shared::token::container::ContainerType;
@@ -216,8 +217,20 @@ pub fn relation_expression_builder(terms: Vec<ExprTerm>) -> RelationExpression {
     };
 
     return RelationExpression {
-        left: SimpleExpression { postfix_expr: left_expr, output_type: Identifier::empty() },
-        right: SimpleExpression { postfix_expr: right_expr, output_type: Identifier::empty() },
+        left: SimpleExpression {
+            postfix_expr: left_expr,
+            output_type: DataType {
+                data_type_id: Identifier::empty(),
+                is_array: false,
+            },
+        },
+        right: SimpleExpression {
+            postfix_expr: right_expr,
+            output_type: DataType {
+                data_type_id: Identifier::empty(),
+                is_array: false,
+            },
+        },
         expected_relation: *rel_op,
     };
 }

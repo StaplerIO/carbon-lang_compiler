@@ -1,6 +1,9 @@
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::decorated_token::{DecoratedToken, DecoratedTokenContent};
+use crate::shared::ast::parameter::Parameter;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::operator::Operator;
+use crate::shared::utils::identifier::Identifier;
 
 // Return the distance to next semicolon token, None to find nothing
 pub fn find_next_semicolon(tokens: Vec<DecoratedToken>) -> Option<usize> {
@@ -75,4 +78,25 @@ pub fn pair_container(tokens: Vec<DecoratedToken>) -> Vec<DecoratedToken> {
     }
 
     return tokens;
+}
+
+pub fn parameter_builder_exact(tokens: &Vec<DecoratedToken>) -> Option<Parameter> {
+    let type_name_result = DataType::from_tokens(&tokens);
+    if type_name_result.is_some() {
+        let type_name = type_name_result.unwrap();
+        let identifier_result = Identifier::from_tokens(&tokens[(type_name.1)..].to_vec());
+
+        if identifier_result.is_some() {
+            let identifier = identifier_result.unwrap();
+
+            if tokens.len() == type_name.1 + identifier.1 {
+                return Some(Parameter {
+                    type_name: type_name.0,
+                    identifier: identifier.0,
+                });
+            }
+        }
+    }
+    
+    return None;
 }

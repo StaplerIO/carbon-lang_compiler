@@ -1,14 +1,14 @@
 use crate::shared::ast::action::CallAction;
+use crate::shared::ast::blocks::data::{DataAccessor, DataType};
 use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::operator::{Operator, RelationOperator};
 use crate::shared::token::token::Token;
-use crate::shared::utils::identifier::Identifier;
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct SimpleExpression {
     pub postfix_expr: Vec<ExprTerm>,
 
-    pub output_type: Identifier,
+    pub output_type: DataType,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -39,6 +39,6 @@ pub struct ExprTerm {
 pub enum ExprDataTerm {
     Number(String),
     String(StringConstant),
-    Identifier(Identifier),
+    DataAccess(DataAccessor),
     FunctionCall(CallAction),
 }

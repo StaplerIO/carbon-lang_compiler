@@ -46,7 +46,7 @@ fn check_assignment() {
         .to_vec();
 
     let mut action = stmt.unwrap().0.get_assignment_action().unwrap().clone();
-    action.eval_expression = infer_every_expression_data_term_type(&action.eval_expression, &vec![], &defined_vars);
+    action.rhs_eval_expression = infer_every_expression_data_term_type(&action.rhs_eval_expression, &vec![], &defined_vars);
 
     assert!(check_variable_assignment(
         &action,

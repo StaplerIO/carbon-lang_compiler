@@ -26,15 +26,17 @@ impl Identifier {
         Itertools::join(&mut result.iter(), "::").to_string()
     }
 
-    pub fn build_identifier(tokens: &Vec<DecoratedToken>) -> Option<Identifier> {
+    pub fn from_tokens(tokens: &Vec<DecoratedToken>) -> Option<(Identifier, usize)> {
         let mut result = Identifier::empty();
         let mut status: bool = false;
+        let mut index = 0;
         for token in tokens.iter() {
             if status {
                 if token.original_token.get_operator().unwrap_or(Operator::Invalid) == Operator::Scope {
                     break;
                 }
                 status = !status;
+                index += 1;
                 continue;
             }
 
@@ -42,6 +44,7 @@ impl Identifier {
             if id.is_some() {
                 result.scope.push(id.unwrap());
                 status = !status;
+                index += 1;
             } else {
                 break;
             }
@@ -51,15 +54,13 @@ impl Identifier {
             None
         } else {
             result.name = result.scope.pop().unwrap();
-            Some(result)
+            Some((result, index))
         };
     }
 }
 
 impl Display for Identifier {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let mut v = self.scope.clone();
-        v.push(self.name.clone());
-        f.write_str(Itertools::join(&mut v.iter(), "::").as_str())
+        return f.write_str(self.to_string().as_str());
     }
 }

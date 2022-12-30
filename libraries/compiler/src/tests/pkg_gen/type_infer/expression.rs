@@ -5,6 +5,7 @@ use crate::parser::builder::expression_builder::expression_infix_to_postfix;
 use crate::parser::builder::expression_builder::expression_term_decorator;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::VariableDefinition;
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::utils::identifier::Identifier;
 
@@ -13,7 +14,10 @@ fn expression_data_type() {
     let tokens = tokenize("1 + 2 - 3.55", true).unwrap();
     let mut expr = SimpleExpression {
         postfix_expr: expression_infix_to_postfix(expression_term_decorator(&decorate_token(tokens).0)),
-        output_type: Identifier::empty(),
+        output_type: DataType {
+            data_type_id: Identifier::empty(),
+            is_array: false,
+        },
     };
 
     let defined_vars: Vec<VariableDefinition> = [VariableDefinition {

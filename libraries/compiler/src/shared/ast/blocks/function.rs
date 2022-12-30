@@ -1,4 +1,5 @@
 use crate::shared::ast::action::Action;
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::parameter::Parameter;
 use crate::shared::utils::identifier::Identifier;
 
@@ -13,5 +14,5 @@ pub struct Function {
 pub struct FunctionDeclarator {
     pub identifier: Identifier,
     pub parameters: Vec<Parameter>,
-    pub return_type: Identifier,
+    pub return_type: DataType,
 }

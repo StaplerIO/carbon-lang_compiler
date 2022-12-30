@@ -1,9 +1,9 @@
+use crate::shared::ast::blocks::data::DataAccessor;
 use crate::shared::ast::decorated_token::{DataToken, DecoratedTokenContent};
 use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::container::ContainerType;
 use crate::shared::token::keyword::KeywordType;
 use crate::shared::token::operator::Operator;
-use crate::shared::utils::identifier::Identifier;
 
 impl DecoratedTokenContent {
     pub fn eq_entry(&self, dtkc: &DecoratedTokenContent) -> bool {
@@ -53,7 +53,7 @@ impl DecoratedTokenContent {
         return match &self {
             DecoratedTokenContent::Data(x) => {
                 match &x {
-                    DataToken::Identifier(_) => true,
+                    DataToken::DataAccess(_) => true,
                     _ => false
                 }
             }
@@ -70,9 +70,9 @@ impl DataToken {
         };
     }
 
-    pub fn get_identifier(&self) -> Option<&Identifier> {
+    pub fn get_data_accessor(&self) -> Option<&DataAccessor> {
         return match &self {
-            DataToken::Identifier(x) => Option::from(x),
+            DataToken::DataAccess(x) => Option::from(x),
             _ => None
         };
     }

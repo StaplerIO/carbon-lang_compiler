@@ -1,6 +1,7 @@
 use crate::parser::builder::expression_builder::{expression_infix_to_postfix, expression_term_decorator};
 use crate::parser::utils::find_next_semicolon;
 use crate::shared::ast::action::{Action, ActionContent, ReturnAction};
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::decorated_token::DecoratedToken;
 use crate::shared::error::general_issue::{GeneralIssue, IssueBase, IssueLevel, IssuePosition};
@@ -25,7 +26,10 @@ pub fn return_action_builder(
                         result = Option::from(ReturnAction {
                             value: Some(SimpleExpression {
                                 postfix_expr: vec![],
-                                output_type: Identifier::empty(),
+                                output_type: DataType {
+                                    data_type_id: Identifier::empty(),
+                                    is_array: false,
+                                },
                             }),
                         });
                     } else {
@@ -35,7 +39,10 @@ pub fn return_action_builder(
                         result = Option::from(ReturnAction {
                             value: Some(SimpleExpression {
                                 postfix_expr: expression_infix_to_postfix(expression_term_decorator(&expression_zone)),
-                                output_type: Identifier::empty(),
+                                output_type: DataType {
+                                    data_type_id: Identifier::empty(),
+                                    is_array: false,
+                                },
                             }),
                         });
                     }

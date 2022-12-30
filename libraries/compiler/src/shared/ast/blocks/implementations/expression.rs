@@ -1,9 +1,9 @@
 use crate::shared::ast::action::CallAction;
+use crate::shared::ast::blocks::data::DataAccessor;
 use crate::shared::ast::blocks::expression::{ExprDataTerm, TermContent};
 use crate::shared::ast::decorated_token::DataToken;
 use crate::shared::package_generation::data_descriptor::StringConstant;
 use crate::shared::token::operator::Operator;
-use crate::shared::utils::identifier::Identifier;
 
 impl TermContent {
     pub fn get_data_term(&self) -> Option<&ExprDataTerm> {
@@ -33,7 +33,7 @@ impl ExprDataTerm {
         return match &d {
             DataToken::Number(x) => ExprDataTerm::Number(x.clone()),
             DataToken::String(x) => ExprDataTerm::String(x.clone()),
-            DataToken::Identifier(x) => ExprDataTerm::Identifier(x.clone()),
+            DataToken::DataAccess(x) => ExprDataTerm::DataAccess(x.clone()),
         }
     }
 
@@ -51,9 +51,9 @@ impl ExprDataTerm {
         };
     }
 
-    pub fn get_identifier(&self) -> Option<&Identifier> {
+    pub fn get_data_accessor(&self) -> Option<&DataAccessor> {
         return match self {
-            ExprDataTerm::Identifier(identifier) => return Some(identifier),
+            ExprDataTerm::DataAccess(identifier) => return Some(identifier),
             _ => None,
         };
     }
