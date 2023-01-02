@@ -66,12 +66,14 @@ fn expression_with_defined_data() {
             slot: 0,
             location: DataLocation::Local,
             is_string: false,
+            is_array: false,
         },
         DataDeclarator {
             name: Identifier::single("b"),
             slot: 1,
             location: DataLocation::Local,
             is_string: false,
+            is_array: false,
         },
     ];
 

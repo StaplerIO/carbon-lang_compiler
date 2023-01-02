@@ -13,6 +13,7 @@ pub struct DataDeclarator {
     pub slot: usize,
     pub location: DataLocation,
     pub is_string: bool,
+    pub is_array: bool,
 }
 
 #[derive(Clone, Debug, PartialEq)]

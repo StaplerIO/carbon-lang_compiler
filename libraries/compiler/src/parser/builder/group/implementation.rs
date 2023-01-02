@@ -40,7 +40,10 @@ pub fn group_implementation_builder(tokens: &Vec<DecoratedToken>, defined_groups
                         let current_build = group_field_gs_builder_no_check(&body[next_index..].to_vec(), &source.fields);
                         if current_build.is_ok() {
                             let res = current_build.unwrap();
-                            let target = result.fields.iter_mut().find(|f| f.source_identifier == res.0.source_identifier).unwrap();
+                            let target = result.fields
+                                .iter_mut()
+                                .find(|f| f.source == res.0.source)
+                                .unwrap();
 
                             if res.0.get_block.is_some() {
                                 target.get_block = res.0.get_block;
@@ -81,7 +84,7 @@ pub fn group_implementation_builder(tokens: &Vec<DecoratedToken>, defined_groups
                         let current_build = group_default_builder_no_check(&body[next_index..].to_vec());
                         if current_build.is_ok() {
                             let res = current_build.unwrap();
-                            let target = result.fields.iter_mut().find(|f| f.source_identifier == res.1).unwrap();
+                            let target = result.fields.iter_mut().find(|f| f.source.identifier == res.1).unwrap();
                             target.default_value = res.0;
                             next_index += res.2;
                             continue;
@@ -122,7 +125,7 @@ fn group_default_builder_no_check(tokens: &Vec<DecoratedToken>) -> Result<(Simpl
         if evaluation.is_ok() {
             let result = evaluation.unwrap();
             match result.0.content {
-                ActionContent::AssignmentStatement(x) => return Ok((x.rhs_eval_expression, result.0.get_assignment_action().unwrap().lhs_accessor.get_identifier().clone(), result.1 + 1)),
+                ActionContent::AssignmentStatement(ref x) => return Ok((x.rhs_eval_expression.clone(), result.0.get_assignment_action().unwrap().lhs_accessor.get_identifier().clone(), result.1 + 1)),
                 _ => panic!("Unknown error!")
             }
         }
@@ -166,7 +169,7 @@ fn group_field_gs_builder_no_check(tokens: &Vec<DecoratedToken>, defined_fields:
 
             let source = defined_fields.iter().find(|&f| f.declarator.identifier == id.0).unwrap();
             let mut result = FieldImplementation {
-                source_identifier: id.0,
+                source: source.declarator.clone(),
                 slot: 0,
                 get_block: None,
                 set_block: None,

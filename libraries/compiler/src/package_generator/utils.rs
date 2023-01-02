@@ -1,8 +1,4 @@
 use apa::apa::modulo::modulo;
-
-use crate::package_generator::type_inference::expression::infer_expression_term_data_type;
-use crate::shared::ast::action::VariableDefinition;
-use crate::shared::ast::blocks::expression::{ExprDataTerm, SimpleExpression, TermContent};
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::package_generation::package_descriptor::PackageMetadata;
 use crate::shared::package_generation::relocation_reference::{
@@ -17,24 +13,6 @@ pub fn find_function(name: &Identifier, available_functions: &Vec<Function>) -> 
     }
 
     return None;
-}
-
-pub fn infer_every_expression_data_term_type(
-    expression: &SimpleExpression,
-    defined_functions: &Vec<Function>,
-    defined_variables: &Vec<VariableDefinition>,
-) -> SimpleExpression {
-    let mut expr = expression.clone();
-
-    for (index, term) in expr.postfix_expr.clone().iter().enumerate() {
-        if term.content.get_data_term().is_some() {
-            let mut data = term.content.get_data_term().unwrap().clone();
-            data = ExprDataTerm::DataAccess(infer_expression_term_data_type(&data, &defined_functions, &defined_variables).unwrap());
-            expr.postfix_expr[index].content = TermContent::Data(data);
-        }
-    }
-
-    return expr;
 }
 
 pub fn combine_command(master: u8, sub: u8) -> u8 {
@@ -188,19 +166,19 @@ pub fn is_function_end_command(reloc_ref: &RelocationReference) -> bool {
     return match reloc_ref.ref_type {
         RelocationReferenceType::EndFunction(_) => true,
         _ => false,
-    }
+    };
 }
 
 pub fn is_function_begin_command(reloc_ref: &RelocationReference) -> bool {
     return match reloc_ref.ref_type {
         RelocationReferenceType::FunctionEntrance(_) => true,
         _ => false,
-    }
+    };
 }
 
-pub fn pair_container_action(references: &[RelocationReference]) -> (&RelocationReference, usize)  {
+pub fn pair_container_action(references: &[RelocationReference]) -> (&RelocationReference, usize) {
     let reloc_type = &references[0].ref_type;
-    let opp_reloc_type = match reloc_type{
+    let opp_reloc_type = match reloc_type {
         RelocationReferenceType::IfEntrance => RelocationReferenceType::EndIf,
         RelocationReferenceType::ElifEntrance => RelocationReferenceType::EndElif,
         RelocationReferenceType::ElseEntrance => RelocationReferenceType::EndElse,

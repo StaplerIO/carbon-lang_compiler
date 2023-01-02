@@ -1,4 +1,5 @@
 use crate::shared::ast::action::ActionBlock;
+use crate::shared::ast::blocks::data::DataDeclarator;
 use crate::shared::ast::blocks::expression::SimpleExpression;
 use crate::shared::ast::blocks::function::Function;
 use crate::shared::utils::identifier::Identifier;
@@ -18,7 +19,7 @@ pub struct GroupImplementationBlock {
 
 #[derive(Debug, Clone)]
 pub struct FieldImplementation {
-    pub source_identifier: Identifier,
+    pub source: DataDeclarator,
     pub slot: usize,
 
     pub get_block: Option<FieldGS>,

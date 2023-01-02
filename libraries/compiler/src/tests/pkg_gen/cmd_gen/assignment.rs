@@ -30,7 +30,8 @@ fn simple_test() {
         name: Identifier::single("t"),
         slot: 0,
         location: DataLocation::Local,
-        is_string: false
+        is_string: false,
+        is_array: false,
     }];
 
     let result = build_assignment_command(&action, &defined_data, &metadata);

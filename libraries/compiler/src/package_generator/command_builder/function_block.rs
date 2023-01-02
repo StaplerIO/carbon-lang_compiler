@@ -15,7 +15,8 @@ pub fn build_function_command(func: &Function, metadata: &PackageMetadata) -> Re
             name: param.identifier.clone(),
             slot: index,
             location: DataLocation::Local,
-            is_string: false
+            is_string: false,
+            is_array: param.type_name.is_array,
         });
     }
 

@@ -31,10 +31,11 @@ pub fn linear_action_tree_command(tree: LinearActionTree, metadata: &PackageMeta
                 result.combine(decl_cmd);
 
                 defined_data.push(DataDeclarator {
-                    name: x.identifier,
+                    name: x.declarator.identifier.clone(),
                     slot:defined_data.len() + 1,
                     location: DataLocation::Local,
-                    is_string: false
+                    is_string: false,
+                    is_array: x.declarator.is_array,
                 });
             }
             LinearActionType::CallAction(_x) => {}

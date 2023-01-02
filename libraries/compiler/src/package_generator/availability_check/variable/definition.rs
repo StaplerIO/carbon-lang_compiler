@@ -8,9 +8,9 @@ pub fn check_variable_definition(
     defined_types: &Vec<Identifier>,
 ) -> bool {
     // If the type is defined
-    if defined_types.contains(&action.data_type.data_type_id) {
+    if defined_types.contains(&action.declarator.data_type) {
         // Then check the existence
-        return !check_variable_existence_by_name(&action.identifier, defined_variables);
+        return !check_variable_existence_by_name(&action.declarator.identifier, defined_variables);
     }
 
     return false;

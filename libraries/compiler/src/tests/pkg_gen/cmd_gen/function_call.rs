@@ -29,7 +29,8 @@ fn function_call() {
         name: Identifier::single("bar"),
         slot: 0,
         location: DataLocation::Local,
-        is_string: false
+        is_string: false,
+        is_array: false,
     }];
 
     let _commands = build_function_call_command(&action, &defined_data, &metadata);

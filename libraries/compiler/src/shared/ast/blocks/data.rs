@@ -14,7 +14,7 @@ pub enum DataAccessor {
     ArrayElement(ArrayElementAccessor),
 }
 
-type ArrayAllocParam = ArrayElementAccessor;
+// type ArrayAllocParam = ArrayElementAccessor;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ArrayElementAccessor {

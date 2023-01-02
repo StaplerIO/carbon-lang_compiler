@@ -1,11 +1,11 @@
 use crate::lexer::tokenize::tokenize;
 use crate::package_generator::availability_check::variable::assignment::check_variable_assignment;
 use crate::package_generator::availability_check::variable::definition::check_variable_definition;
-use crate::package_generator::utils::infer_every_expression_data_term_type;
 use crate::parser::builder::blocks::assignment::assignment_block_builder;
 use crate::parser::builder::blocks::declaration::declaration_action_builder;
 use crate::parser::decorator::decorate_token;
 use crate::shared::ast::action::VariableDefinition;
+use crate::shared::ast::blocks::data::DataType;
 use crate::shared::utils::identifier::Identifier;
 
 #[test]
@@ -23,7 +23,7 @@ fn check_def() {
     assert!(check_variable_definition(
         &stmt.ok().unwrap().0.get_declaration_action().unwrap(),
         &vec![],
-        &defined_types
+        &defined_types,
     ));
 }
 
@@ -34,7 +34,10 @@ fn check_assignment() {
 
     let defined_vars: Vec<VariableDefinition> = [VariableDefinition {
         identifier: Identifier::single("bcd"),
-        type_name: Identifier::single("number"),
+        type_name: DataType {
+            data_type_id: Identifier::single("number"),
+            is_array: false,
+        },
     }]
         .to_vec();
 
@@ -45,12 +48,11 @@ fn check_assignment() {
     ]
         .to_vec();
 
-    let mut action = stmt.unwrap().0.get_assignment_action().unwrap().clone();
-    action.rhs_eval_expression = infer_every_expression_data_term_type(&action.rhs_eval_expression, &vec![], &defined_vars);
+    let action = stmt.unwrap().0.get_assignment_action().unwrap().clone();
 
     assert!(check_variable_assignment(
         &action,
         defined_vars,
-        defined_types
+        defined_types,
     ));
 }

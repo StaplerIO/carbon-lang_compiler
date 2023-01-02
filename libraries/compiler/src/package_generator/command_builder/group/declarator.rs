@@ -14,10 +14,10 @@ pub fn group_declarator_builder(decl_block: GroupDeclarationBlock, generated_gro
     result.commands.extend(align_array_width(&decl_block.fields.len().to_be_bytes().to_vec(), metadata.data_slot_alignment));
     for field in decl_block.fields.iter() {
         let source = generated_groups.iter()
-                                     .find(|g| g.identifier == field.data_type);
+                                     .find(|g| g.identifier == field.declarator.data_type);
 
         if source.is_none() {
-            dependency.push(field.data_type.clone());
+            dependency.push(field.declarator.data_type.clone());
         } else {
             result.commands.extend(align_array_width(&source.unwrap().slot.to_be_bytes().to_vec(), metadata.data_slot_alignment));
         }
@@ -58,9 +58,9 @@ fn separated_function_declarator_builder(decl: &FunctionDeclarator, generated_gr
 
     // Build return type
     let return_type = generated_groups.iter()
-                                      .find(|g| g.identifier == decl.return_type);
+                                      .find(|g| g.identifier == decl.return_type.data_type_id);
     if return_type.is_none() {
-        dependency.push(decl.return_type.clone());
+        dependency.push(decl.return_type.data_type_id.clone());
     } else {
         result.commands.extend(align_array_width(&return_type.unwrap().slot.to_be_bytes().to_vec(), metadata.data_slot_alignment));
     }
@@ -71,7 +71,7 @@ fn separated_function_declarator_builder(decl: &FunctionDeclarator, generated_gr
         let param_type = generated_groups.iter()
                                          .find(|g| g.identifier == param.identifier);
         if param_type.is_none() {
-            dependency.push(decl.return_type.clone());
+            dependency.push(decl.return_type.data_type_id.clone());
         } else {
             result.commands.extend(align_array_width(&param_type.unwrap().slot.to_be_bytes().to_vec(), metadata.data_slot_alignment));
         }

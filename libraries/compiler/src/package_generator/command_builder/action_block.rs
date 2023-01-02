@@ -37,10 +37,11 @@ pub fn action_block_command_builder(
                 result.command_entries.push(result.commands.len());
                 result.combine(build_data_declaration_command(false));
                 available_defined_data.push(DataDeclarator {
-                    name: x.identifier.clone(),
+                    name: x.declarator.identifier.clone(),
                     slot: available_defined_data.len(),
                     location: DataLocation::Local,
                     is_string: false,
+                    is_array: x.declarator.is_array,
                 });
             }
             ActionContent::AssignmentStatement(x) => {

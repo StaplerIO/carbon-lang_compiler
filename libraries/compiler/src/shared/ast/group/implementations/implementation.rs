@@ -15,7 +15,7 @@ impl GroupImplementationBlock {
 
         for (idx, field) in decl.fields.iter().enumerate() {
             result.fields.push(FieldImplementation {
-                source_identifier: field.declarator.clone(),
+                source: field.declarator.clone(),
                 slot: idx,
                 get_block: None,
                 set_block: None,

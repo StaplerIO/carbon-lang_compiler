@@ -40,7 +40,7 @@ impl Display for DataAccessor {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut result = self.get_identifier().to_string();
         match &self {
-            DataAccessor::ArrayElement(x) => {
+            DataAccessor::ArrayElement(_) => {
                 result = result + "[...]";
             }
             _ => {}
